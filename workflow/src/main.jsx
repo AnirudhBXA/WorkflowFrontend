@@ -13,6 +13,7 @@ import TrainingsComponent from './components/TrainingComponent.jsx';
 import InterviewsComponent from './components/InterviewsComponent.jsx';
 import CertificationsComponent from './components/CertificatoinComponent.jsx';
 import LoginComponent from './components/LoginComponent.jsx';
+import ForgotPasswordComponent from './components/ForgotPasswordComponent.jsx';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -20,15 +21,17 @@ createRoot(document.getElementById('root')).render(
     <ChakraProvider  value={system}>
       <div>
       <Routes>
-
-        <Route path='/' element={<App />}></Route>
-        <Route path='/dashboard' element={<DashboardComponent />}></Route>
-        <Route path='/timesheet' element={<TimesheetsComponent />}></Route>
-        <Route path='/leave' element={<LeavesComponent />}></Route>
-        <Route path='/trainings' element={<TrainingsComponent />}></Route>
-        <Route path='/interviews' element={<InterviewsComponent />}></Route>
-        <Route path='/certifications' element={<CertificationsComponent />}></Route>
+        <Route path='/' element={<App />}>
+          <Route path='dashboard' element={<DashboardComponent />}></Route>
+          <Route path='timesheet' element={<TimesheetsComponent />}></Route>
+          <Route path='leave' element={<LeavesComponent />}></Route>
+          <Route path='trainings' element={<TrainingsComponent />}></Route>
+          <Route path='interviews' element={<InterviewsComponent />}></Route>
+          <Route path='certifications' element={<CertificationsComponent />}></Route>
+        </Route>
         <Route path='/login' element={<LoginComponent />}></Route>
+        <Route path='/forgot-password' element={< ForgotPasswordComponent/>}></Route>
+        
 
 
       </Routes>

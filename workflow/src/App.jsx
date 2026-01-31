@@ -10,16 +10,37 @@ import HeaderComponent from './components/HeaderComponent'
 import LoginComponent from './components/LoginComponent'
 import { Outlet } from 'react-router-dom'
 import FileUploadComponent from './components/FileUploadComponent'
+import Dummy from './components/Dumy'
 
 function App() {
   const [count, setCount] = useState(0)
 
   return (
     <>
-    <HeaderComponent></HeaderComponent>
-      <NavigationSidebar></NavigationSidebar>
+    <div className="flex h-screen">
+      
+      {/* Sidebar */}
+      <div className="w-40">
+        <NavigationSidebar />
+      </div>
 
-      <Outlet></Outlet>
+      {/* Right side (Header + Content) */}
+      <div className="flex flex-col flex-1">
+        
+        {/* Header */}
+        <div className="h-16">
+          <HeaderComponent />
+        </div>
+
+        {/* Main Content */}
+        <div className="flex-1 overflow-y-auto bg-gray-100 p-6">
+          <Outlet />
+        </div>
+
+      </div>
+    </div>
+
+      {/* <Dummy></Dummy> */}
     </>
   )
 }

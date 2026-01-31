@@ -1,6 +1,6 @@
 function ValuesDisplayCard(props) {
 
-    const { context, color, value, units } = props;
+    const { context, color, value, units } = props.data;
 
     return (
       <div className="flex items-center gap-6 px-8 py-6 bg-white rounded-lg shadow-md min-w-[320px]">

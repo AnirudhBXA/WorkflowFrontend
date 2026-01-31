@@ -1,6 +1,20 @@
 import { Bell, ChevronDown } from "lucide-react";
+import { useEffect, useEffectEvent, useState } from "react";
+import { Menu, Button, Portal } from '@chakra-ui/react'
 
 function HeaderComponent() {
+
+  const [notifications, setNotifications] = useState([])
+
+  useEffect(() => {
+    setNotifications([
+      {"message":"notification 1"},
+      {"message":"notification 2"},
+      {"message":"notification 3"},
+      {"message":"notification 4"},
+    ])
+  }, [])
+
   return (
     <header className="w-full h-16 bg-white shadow-sm flex items-center justify-between px-8">
       
@@ -13,11 +27,33 @@ function HeaderComponent() {
       <div className="flex items-center gap-6">
         
         {/* Notification Icon */}
-        <button className="relative text-gray-500 hover:text-gray-700">
-          <Bell size={20} />
+
+        <Menu.Root>
+        <Menu.Trigger asChild>
+          <div variant="outline" size="sm">
+            <Bell size={20} />
+            {(notifications.length>0) && (
+              <span className="absolute -top-1 -right-1 w-2 h-2 bg-blue-600 rounded-full"></span>
+            )}
+          </div>
+        </Menu.Trigger>
+        <Portal>
+          <Menu.Positioner>
+            <Menu.Content>
+              <ul>
+                {notifications.map((notification, index) => (
+                  <li key={index}>{notification.message}</li>
+                ) )}
+              </ul>
+            </Menu.Content>
+          </Menu.Positioner>
+        </Portal>
+      </Menu.Root>
+
+        {/* <button className="relative text-gray-500 hover:text-gray-700">
+          <Bell size={20} /> */}
           {/* Notification dot (optional) */}
-          <span className="absolute -top-1 -right-1 w-2 h-2 bg-blue-600 rounded-full"></span>
-        </button>
+        {/* </button> */}
 
         {/* User Info */}
         <div className="flex items-center gap-2 cursor-pointer">

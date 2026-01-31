@@ -28,6 +28,7 @@ function ForgotPasswordComponent(){
 
     function savePassword(){
 
+      // navigate to login page
     }
 
     return (
@@ -47,7 +48,7 @@ function ForgotPasswordComponent(){
                   Email
                 </label>
                 <input
-                  type="text"
+                  type="email"
                   placeholder="Enter your email"
                   ref={email}
                   className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"

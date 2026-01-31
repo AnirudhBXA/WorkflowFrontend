@@ -21,7 +21,7 @@ const navItems = [
 export default function NavigationSidebar() {
 
   return (
-    <aside className="flex h-screen w-64 flex-col bg-[#2f5db7] text-white">
+    <aside className="flex h-screen w-40 flex-col bg-[#2f5db7] text-white">
       
       {/* ===== Header ===== */}
       <div className="flex flex-col items-center bg-[#1f3f8b] py-6">

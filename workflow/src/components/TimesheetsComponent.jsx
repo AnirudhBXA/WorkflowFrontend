@@ -1,13 +1,23 @@
 
 import { Tabs, SimpleGrid, For } from '@chakra-ui/react'
 import DisplayPreviousTimeSheets from './DisplayPreviousTimeSheetsComponent';
-import FillTimesheetComponent from './FillTimesheetComponent';
+import FileUploadComponent from './FileUploadComponent';
+import { useState } from 'react';
+import TimesheetApprovalComponent from './TimesheetApprovalComponent';
 
 function TimesheetsComponent(){
+
+    const [role, setRole] = useState("manager")
 
 
     return (
         <>
+
+            {( role == "manager") && (
+                <>
+                    <TimesheetApprovalComponent></TimesheetApprovalComponent>
+                </>
+            )}
 
             <SimpleGrid columns={2} gap="14" width="full">
                 <Tabs.Root key="outline" defaultValue="members" variant="outline">
@@ -29,7 +39,10 @@ function TimesheetsComponent(){
                     </Tabs.Content>
 
                     <Tabs.Content value="fill">
-                        <FillTimesheetComponent></FillTimesheetComponent>
+                        <div>
+                            fill the timesheet
+                        </div>
+                        <FileUploadComponent></FileUploadComponent>
                     </Tabs.Content>
                     
                 </Tabs.Root>

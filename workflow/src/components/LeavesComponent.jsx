@@ -1,9 +1,15 @@
 import { Table, Tabs, SimpleGrid, For } from "@chakra-ui/react"
 
 import ValuesDisplayCard from './ValuesDisplayCard'
+import LeaveApprovalComponent from "./LeaveApprovalComponent";
+import { useState } from "react";
+import FileUploadComponent from "./FileUploadComponent";
 
 
 function LeavesComponent(){
+
+    const [role, setRole] = useState("manager")
+    const [isUploadActive, setIsUploadActive] = useState(false)
 
     let items = [
         { id: 1, name: "Laptop", category: "Electronics", price: 999.99 },
@@ -13,20 +19,56 @@ function LeavesComponent(){
         { id: 5, name: "Headphones", category: "Accessories", price: 199.99 },
     ]
 
-    let available_leaves = 5;
-    let leaves_used = 3;
+    
+    let available_leaves_count = 5;
+    let leaves_used_count = 3;
+    
+    const available_leaves = { "context" : "available leaves",
+                                 "color" : "bg-green-400",
+                                 "value" : available_leaves_count,
+                                 "units" : "days" }
+
+    const leaves_used = { "context" : "leaves used",
+                                 "color" : "bg-red-400",
+                                 "value" : leaves_used_count,
+                                 "units" : "days" }
+
+    function makeUploadCardActive(){
+        setIsUploadActive(true)
+    }
+
 
     return (
         <>
 
             <div>
-                <ValuesDisplayCard context="available leaves" color="bg-green-400" value={available_leaves} units="days"></ValuesDisplayCard>
+                <ValuesDisplayCard data={available_leaves}></ValuesDisplayCard>
             </div>
             <div>
-                <ValuesDisplayCard context="leaves used" color="bg-red-400" value={leaves_used} units="days"></ValuesDisplayCard>
+                <ValuesDisplayCard data={leaves_used}></ValuesDisplayCard>
             </div>
 
+            <div>
+                { (role === "HR") && (
+                    <>
+                        <button onClick={makeUploadCardActive}>Update Leaves</button>
+                    </>
+                )}
 
+                { isUploadActive && (
+                    <>
+                    <FileUploadComponent></FileUploadComponent>
+                    </>
+                )}
+            </div>
+
+            { (role === "manager") && (
+                <div>
+                    <LeaveApprovalComponent></LeaveApprovalComponent>
+                </div>
+            )}
+
+            
             <SimpleGrid columns={2} gap="14" width="full">
                 <Tabs.Root key="outline" defaultValue="members" variant="outline">
 
@@ -91,7 +133,7 @@ function LeavesComponent(){
                             ))}
                             </Table.Body>
                         </Table.Root>
-                        </Table.ScrollArea>
+                    </Table.ScrollArea>
                     </Tabs.Content>
 
                     <Tabs.Content value="pending">

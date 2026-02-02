@@ -5,16 +5,19 @@ import TimesheetBriefCard from "./TimesheetBriefCard";
 
 function TimesheetApprovalComponent(){
 
-    const [items, setItems] = useState([]);
+    const [timeSheetsList, setTimeSheetsList] = useState([]);
     const [isCardActive, setIsCardActive] = useState(false)
     const [cardItem, setCardItem] = useState(null);
 
     useEffect(()=>{
-        setItems([{ id: 1, name: "Laptop", category: "Electronics", price: 999.99 },
-        { id: 2, name: "Coffee Maker", category: "Home Appliances", price: 49.99 },
-        { id: 3, name: "Desk Chair", category: "Furniture", price: 150.0 },
-        { id: 4, name: "Smartphone", category: "Electronics", price: 799.99 },
-        { id: 5, name: "Headphones", category: "Accessories", price: 199.99 },])
+        setTimeSheetsList(
+            [
+                { id: 1, employeeName : "anirudh", dateOfSubmit : "2-3-2026", totalWorkingHours: 40},
+                { id: 2, employeeName : "sai", dateOfSubmit : "2-3-2026", totalWorkingHours: 40},
+                { id: 3, employeeName : "murli", dateOfSubmit : "2-3-2026", totalWorkingHours: 40},
+                { id: 4, employeeName : "keerthu", dateOfSubmit : "2-3-2026", totalWorkingHours: 40},
+            ]
+        )
     },[])
 
     function openTimesheetApproval(item){
@@ -31,27 +34,52 @@ function TimesheetApprovalComponent(){
                 </>
             )}
 
-            <Table.ScrollArea borderWidth="1px" rounded="md" height="160px">
-                <Table.Root size="sm" stickyHeader>
-                    <Table.Header>
-                    <Table.Row bg="bg.subtle">
-                        <Table.ColumnHeader>Product</Table.ColumnHeader>
-                        <Table.ColumnHeader>Category</Table.ColumnHeader>
-                        <Table.ColumnHeader textAlign="end">Price</Table.ColumnHeader>
-                    </Table.Row>
-                    </Table.Header>
 
-                    <Table.Body>
-                    {items.map((item) => (
-                        <Table.Row key={item.id} onClick={ (item) => openTimesheetApproval(item)}>
-                        <Table.Cell>{item.name}</Table.Cell>
-                        <Table.Cell>{item.category}</Table.Cell>
-                        <Table.Cell textAlign="end">{item.price}</Table.Cell>
-                        </Table.Row>
-                    ))}
-                    </Table.Body>
-                </Table.Root>
+            <Table.ScrollArea
+            border="1px solid"
+            borderColor="gray.200"
+            rounded="lg"
+            height="260px"
+            bg="white"
+            >
+            <Table.Root size="sm" stickyHeader>
+                
+                {/* Header */}
+                <Table.Header>
+                <Table.Row bg="gray.50">
+                    <Table.ColumnHeader fontSize="xs" color="gray.600">
+                    Employee Name
+                    </Table.ColumnHeader>
+                    <Table.ColumnHeader fontSize="xs" color="gray.600">
+                    Submitted on
+                    </Table.ColumnHeader>
+                    <Table.ColumnHeader fontSize="xs" color="gray.600">
+                    Working hours
+                    </Table.ColumnHeader>
+                </Table.Row>
+                </Table.Header>
+
+                {/* Body */}
+                <Table.Body>
+                {timeSheetsList.map((item) => (
+                    <Table.Row
+                    key={item.id}
+                    _hover={{ bg: "gray.50" }}
+                    borderBottom="1px solid"
+                    borderColor="gray.100"
+                    onClick={ (item) => openTimesheetApproval(item)}
+                    >
+                    <Table.Cell fontSize="sm">{item.employeeName}</Table.Cell>
+                    <Table.Cell fontSize="sm">{item.dateOfSubmit}</Table.Cell>
+                    <Table.Cell fontSize="sm">{item.totalWorkingHours}</Table.Cell>
+                    
+                    </Table.Row>
+                ))}
+                </Table.Body>
+
+            </Table.Root>
             </Table.ScrollArea>
+
         </>
     )
 }

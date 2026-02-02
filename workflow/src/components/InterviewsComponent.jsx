@@ -1,6 +1,7 @@
-import { Table, Tabs, SimpleGrid, For } from "@chakra-ui/react"
+import { Stack, Accordion, Table, Badge, Tabs, SimpleGrid, For, Button } from "@chakra-ui/react"
 import { useState } from "react";
 import FileUploadComponent from "./FileUploadComponent";
+import MetricProgressCard from "./MetricProgressCard";
 
 function InterviewsComponent(){
 
@@ -12,98 +13,177 @@ function InterviewsComponent(){
         setIsUploadActive(true)
     }
 
-    let items = [
-        { id: 1, name: "Laptop", category: "Electronics", price: 999.99 },
-        { id: 2, name: "Coffee Maker", category: "Home Appliances", price: 49.99 },
-        { id: 3, name: "Desk Chair", category: "Furniture", price: 150.0 },
-        { id: 4, name: "Smartphone", category: "Electronics", price: 799.99 },
-        { id: 5, name: "Headphones", category: "Accessories", price: 199.99 },
+    let interviewList = [
+        { id: 1, candidateName: "Laptop", candidateEmail: "Electronics", scheduledDate: 999.99, status: "unMarked" },
+        { id: 2, candidateName: "Coffee Maker", candidateEmail: "Home Appliances", scheduledDate: 49.99, status: "unMarked" },
+        { id: 3, candidateName: "Desk Chair", candidateEmail: "Furniture", scheduledDate: 150.0, status: "noShow" },
+        { id: 4, candidateName: "Smartphone", candidateEmail: "Electronics", scheduledDate: 799.99, status: "completed" },
+        { id: 5, candidateName: "Headphones", candidateEmail: "Accessories", scheduledDate: 199.99, status: "completed" },
     ]
 
-    return (
-        <>
+    function makeMarkingActive(){
 
-            { (role === "HR") && (
-                <>
-                    <button onClick={makeUploadCardActive}>Schedule Trainings</button>
-                </>
-            )}
+    }
 
-            { isUploadActive && (
-                <>
-                <FileUploadComponent></FileUploadComponent>
-                </>
-            )}
+    function closeUploadComponent(){
+        setIsUploadActive(false)
+    }
 
-            <SimpleGrid columns={2} gap="14" width="full">
-                <Tabs.Root key="outline" defaultValue="members" variant="outline">
+    function handleMarkingClick(){
 
-                    {/* Tabs display */}
-                    <Tabs.List>
-                    <Tabs.Trigger value="previous">
-                        Previous
-                    </Tabs.Trigger>
-                    <Tabs.Trigger value="upcoming">
-                        Upcoming
-                    </Tabs.Trigger>
-                    </Tabs.List>
+    }
 
+    const getStatusMarker = (status) => {
+        const statusColorMap = {
+            unMarked:"blue",
+            noShow:"black",
+            completed:"green"
+        };
 
-                    {/* Content for the tabs */}
-                    <Tabs.Content value="previous">
-                        <Table.ScrollArea borderWidth="1px" rounded="md" height="160px">
-                        <Table.Root size="sm" stickyHeader>
-                            <Table.Header>
-                            <Table.Row bg="bg.subtle">
-                                <Table.ColumnHeader>Product</Table.ColumnHeader>
-                                <Table.ColumnHeader>Category</Table.ColumnHeader>
-                                <Table.ColumnHeader textAlign="end">Price</Table.ColumnHeader>
-                            </Table.Row>
-                            </Table.Header>
+        const clickableFunction = "";
 
-                            <Table.Body>
-                            {items.map((item) => (
-                                <Table.Row key={item.id}>
-                                <Table.Cell>{item.name}</Table.Cell>
-                                <Table.Cell>{item.category}</Table.Cell>
-                                <Table.Cell textAlign="end">{item.price}</Table.Cell>
-                                </Table.Row>
-                            ))}
-                            </Table.Body>
-                        </Table.Root>
-                        </Table.ScrollArea>
-                    </Tabs.Content>
+        if(status==="completed"){
+            return (
+                <Badge
+                  px={3}
+                  py={1}
+                  borderRadius="md"
+                  fontSize="xs"
+                  fontWeight="medium"
+                  colorScheme={statusColorMap[status]}
+                  onClick={handleMarkingClick}
+                >
+                  {status}
+                </Badge>
+              );
+        }
+      
+        return (
+          <Badge
+            px={3}
+            py={1}
+            borderRadius="md"
+            fontSize="xs"
+            fontWeight="medium"
+            colorScheme={statusColorMap[status]}
+          >
+            {status}
+          </Badge>
+        );
+      };
 
-                    <Tabs.Content value="upcoming">
-                        
-                    <Table.ScrollArea borderWidth="1px" rounded="md" height="160px">
-                        <Table.Root size="sm" stickyHeader>
-                            <Table.Header>
-                            <Table.Row bg="bg.subtle">
-                                <Table.ColumnHeader>Product</Table.ColumnHeader>
-                                <Table.ColumnHeader>Category</Table.ColumnHeader>
-                                <Table.ColumnHeader textAlign="end">Price</Table.ColumnHeader>
-                            </Table.Row>
-                            </Table.Header>
-
-                            <Table.Body>
-                            {items.map((item) => (
-                                <Table.Row key={item.id}>
-                                <Table.Cell>{item.name}</Table.Cell>
-                                <Table.Cell>{item.category}</Table.Cell>
-                                <Table.Cell textAlign="end">{item.price}</Table.Cell>
-                                </Table.Row>
-                            ))}
-                            </Table.Body>
-                        </Table.Root>
-                    </Table.ScrollArea>
-                    </Tabs.Content>
+      return (
+        <Stack width="full" maxW="100%" spacing={4}>
+      
+          <Accordion.Root collapsible defaultValue={["personal"]}>
+      
+            {/* Personal Info */}
+            <Accordion.Item value="personal">
+              <Accordion.ItemTrigger>
+                My Personal Info
+              </Accordion.ItemTrigger>
+      
+              <Accordion.ItemContent>
+                <Accordion.ItemBody>
+                  <Stack spacing={4}>
                     
-                </Tabs.Root>
-            </SimpleGrid>
-        </>
-    )
+                    <MetricProgressCard title="Interview" value="6"></MetricProgressCard>
 
+
+                    <Table.ScrollArea
+            border="1px solid"
+            borderColor="gray.200"
+            rounded="lg"
+            height="260px"
+            bg="white"
+            >
+            <Table.Root size="sm" stickyHeader>
+                
+                {/* Header */}
+                <Table.Header>
+                <Table.Row bg="gray.50">
+                    <Table.ColumnHeader fontSize="xs" color="gray.600">
+                    Candidate Name
+                    </Table.ColumnHeader>
+                    <Table.ColumnHeader fontSize="xs" color="gray.600">
+                    Candidate email
+                    </Table.ColumnHeader>
+                    <Table.ColumnHeader fontSize="xs" color="gray.600">
+                    Scheduled Date
+                    </Table.ColumnHeader>
+                    <Table.ColumnHeader fontSize="xs" color="gray.600">
+                    Status
+                    </Table.ColumnHeader>
+                </Table.Row>
+                </Table.Header>
+
+                {/* Body */}
+                <Table.Body>
+                {interviewList.map((item) => (
+                    <Table.Row
+                    key={item.id}
+                    _hover={{ bg: "gray.50" }}
+                    borderBottom="1px solid"
+                    borderColor="gray.100"
+                    >
+                    <Table.Cell fontSize="sm">{item.candidateName}</Table.Cell>
+                    <Table.Cell fontSize="sm">{item.candidateEmail}</Table.Cell>
+                    <Table.Cell fontSize="sm">{item.scheduledDate}</Table.Cell>
+                    <Table.Cell fontSize="sm">{getStatusMarker(item.status)}</Table.Cell>
+                    
+                    </Table.Row>
+                ))}
+                </Table.Body>
+
+            </Table.Root>
+            </Table.ScrollArea>
+
+                  </Stack>
+                </Accordion.ItemBody>
+              </Accordion.ItemContent>
+            </Accordion.Item>
+      
+            {/* Manager Section */}
+            {(role === "manager" || role === "HR") && (
+              <Accordion.Item value="management">
+                <Accordion.ItemTrigger>
+                  Management / Workflows
+                </Accordion.ItemTrigger>
+      
+                <Accordion.ItemContent>
+                  <Accordion.ItemBody>
+                    <Stack spacing={4}>
+      
+                    { (role === "HR") && (
+                        <>
+                            <button className=" bg-blue-800 text-white px-10 py-4 rounded-sm text-sm font-medium hover:bg-blue-1000 transition shadow-sm "
+                            onClick={makeUploadCardActive}>Schedule Trainings</button>
+                        </>
+                    )}
+
+                    { isUploadActive && (
+                        <>
+                        <div className="bg-white w-[420px] rounded-xl shadow-xl p-6">
+                            <div className="flex justify-between items-center mb-4">
+                                <h2 className="text-sm font-semibold text-gray-800">
+                                    Upload the Trainings excel
+                                </h2>
+                                <button onClick={closeUploadComponent} className="text-gray-400 hover:text-gray-600">✕</button>
+                            </div>
+                            <FileUploadComponent></FileUploadComponent>
+                        </div>
+                        </>
+                    )}
+      
+                    </Stack>
+                  </Accordion.ItemBody>
+                </Accordion.ItemContent>
+              </Accordion.Item>
+            )}
+      
+          </Accordion.Root>
+        </Stack>
+      );
 }
 
 export default InterviewsComponent

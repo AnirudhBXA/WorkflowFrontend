@@ -1,17 +1,16 @@
 import { useRef } from "react";
-import { useNavigation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function LoginComponent(){
 
     const username = useRef("")
     const password = useRef("")
 
-    // const navigate = useNavigation()
+    const navigate = useNavigate()
 
     async function handleLogin(){
 
-        
-
+      
         let payload = {
             "username" : username.current?.value,
             "password" : password.current?.value
@@ -32,7 +31,7 @@ function LoginComponent(){
     }
 
     function handleForgotPassword(){
-
+      navigate("/forgot-password")
     }
 
     return (
@@ -57,11 +56,11 @@ function LoginComponent(){
               {/* Username */}
               <div>
                 <label className="block text-sm font-medium text-gray-600 mb-1">
-                  Username
+                  Username or email
                 </label>
                 <input
                   type="text"
-                  placeholder="Enter your username"
+                  placeholder="Enter your username or email"
                   ref={username}
                   className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />

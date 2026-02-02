@@ -11,6 +11,7 @@ import LoginComponent from './components/LoginComponent'
 import { Outlet } from 'react-router-dom'
 import FileUploadComponent from './components/FileUploadComponent'
 import Dummy from './components/Dumy'
+import AdminPage from './components/AdminPage'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -38,6 +39,7 @@ function App() {
         </div>
 
       </div>
+
     </div>
 
       {/* <Dummy></Dummy> */}

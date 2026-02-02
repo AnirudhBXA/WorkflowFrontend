@@ -2,6 +2,7 @@ import { useState } from "react";
 import CertificationApprovalComponent from "./CertificationApprovalComponent";
 import ValuesDisplayCard from "./ValuesDisplayCard";
 import FileUploadComponent from "./FileUploadComponent";
+import { Stack, Accordion, Table, Badge  } from "@chakra-ui/react"
 
 function CertificationsComponent(){
 
@@ -23,29 +24,61 @@ function CertificationsComponent(){
     }
 
     return (
-        <>
+        <Stack width="full" maxW="100%" spacing={4}>
+      
+          <Accordion.Root collapsible defaultValue={["personal"]}>
+      
+            {/* Personal Info */}
+            <Accordion.Item value="personal">
+              <Accordion.ItemTrigger>
+                My Personal Info
+              </Accordion.ItemTrigger>
+      
+              <Accordion.ItemContent>
+                <Accordion.ItemBody>
+                  <Stack spacing={4}>
+                    
+                  <div>
+                    <ValuesDisplayCard data={refund_amount_left} ></ValuesDisplayCard>
+                </div>
+                <div>
+                    <ValuesDisplayCard data={refund_amount_used} ></ValuesDisplayCard>
+                </div>
+                  </Stack>
+                </Accordion.ItemBody>
+              </Accordion.ItemContent>
+            </Accordion.Item>
+      
+            {/* Manager Section */}
+            {role === "manager" || role==="HR" && (
+              <Accordion.Item value="management">
+                <Accordion.ItemTrigger>
+                  Management / Workflows
+                </Accordion.ItemTrigger>
+      
+                <Accordion.ItemContent>
+                  <Accordion.ItemBody>
+                    <Stack spacing={4}>
+                    { (role === "HR") && (
+                        <button  className=" bg-blue-800 text-white px-10 py-4 rounded-sm text-sm font-medium hover:bg-blue-1000 transition shadow-sm " onClick={makeUploadActive}>Update Certifications</button>
+                    )}
 
-            <div>
-                <ValuesDisplayCard data={refund_amount_left} ></ValuesDisplayCard>
-            </div>
-            <div>
-                <ValuesDisplayCard data={refund_amount_used} ></ValuesDisplayCard>
-            </div>
+                    {isUploadActive && (
+                        <FileUploadComponent></FileUploadComponent>
+                    )}
 
-            { (role === "HR") && (
-                <button onClick={makeUploadActive}>Update Certifications</button>
+                    { (role==="manager") && (
+                        <CertificationApprovalComponent></CertificationApprovalComponent>
+                    )}
+                    </Stack>
+                  </Accordion.ItemBody>
+                </Accordion.ItemContent>
+              </Accordion.Item>
             )}
-
-            {isUploadActive && (
-                <FileUploadComponent></FileUploadComponent>
-            )}
-
-            { (role==="manager") && (
-                <CertificationApprovalComponent></CertificationApprovalComponent>
-            )}
-
-        </>
-    )
+      
+          </Accordion.Root>
+        </Stack>
+      );
 
 }
 

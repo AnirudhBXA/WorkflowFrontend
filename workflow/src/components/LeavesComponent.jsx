@@ -1,4 +1,4 @@
-import { Table, Tabs, SimpleGrid, For } from "@chakra-ui/react"
+import { Stack, Accordion, Badge, Table, Tabs, SimpleGrid, For } from "@chakra-ui/react"
 
 import ValuesDisplayCard from './ValuesDisplayCard'
 import LeaveApprovalComponent from "./LeaveApprovalComponent";
@@ -11,14 +11,13 @@ function LeavesComponent(){
     const [role, setRole] = useState("manager")
     const [isUploadActive, setIsUploadActive] = useState(false)
 
-    let items = [
-        { id: 1, name: "Laptop", category: "Electronics", price: 999.99 },
-        { id: 2, name: "Coffee Maker", category: "Home Appliances", price: 49.99 },
-        { id: 3, name: "Desk Chair", category: "Furniture", price: 150.0 },
-        { id: 4, name: "Smartphone", category: "Electronics", price: 799.99 },
-        { id: 5, name: "Headphones", category: "Accessories", price: 199.99 },
+    let leavesList = [
+        { id: 1, type: "Laptop", from: "5-7-2026", to: "5-7-2026", days: 5, status: "APPROVED", reason: "personal reason" },
+        { id: 2, type: "Coffee Maker", from: "5-7-2026", to: "5-7-2026", days: 5, status: "APPROVED", reason: "personal reason" },
+        { id: 3, type: "Desk Chair", from: "5-7-2026", to: "5-7-2026", days: 5, status: "APPROVED", reason: "personal reason" },
+        { id: 4, type: "Smartphone", from: "5-7-2026", to: "5-7-2026", days: 5, status: "APPROVED", reason: "personal reason" },
+        { id: 5, type: "Headphones", from: "5-7-2026", to: "5-7-2026", days: 5, status: "APPROVED", reason: "personal reason" },
     ]
-
     
     let available_leaves_count = 5;
     let leaves_used_count = 3;
@@ -37,133 +36,157 @@ function LeavesComponent(){
         setIsUploadActive(true)
     }
 
+    const getStatusMarker = (status) => {
+        const statusColorMap = {
+            APPROVED:"green",
+            PENDING:"yellow",
+            REJECTED:"red"
+        };
+      
+        return (
+          <Badge
+            px={3}
+            py={1}
+            borderRadius="md"
+            fontSize="xs"
+            fontWeight="medium"
+            colorScheme={statusColorMap[status]}
+          >
+            {status}
+          </Badge>
+        );
+      };
+
+
 
     return (
-        <>
+        <Stack width="full" maxW="100%" spacing={4}>
+      
+          <Accordion.Root collapsible defaultValue={["personal"]}>
+      
+            {/* Personal Info */}
+            <Accordion.Item value="personal">
+              <Accordion.ItemTrigger>
+                My Personal Info
+              </Accordion.ItemTrigger>
+      
+              <Accordion.ItemContent>
+                <Accordion.ItemBody>
+                  <Stack spacing={4}>
+                  <div>
+                    <ValuesDisplayCard data={available_leaves}></ValuesDisplayCard>
+                  </div>
+                  <div>
+                    <ValuesDisplayCard data={leaves_used}></ValuesDisplayCard>
+                  </div>
 
-            <div>
-                <ValuesDisplayCard data={available_leaves}></ValuesDisplayCard>
-            </div>
-            <div>
-                <ValuesDisplayCard data={leaves_used}></ValuesDisplayCard>
-            </div>
+                    <div>
+                    <Table.ScrollArea
+                        border="1px solid"
+                        borderColor="gray.200"
+                        rounded="lg"
+                        height="260px"
+                        bg="white"
+                      >
+                        <Table.Root size="sm" stickyHeader>
+                          <Table.Header>
+                            <Table.Row bg="gray.50">
+                              <Table.ColumnHeader fontSize="xs" color="gray.600">
+                                Leave Type
+                              </Table.ColumnHeader>
+                              <Table.ColumnHeader fontSize="xs" color="gray.600">
+                                From
+                              </Table.ColumnHeader>
+                              <Table.ColumnHeader fontSize="xs" color="gray.600">
+                                To
+                              </Table.ColumnHeader>
+                              <Table.ColumnHeader fontSize="xs" color="gray.600">
+                                Days
+                              </Table.ColumnHeader>
+                              <Table.ColumnHeader fontSize="xs" color="gray.600">
+                                Status
+                              </Table.ColumnHeader>
+                              <Table.ColumnHeader fontSize="xs" color="gray.600">
+                                Reason
+                              </Table.ColumnHeader>
+                            </Table.Row>
+                          </Table.Header>
+      
+                          <Table.Body>
+                            {leavesList.map((item) => (
+                              <Table.Row
+                                key={item.id}
+                                _hover={{ bg: "gray.50" }}
+                                borderBottom="1px solid"
+                                borderColor="gray.100"
+                              >
+                                <Table.Cell fontSize="sm">
+                                  {item.type}
+                                </Table.Cell>
+                                <Table.Cell fontSize="sm">
+                                  {item.from}
+                                </Table.Cell>
+                                <Table.Cell fontSize="sm">
+                                  {item.to}
+                                </Table.Cell>
+                                <Table.Cell fontSize="sm">
+                                  {item.days}
+                                </Table.Cell>
+                                <Table.Cell>
+                                  {getStatusMarker(item.status)}
+                                </Table.Cell>
+                                <Table.Cell fontSize="sm">
+                                  {item.reason}
+                                </Table.Cell>
+                              </Table.Row>
+                            ))}
+                          </Table.Body>
+                        </Table.Root>
+                      </Table.ScrollArea>
+                    </div>
 
-            <div>
-                { (role === "HR") && (
-                    <>
-                        <button onClick={makeUploadCardActive}>Update Leaves</button>
-                    </>
-                )}
+                  </Stack>
+                </Accordion.ItemBody>
+              </Accordion.ItemContent>
+            </Accordion.Item>
+      
+            {/* Manager Section */}
+            {role === "manager" && (
+              <Accordion.Item value="management">
+                <Accordion.ItemTrigger>
+                  Management / Workflows
+                </Accordion.ItemTrigger>
+      
+                <Accordion.ItemContent>
+                  <Accordion.ItemBody>
+                    <Stack spacing={4}>
 
-                { isUploadActive && (
-                    <>
-                    <FileUploadComponent></FileUploadComponent>
-                    </>
-                )}
-            </div>
+                    <div>
+                        { (role === "HR") && (
+                            <>
+                                <button  className=" bg-blue-800 text-white px-10 py-4 rounded-sm text-sm font-medium hover:bg-blue-1000 transition shadow-sm " onClick={makeUploadCardActive}>Update Leaves</button>
+                            </>
+                        )}
 
-            { (role === "manager") && (
-                <div>
-                    <LeaveApprovalComponent></LeaveApprovalComponent>
-                </div>
+                        { isUploadActive && (
+                            <FileUploadComponent></FileUploadComponent>
+                        )}
+                    </div>
+
+                    { (role === "manager") && (
+                        <div>
+                            <LeaveApprovalComponent></LeaveApprovalComponent>
+                        </div>
+                    )}
+      
+                    </Stack>
+                  </Accordion.ItemBody>
+                </Accordion.ItemContent>
+              </Accordion.Item>
             )}
-
-            
-            <SimpleGrid columns={2} gap="14" width="full">
-                <Tabs.Root key="outline" defaultValue="members" variant="outline">
-
-                    {/* Tabs display */}
-                    <Tabs.List>
-                    <Tabs.Trigger value="approved">
-                        Approved
-                    </Tabs.Trigger>
-                    <Tabs.Trigger value="rejected">
-                        Rejected
-                    </Tabs.Trigger>
-                    <Tabs.Trigger value="pending">
-                        Pending
-                    </Tabs.Trigger>
-                    </Tabs.List>
-
-
-                    {/* Content for the tabs */}
-                    <Tabs.Content value="approved">
-                        <Table.ScrollArea borderWidth="1px" rounded="md" height="160px">
-                        <Table.Root size="sm" stickyHeader>
-                            <Table.Header>
-                            <Table.Row bg="bg.subtle">
-                                <Table.ColumnHeader>Product</Table.ColumnHeader>
-                                <Table.ColumnHeader>Category</Table.ColumnHeader>
-                                <Table.ColumnHeader textAlign="end">Price</Table.ColumnHeader>
-                            </Table.Row>
-                            </Table.Header>
-
-                            <Table.Body>
-                            {items.map((item) => (
-                                <Table.Row key={item.id}>
-                                <Table.Cell>{item.name}</Table.Cell>
-                                <Table.Cell>{item.category}</Table.Cell>
-                                <Table.Cell textAlign="end">{item.price}</Table.Cell>
-                                </Table.Row>
-                            ))}
-                            </Table.Body>
-                        </Table.Root>
-                        </Table.ScrollArea>
-                    </Tabs.Content>
-
-                    <Tabs.Content value="rejected">
-                        
-                    <Table.ScrollArea borderWidth="1px" rounded="md" height="160px">
-                        <Table.Root size="sm" stickyHeader>
-                            <Table.Header>
-                            <Table.Row bg="bg.subtle">
-                                <Table.ColumnHeader>Product</Table.ColumnHeader>
-                                <Table.ColumnHeader>Category</Table.ColumnHeader>
-                                <Table.ColumnHeader textAlign="end">Price</Table.ColumnHeader>
-                            </Table.Row>
-                            </Table.Header>
-
-                            <Table.Body>
-                            {items.map((item) => (
-                                <Table.Row key={item.id}>
-                                <Table.Cell>{item.name}</Table.Cell>
-                                <Table.Cell>{item.category}</Table.Cell>
-                                <Table.Cell textAlign="end">{item.price}</Table.Cell>
-                                </Table.Row>
-                            ))}
-                            </Table.Body>
-                        </Table.Root>
-                    </Table.ScrollArea>
-                    </Tabs.Content>
-
-                    <Tabs.Content value="pending">
-                        
-                    <Table.ScrollArea borderWidth="1px" rounded="md" height="160px">
-                        <Table.Root size="sm" stickyHeader>
-                            <Table.Header>
-                            <Table.Row bg="bg.subtle">
-                                <Table.ColumnHeader>Product</Table.ColumnHeader>
-                                <Table.ColumnHeader>Category</Table.ColumnHeader>
-                                <Table.ColumnHeader textAlign="end">Price</Table.ColumnHeader>
-                            </Table.Row>
-                            </Table.Header>
-
-                            <Table.Body>
-                            {items.map((item) => (
-                                <Table.Row key={item.id}>
-                                <Table.Cell>{item.name}</Table.Cell>
-                                <Table.Cell>{item.category}</Table.Cell>
-                                <Table.Cell textAlign="end">{item.price}</Table.Cell>
-                                </Table.Row>
-                            ))}
-                            </Table.Body>
-                        </Table.Root>
-                        </Table.ScrollArea>
-                    </Tabs.Content>
-                    
-                </Tabs.Root>
-            </SimpleGrid>
-        </>
+      
+          </Accordion.Root>
+        </Stack>
     )
 
 }

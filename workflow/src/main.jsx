@@ -14,6 +14,8 @@ import InterviewsComponent from './components/InterviewsComponent.jsx';
 import CertificationsComponent from './components/CertificatoinComponent.jsx';
 import LoginComponent from './components/LoginComponent.jsx';
 import ForgotPasswordComponent from './components/ForgotPasswordComponent.jsx';
+import UserProfile from './components/UserProfile.jsx';
+import AdminPage from './components/AdminPage.jsx';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -28,6 +30,8 @@ createRoot(document.getElementById('root')).render(
           <Route path='trainings' element={<TrainingsComponent />}></Route>
           <Route path='interviews' element={<InterviewsComponent />}></Route>
           <Route path='certifications' element={<CertificationsComponent />}></Route>
+          <Route path='profile' element={<UserProfile />}></Route>
+          <Route path='admin' element={<AdminPage />}></Route>
         </Route>
         <Route path='/login' element={<LoginComponent />}></Route>
         <Route path='/forgot-password' element={< ForgotPasswordComponent/>}></Route>

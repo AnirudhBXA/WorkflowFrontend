@@ -1,5 +1,6 @@
 
-import { Tabs, SimpleGrid, For } from '@chakra-ui/react'
+
+import { Stack, Accordion, Table, Badge  } from "@chakra-ui/react"
 import DisplayPreviousTimeSheets from './DisplayPreviousTimeSheetsComponent';
 import FileUploadComponent from './FileUploadComponent';
 import { useState } from 'react';
@@ -11,43 +12,50 @@ function TimesheetsComponent(){
 
 
     return (
-        <>
 
-            {( role == "manager") && (
+        <Stack width="full" maxW="100%" spacing={4}>
+      
+          <Accordion.Root collapsible defaultValue={["personal"]}>
+      
+            {/* Personal Info */}
+            <Accordion.Item value="personal">
+              <Accordion.ItemTrigger>
+                My Personal Info
+              </Accordion.ItemTrigger>
+      
+              <Accordion.ItemContent>
+                <Accordion.ItemBody>
+                  <Stack spacing={4}>
+                    
+                  <DisplayPreviousTimeSheets></DisplayPreviousTimeSheets>
+                  </Stack>
+                </Accordion.ItemBody>
+              </Accordion.ItemContent>
+            </Accordion.Item>
+      
+            {/* Manager Section */}
+            {(role === "manager" || role==="HR") && (
+              <Accordion.Item value="management">
+                <Accordion.ItemTrigger>
+                  Management / Workflows
+                </Accordion.ItemTrigger>
+      
+                <Accordion.ItemContent>
+                  <Accordion.ItemBody>
+                    <Stack spacing={4}>
+                    {( role == "manager") && (
                 <>
                     <TimesheetApprovalComponent></TimesheetApprovalComponent>
                 </>
             )}
-
-            <SimpleGrid columns={2} gap="14" width="full">
-                <Tabs.Root key="outline" defaultValue="members" variant="outline">
-
-                    {/* Tabs display */}
-                    <Tabs.List>
-                    <Tabs.Trigger value="previous">
-                        Previous Time sheets
-                    </Tabs.Trigger>
-                    <Tabs.Trigger value="fill">
-                        Fill Time sheet
-                    </Tabs.Trigger>
-                    </Tabs.List>
-
-
-                    {/* Content for the tabs */}
-                    <Tabs.Content value="previous">
-                        <DisplayPreviousTimeSheets></DisplayPreviousTimeSheets>
-                    </Tabs.Content>
-
-                    <Tabs.Content value="fill">
-                        <div>
-                            fill the timesheet
-                        </div>
-                        <FileUploadComponent></FileUploadComponent>
-                    </Tabs.Content>
-                    
-                </Tabs.Root>
-            </SimpleGrid>
-        </>
+                    </Stack>
+                  </Accordion.ItemBody>
+                </Accordion.ItemContent>
+              </Accordion.Item>
+            )}
+      
+          </Accordion.Root>
+        </Stack>
     )
 
 }

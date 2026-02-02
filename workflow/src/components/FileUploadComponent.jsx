@@ -40,15 +40,15 @@ function FileUploadComponent() {
 
   return (
     <div >
-      <div className="bg-white w-[420px] rounded-xl shadow-xl p-6">
+      {/* <div className="bg-white w-[420px] rounded-xl shadow-xl p-6"> */}
         
         {/* Header */}
-        <div className="flex justify-between items-center mb-4">
+        {/* <div className="flex justify-between items-center mb-4">
           <h2 className="text-sm font-semibold text-gray-800">
             Add Preview Images!
           </h2>
           <button className="text-gray-400 hover:text-gray-600">✕</button>
-        </div>
+        </div> */}
 
         {/* Upload Box */}
         <div
@@ -133,7 +133,7 @@ function FileUploadComponent() {
             Import
           </button>
         </div>
-      </div>
+      {/* </div> */}
     </div>
   );
 }

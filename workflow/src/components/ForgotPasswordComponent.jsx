@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Button } from '@chakra-ui/react'
+import { useNavigate } from "react-router-dom";
 
 function ForgotPasswordComponent(){
 
@@ -18,6 +19,8 @@ function ForgotPasswordComponent(){
         console.log(otpsent,otpVerified)
     },[])
 
+    const navigate = useNavigate();
+
     function verifyEmail(){
         setOtpsent(true)
     }
@@ -30,6 +33,7 @@ function ForgotPasswordComponent(){
 
       // navigate to login page
     }
+    
 
     return (
         <>
@@ -95,7 +99,7 @@ function ForgotPasswordComponent(){
                 onClick={verifyOtp}
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md font-medium transition"
               >
-                Send otp
+                verify otp
               </button>
               </>
               )}
@@ -133,11 +137,18 @@ function ForgotPasswordComponent(){
                 </>
             ))}
 
+            <a onClick={() => {navigate("/login")}} className="text-blue-600 hover:underline">
+              go to login
+            </a>
+
           </div>
         </div>
         </>
     )
 
 }
+
+
+
 
 export default ForgotPasswordComponent;

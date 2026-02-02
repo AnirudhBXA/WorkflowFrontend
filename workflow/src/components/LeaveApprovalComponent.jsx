@@ -1,20 +1,22 @@
 import { useEffect, useState } from "react";
-import { Table, Tabs, SimpleGrid, For } from "@chakra-ui/react"
+import { Table, Tabs, SimpleGrid, For,Badge } from "@chakra-ui/react"
 import LeaveBriefCard from "./LeaveBriefCard";
 
 
 function LeaveApprovalComponent(){
 
-    const [items, setItems] = useState([]);
+    const [leavesList, setleavesList] = useState([]);
     const [isCardActive, setIsCardActive] = useState(false)
     const [cardItem, setCardItem] = useState(null);
 
     useEffect(()=>{
-        setItems([{ id: 1, name: "Laptop", category: "Electronics", price: 999.99 },
-        { id: 2, name: "Coffee Maker", category: "Home Appliances", price: 49.99 },
-        { id: 3, name: "Desk Chair", category: "Furniture", price: 150.0 },
-        { id: 4, name: "Smartphone", category: "Electronics", price: 799.99 },
-        { id: 5, name: "Headphones", category: "Accessories", price: 199.99 },])
+        setleavesList([
+            { id: 1, type: "Laptop", from: "5-7-2026", to: "5-7-2026", days: 5, status: "APPROVED", reason: "personal reason" },
+            { id: 2, type: "Coffee Maker", from: "5-7-2026", to: "5-7-2026", days: 5, status: "APPROVED", reason: "personal reason" },
+            { id: 3, type: "Desk Chair", from: "5-7-2026", to: "5-7-2026", days: 5, status: "APPROVED", reason: "personal reason" },
+            { id: 4, type: "Smartphone", from: "5-7-2026", to: "5-7-2026", days: 5, status: "APPROVED", reason: "personal reason" },
+            { id: 5, type: "Headphones", from: "5-7-2026", to: "5-7-2026", days: 5, status: "APPROVED", reason: "personal reason" },
+        ])
     },[])
 
     function openLeaveCard(item){
@@ -31,27 +33,85 @@ function LeaveApprovalComponent(){
                 </>
             )}
 
-            <Table.ScrollArea borderWidth="1px" rounded="md" height="160px">
-                <Table.Root size="sm" stickyHeader>
-                    <Table.Header>
-                    <Table.Row bg="bg.subtle">
-                        <Table.ColumnHeader>Product</Table.ColumnHeader>
-                        <Table.ColumnHeader>Category</Table.ColumnHeader>
-                        <Table.ColumnHeader textAlign="end">Price</Table.ColumnHeader>
-                    </Table.Row>
-                    </Table.Header>
 
-                    <Table.Body>
-                    {items.map((item) => (
-                        <Table.Row key={item.id} onClick={ (item) => openLeaveCard(item)}>
-                        <Table.Cell>{item.name}</Table.Cell>
-                        <Table.Cell>{item.category}</Table.Cell>
-                        <Table.Cell textAlign="end">{item.price}</Table.Cell>
-                        </Table.Row>
-                    ))}
-                    </Table.Body>
-                </Table.Root>
-            </Table.ScrollArea>
+                    <Table.ScrollArea
+                        border="1px solid"
+                        borderColor="gray.200"
+                        rounded="lg"
+                        height="260px"
+                        bg="white"
+                      >
+                        <Table.Root size="sm" stickyHeader>
+                          <Table.Header>
+                            <Table.Row bg="gray.50">
+                              <Table.ColumnHeader fontSize="xs" color="gray.600">
+                                Leave Type
+                              </Table.ColumnHeader>
+                              <Table.ColumnHeader fontSize="xs" color="gray.600">
+                                From
+                              </Table.ColumnHeader>
+                              <Table.ColumnHeader fontSize="xs" color="gray.600">
+                                To
+                              </Table.ColumnHeader>
+                              <Table.ColumnHeader fontSize="xs" color="gray.600">
+                                Days
+                              </Table.ColumnHeader>
+                              {/* <Table.ColumnHeader fontSize="xs" color="gray.600">
+                                Status
+                              </Table.ColumnHeader> */}
+                              <Table.ColumnHeader fontSize="xs" color="gray.600">
+                                Reason
+                              </Table.ColumnHeader>
+                            </Table.Row>
+                          </Table.Header>
+      
+                          <Table.Body>
+                            {leavesList.map((item) => (
+                              <Table.Row
+                                key={item.id}
+                                _hover={{ bg: "gray.50" }}
+                                borderBottom="1px solid"
+                                borderColor="gray.100"
+                              >
+                                <Table.Cell fontSize="sm">
+                                  {item.type}
+                                </Table.Cell>
+                                <Table.Cell fontSize="sm">
+                                  {item.from}
+                                </Table.Cell>
+                                <Table.Cell fontSize="sm">
+                                  {item.to}
+                                </Table.Cell>
+                                <Table.Cell fontSize="sm">
+                                  {item.days}
+                                </Table.Cell>
+                                {/* <Table.Cell>
+                                  {getStatusMarker(item.status)}
+                                </Table.Cell> */}
+                                <Table.Cell fontSize="sm">
+                                  {item.reason}
+                                </Table.Cell>
+                                <Table.Cell fontSize="sm">
+                                <Badge
+                                    px={3}
+                                    py={1}
+                                    borderRadius="md"
+                                    fontSize="xs"
+                                    fontWeight="medium"
+                                    colorScheme="blue"
+                                    
+                                    onClick={ (item) => openLeaveCard(item)}
+                                >
+                                    view
+                                </Badge>
+                                </Table.Cell>
+
+                              </Table.Row>
+                            ))}
+                          </Table.Body>
+                        </Table.Root>
+                      </Table.ScrollArea>
+
         </>
     )
 

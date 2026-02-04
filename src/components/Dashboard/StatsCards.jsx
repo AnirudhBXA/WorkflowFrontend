@@ -1,6 +1,8 @@
 "use client";
 
+import { useDataListStyles } from "@chakra-ui/react";
 import { Users, CheckCircle, Clock, Calendar, Zap } from "lucide-react";
+import { useEffect, useState } from "react";
 
 const statsData = [
   {
@@ -39,6 +41,21 @@ const statsData = [
 ];
 
 export default function StatsCards() {
+
+  const interviewApi = "/api/interview/me";
+  const timesheetApi = "/api/timesheets/me"
+  const leaveApi = "/api/leaves/me";
+  const subordinatesCountApi = "/api/users/subordinates-count";
+
+  const [interviewData, setInterviewData] = useState({})
+  const [timesheetData, setTimesheetData] = useState({})
+  const [leavesData, setLeavesData] = useState({})
+  // const []
+
+  // useEffect( async () => {
+
+  // },[])
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       {statsData.map((stat) => {

@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CheckCircle2, Circle, ChevronLeft, ChevronRight } from "lucide-react";
+import axios from "axios";
 
-const tasksData = [
+const defaultTasksData = [
   {
     id: 1,
     title: "Complete Q1 Project Report",
@@ -157,12 +158,33 @@ function Calendar() {
 
 export default function TasksAndCalendar() {
   const [completedTasks, setCompletedTasks] = useState([]);
-
+  const [tasksData, setTaskData] = useState([]);
   const toggleTask = (id) => {
     setCompletedTasks((prev) =>
       prev.includes(id) ? prev.filter((t) => t !== id) : [...prev, id],
     );
   };
+
+  const processInstanceId = "";
+
+  const tasksApi = `/api/workflows/${processInstanceId}/tasks`
+
+  async function fetchUserTask(){
+    try{
+      const response = await axios.get(
+        tasksApi
+      );
+      setTaskData(response.data); // 👈 store API response
+    } catch (error) {
+      console.error("Error fetching workflow tasks", error);
+    }
+  }
+
+  useEffect(()=>{
+    setTaskData(defaultTasksData);
+    // fetchUserTask()
+
+  },[])
 
   const getPriorityBadge = (priority) => {
     switch (priority) {

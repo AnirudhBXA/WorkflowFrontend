@@ -9,6 +9,7 @@ const navItems = [
   { icon: FileText, label: "Timesheet", navPath: "/timesheet" },
   { icon: Award, label: "Certifications", navPath: "/certifications" },
   { icon: Monitor, label: "Interviews", navPath: "/interviews" },
+  { icon: FileText, label: "Work flows", navPath: "/workflows" },
 ];
 
 export default function NavigationSidebar() {

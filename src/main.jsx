@@ -17,6 +17,7 @@ import ForgotPassword from "./pages/ForgotPassword.jsx";
 import UserProfile from "./pages/UserProfile.jsx";
 import AdminPage from "./pages/AdminPage.jsx";
 import { AuthProvider } from "./context/AuthContext.jsx";
+import WorkflowPage from "./pages/WorkflowPage.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -33,6 +34,7 @@ createRoot(document.getElementById("root")).render(
               <Route path="certifications" element={<Certifications />}></Route>
               <Route path="profile" element={<UserProfile />}></Route>
               <Route path="admin" element={<AdminPage />}></Route>
+              <Route path="workflows" element={<WorkflowPage />}></Route>
             </Route>
             <Route path="/login" element={<Login />}></Route>
             <Route path="/forgot-password" element={<ForgotPassword />}></Route>

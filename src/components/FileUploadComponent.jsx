@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 function FileUploadComponent() {
   const inputRef = useRef(null);
@@ -7,6 +7,30 @@ function FileUploadComponent() {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadedFile, setUploadedFile] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [fileToUpload, setFileToUpload] = useState(null);
+
+
+  const [selectedWorkflow, setSelectedWorkflow] = useState({ workflowName : "Select-Workflow" , relatedApi : "" })
+  const [workflowOptions, setWorkFlowOptions] = useState([])
+  const role = "HR";
+  useEffect( () => {
+
+    if(role==="HR"){
+      setWorkFlowOptions([
+        { workflowName : "Leave Workflow" , relatedApi : "/api/leaves/upload-leave-requests" },
+        { workflowName : "Certifications" , relatedApi : "/api/certifications/upload" },
+        { workflowName : "Interview Workflow" , relatedApi : "/api/interview/upload" },
+        { workflowName : "Select-Workflow" , relatedApi : "" },
+      ])
+    }
+    else if(role==="MANAGER"){
+      setWorkFlowOptions([
+        { workflowName : "Select-Workflow" , relatedApi : "" },
+        { workflowName : "Training Workflow" , relatedApi : "/api/trainings/upload" },
+      ])
+    }
+    
+  },[])
 
   const startUpload = (file) => {
     setUploadedFile(null);
@@ -29,6 +53,7 @@ function FileUploadComponent() {
 
   const handleFile = (file) => {
     if (!file) return;
+    setFileToUpload(file);
     startUpload(file);
   };
 
@@ -38,17 +63,75 @@ function FileUploadComponent() {
     handleFile(e.dataTransfer.files[0]);
   };
 
+  async function handelFileUpload() {
+    if (!fileToUpload) {
+      alert("Please select a file");
+      return;
+    }
+  
+    if (!selectedWorkflow?.relatedApi) {
+      alert("Please select a workflow");
+      return;
+    }
+  
+    const formData = new FormData();
+    formData.append("file", fileToUpload);
+  
+    try {
+      const response = await axios.post(
+        selectedWorkflow.relatedApi,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          onUploadProgress: (progressEvent) => {
+            const percent = Math.round(
+              (progressEvent.loaded * 100) / progressEvent.total
+            );
+            setUploadProgress(percent); // REAL progress
+          },
+        }
+      );
+  
+      alert("File uploaded successfully");
+      console.log(response.data);
+  
+    } catch (error) {
+      console.error(error);
+      alert("Upload failed");
+    }
+  }
+  
+
   return (
     <div>
       {/* <div className="bg-white w-[420px] rounded-xl shadow-xl p-6"> */}
 
+      <div>
+        <label>Select Workflow: </label>
+        <select
+          value={selectedWorkflow.workflowName}
+          onChange={(e) => {
+            const selectedName = e.target.value;
+            const workflow = workflowOptions.find(
+              (w) => w.workflowName === selectedName
+            );
+            setSelectedWorkflow(workflow);
+          }}
+        >
+          {workflowOptions.map((item) => (
+            <option key={item.workflowName} value={item}>{item.workflowName}</option>
+          ))}
+        </select>
+      </div>
+
       {/* Header */}
-      {/* <div className="flex justify-between items-center mb-4">
+      <div className="flex justify-between items-center mb-4">
           <h2 className="text-sm font-semibold text-gray-800">
-            Add Preview Images!
+            Upload your file here
           </h2>
-          <button className="text-gray-400 hover:text-gray-600">✕</button>
-        </div> */}
+        </div>
 
       {/* Upload Box */}
       <div
@@ -74,14 +157,14 @@ function FileUploadComponent() {
           upload
         </p>
 
-        <p className="text-xs text-gray-400 mt-1">fig, zip, pdf, png, jpeg</p>
+        <p className="text-xs text-gray-400 mt-1">excel</p>
 
         <input
           ref={inputRef}
           type="file"
           hidden
           onChange={(e) => handleFile(e.target.files[0])}
-          accept=".fig,.zip,.pdf,.png,.jpeg,.jpg"
+          accept=".xlsx"
         />
       </div>
 
@@ -121,8 +204,10 @@ function FileUploadComponent() {
         <button className="px-4 py-2 text-sm border rounded-md text-gray-600 hover:bg-gray-100">
           Cancel
         </button>
-        <button className="px-4 py-2 text-sm rounded-md bg-blue-600 text-white hover:bg-blue-700">
-          Import
+        <button className="px-4 py-2 text-sm rounded-md bg-blue-600 text-white hover:bg-blue-700"
+        onClick={handelFileUpload}
+        >
+          Upload
         </button>
       </div>
       {/* </div> */}

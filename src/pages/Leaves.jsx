@@ -368,7 +368,7 @@ export default function LeavesComponent() {
             Manager Actions
           </h2>
 
-          {role === "HR" && (
+          {/* {role === "HR" && (
             <>
               <button
                 className="bg-indigo-600 text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition"
@@ -378,7 +378,7 @@ export default function LeavesComponent() {
               </button>
               {isUploadActive && <FileUploadComponent />}
             </>
-          )}
+          )} */}
 
           <LeaveApprovalComponent />
         </div>

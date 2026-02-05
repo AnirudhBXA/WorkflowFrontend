@@ -1,5 +1,7 @@
 "use client";
 
+import axios from "axios";
+import { useEffect, useState } from "react";
 import {
   BarChart,
   Bar,
@@ -40,6 +42,27 @@ export default function ChartsSection() {
   const tooltipBg = isDark ? "#1f2937" : "#f8fafc";
   const tooltipBorder = isDark ? "#374151" : "#e2e8f0";
   const tooltipText = isDark ? "#f3f4f6" : "#1f2937";
+
+  const [timesheetData, setTimesheetData] = useState({})
+  const timesheetApi = "/api/timesheets/me";
+
+  useEffect(() => {
+
+    fetchTimesheetData();
+
+  },[])
+
+  async function fetchTimesheetData(){
+
+    try{
+      const timesheetRes = await axios.get(timesheetApi);
+      setTimesheetData(timesheetRes.data)
+
+    } catch(e){
+      console.log("Error occurred while fetching"+e)
+    }
+  }
+
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

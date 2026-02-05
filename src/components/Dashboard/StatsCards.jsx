@@ -43,18 +43,49 @@ const statsData = [
 export default function StatsCards() {
 
   const interviewApi = "/api/interview/me";
-  const timesheetApi = "/api/timesheets/me"
+  const timesheetApi = "/api/timesheets/me";
   const leaveApi = "/api/leaves/me";
   const subordinatesCountApi = "/api/users/subordinates-count";
 
   const [interviewData, setInterviewData] = useState({})
   const [timesheetData, setTimesheetData] = useState({})
   const [leavesData, setLeavesData] = useState({})
-  // const []
+  const [subordCount, setSubordCount] = useState({})
 
-  // useEffect( async () => {
+  useEffect( async () => {
 
-  // },[])
+    // fetchUserData();
+    // processUserData();
+
+  },[])
+
+  function processUserData(){
+
+  }
+
+
+  async function fetchUserData(){
+
+    try{
+      const [
+        interviewRes, timesheetRes,
+        leaveRes, subordRes
+      ] = await Promise.all([
+        axios.get(interviewApi),
+        axios.get(timesheetApi),
+        axios.get(leaveApi),
+        axios.get(subordinatesCountApi),
+      ]);
+
+      setInterviewData(interviewRes.data);
+      setTimesheetData(timesheetRes.data);
+      setLeavesData(leaveRes.data);
+      setSubordCount(subordRes.data);
+
+    } catch(e){
+      console.log("Error occurred while fetching "+e)
+    }
+  } 
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

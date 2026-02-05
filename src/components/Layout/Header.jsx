@@ -2,6 +2,7 @@ import { Bell } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Menu, Portal } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 function HeaderComponent() {
   const [notifications, setNotifications] = useState([]);
@@ -23,7 +24,20 @@ function HeaderComponent() {
         unread: true,
       },
     ]);
+
+    // fetchNotifications();
   }, []);
+
+  const notificationsApi = "/api/notifications/my";
+
+  async function fetchNotifications(){
+    try{
+      const response = await axios.get(notificationsApi)
+      setNotifications(response.data)
+    } catch(e){
+      console.log("Error fetching Notifications "+e);
+    }
+  }
 
   function markAllAsRead() {
     setNotifications((prev) => prev.map((n) => ({ ...n, unread: false })));
@@ -35,6 +49,10 @@ function HeaderComponent() {
 
   function handleLogout() {
     console.log("Logout clicked");
+  }
+
+  function getProfileIcon(){
+    return "AM";
   }
 
   return (
@@ -132,7 +150,7 @@ function HeaderComponent() {
         <Menu.Root>
           <Menu.Trigger asChild>
             <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 text-sm font-semibold tracking-wide cursor-pointer hover:shadow-sm transition">
-              AM
+              {getProfileIcon()}
             </div>
           </Menu.Trigger>
 

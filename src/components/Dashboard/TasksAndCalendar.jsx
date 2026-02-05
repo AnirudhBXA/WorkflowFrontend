@@ -174,7 +174,7 @@ export default function TasksAndCalendar() {
       const response = await axios.get(
         tasksApi
       );
-      setTaskData(response.data); // 👈 store API response
+      setTaskData(response.data);
     } catch (error) {
       console.error("Error fetching workflow tasks", error);
     }

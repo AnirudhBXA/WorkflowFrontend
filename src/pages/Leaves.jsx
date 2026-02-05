@@ -241,42 +241,44 @@ export default function LeavesComponent() {
   const [leavesList, setLeavesList] = useState([]);
 
   useEffect(() => {
-    async function fetchLeavesData() {
-      try {
-        const [summaryRes, leavesRes] = await Promise.all([
-          axiosInstance.get("/leaves/summary"),
-          axiosInstance.get("/leaves/my"),
-        ]);
-        setSummary(summaryRes.data);
-        setLeavesList(leavesRes.data);
-      } catch {
-        setSummary({ available: 5, used: 3 });
-        setLeavesList([
-          {
-            id: 1,
-            type: "Casual Leave",
-            from: "2026-07-05",
-            to: "2026-07-07",
-            days: 3,
-            status: "APPROVED",
-            reason: "Family trip",
-          },
-          {
-            id: 2,
-            type: "Sick Leave",
-            from: "2026-06-10",
-            to: "2026-06-11",
-            days: 2,
-            status: "PENDING",
-            reason: "Fever",
-          },
-        ]);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchLeavesData();
+
+    setSummary({available : 5, used : 4})
+
+    setLeavesList([
+      {
+        id: 1,
+        type: "Casual Leave",
+        from: "2026-07-05",
+        to: "2026-07-07",
+        days: 3,
+        status: "APPROVED",
+        reason: "Family trip",
+      },
+      {
+        id: 2,
+        type: "Sick Leave",
+        from: "2026-06-10",
+        to: "2026-06-11",
+        days: 2,
+        status: "PENDING",
+        reason: "Fever",
+      },
+    ]);
+
+    setLoading(false);
+    // fetchLeavesData();
   }, []);
+
+  const myLeavesApi = "/api/leaves/me";
+  async function fetchLeavesData(){
+    try{
+      const response = await axios.get(myLeavesApi);
+      setLeavesList(response.data);
+    } catch(e){
+      console.log("Error occurred while fetching "+e);
+    }
+  }
+
 
   if (loading) {
     return (

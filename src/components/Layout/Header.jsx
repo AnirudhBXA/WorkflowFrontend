@@ -2,10 +2,13 @@ import { Bell } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Menu, Portal } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
+import axiosInstance from "../../utils/axiosInstance";
 
 function HeaderComponent() {
   const [notifications, setNotifications] = useState([]);
-
+  const { logout } = useContext(AuthContext);
   useEffect(() => {
     setNotifications([
       {
@@ -34,7 +37,8 @@ function HeaderComponent() {
   }
 
   function handleLogout() {
-    console.log("Logout clicked");
+    axiosInstance.post("/auth/logout");
+    logout();
   }
 
   return (

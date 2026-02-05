@@ -1,251 +1,32 @@
-// import { useEffect, useState } from "react";
-// import { Table, Tabs, SimpleGrid } from "@chakra-ui/react";
-// import ValuesDisplayCard from "../components/ValuesDisplayCard";
-
-// function UserProfile() {
-//   const [profile, setProfile] = useState(null);
-//   const [leaves, setLeaves] = useState([]);
-//   const [certifications, setCertifications] = useState([]);
-//   const [leaveSummary, setLeaveSummary] = useState({ available: 0, used: 0 });
-
-//   useEffect(() => {
-//     setProfile({
-//       name: "Anirudh Myakam",
-//       designation: "Frontend Developer",
-//       email: "anirudh@company.com",
-//       department: "Engineering",
-//       manager: "Ravi Kumar",
-//       hr: "Sneha Sharma",
-//       employeeId: "EMP-1024",
-//     });
-
-//     setLeaves([
-//       {
-//         id: 1,
-//         from: "2026-02-01",
-//         to: "2026-02-03",
-//         days: 3,
-//         reason: "Vacation",
-//         status: "approved",
-//       },
-//       {
-//         id: 2,
-//         from: "2026-03-05",
-//         to: "2026-03-06",
-//         days: 2,
-//         reason: "Medical",
-//         status: "pending",
-//       },
-//       {
-//         id: 3,
-//         from: "2026-01-10",
-//         to: "2026-01-12",
-//         days: 3,
-//         reason: "Travel",
-//         status: "rejected",
-//       },
-//     ]);
-
-//     setCertifications([
-//       { id: 1, title: "AI & ML", provider: "Coursera", date: "2025-10-01" },
-//       {
-//         id: 2,
-//         title: "Cloud Computing",
-//         provider: "Udemy",
-//         date: "2025-12-15",
-//       },
-//     ]);
-
-//     setLeaveSummary({ available: 5, used: 3 });
-//   }, []);
-
-//   const filterLeaves = (status) => leaves.filter((l) => l.status === status);
-
-//   if (!profile) return null;
-
-//   return (
-//     <div className="max-w-5xl mx-auto space-y-6">
-//       {/* PROFILE CARD */}
-//       <div className="bg-white rounded-xl shadow-md p-6">
-//         <div className="flex items-center gap-6 border-b pb-6">
-//           <div className="w-20 h-20 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 text-2xl font-semibold">
-//             {profile.name.charAt(0)}
-//           </div>
-//           <div>
-//             <h2 className="text-lg font-semibold text-gray-800">
-//               {profile.name}
-//             </h2>
-//             <p className="text-sm text-gray-500">{profile.designation}</p>
-//           </div>
-//         </div>
-
-//         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6">
-//           <ProfileField label="Email" value={profile.email} />
-//           <ProfileField label="Department" value={profile.department} />
-//           <ProfileField label="Manager" value={profile.manager} />
-//           <ProfileField label="HR" value={profile.hr} />
-//           <ProfileField label="Employee ID" value={profile.employeeId} />
-//         </div>
-//       </div>
-
-//       {/* LEAVES */}
-//       <div className="bg-white rounded-xl shadow-md p-6">
-//         <h2 className="text-lg font-semibold text-gray-800 border-b pb-4 mb-6">
-//           Leave Summary
-//         </h2>
-
-//         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-//           <ValuesDisplayCard
-//             data={{
-//               context: "Available Leaves",
-//               value: leaveSummary.available,
-//               units: "days",
-//             }}
-//           />
-//           <ValuesDisplayCard
-//             data={{
-//               context: "Leaves Used",
-//               value: leaveSummary.used,
-//               units: "days",
-//             }}
-//           />
-//         </div>
-
-//         <SimpleGrid columns={2} gap="14" width="full">
-//           <Tabs.Root defaultValue="approved" variant="outline">
-//             <Tabs.List>
-//               <Tabs.Trigger value="approved">Approved</Tabs.Trigger>
-//               <Tabs.Trigger value="rejected">Rejected</Tabs.Trigger>
-//               <Tabs.Trigger value="pending">Pending</Tabs.Trigger>
-//             </Tabs.List>
-
-//             {["approved", "rejected", "pending"].map((status) => (
-//               <Tabs.Content key={status} value={status}>
-//                 <Table.ScrollArea borderWidth="1px" rounded="md" height="160px">
-//                   <Table.Root size="sm" stickyHeader>
-//                     <Table.Header>
-//                       <Table.Row bg="bg.subtle">
-//                         <Table.ColumnHeader>From</Table.ColumnHeader>
-//                         <Table.ColumnHeader>To</Table.ColumnHeader>
-//                         <Table.ColumnHeader>Days</Table.ColumnHeader>
-//                         <Table.ColumnHeader>Reason</Table.ColumnHeader>
-//                       </Table.Row>
-//                     </Table.Header>
-//                     <Table.Body>
-//                       {filterLeaves(status).map((l) => (
-//                         <Table.Row key={l.id}>
-//                           <Table.Cell>{l.from}</Table.Cell>
-//                           <Table.Cell>{l.to}</Table.Cell>
-//                           <Table.Cell>{l.days}</Table.Cell>
-//                           <Table.Cell>{l.reason}</Table.Cell>
-//                         </Table.Row>
-//                       ))}
-//                     </Table.Body>
-//                   </Table.Root>
-//                 </Table.ScrollArea>
-//               </Tabs.Content>
-//             ))}
-//           </Tabs.Root>
-//         </SimpleGrid>
-//       </div>
-
-//       {/* CERTIFICATIONS */}
-//       <div className="bg-white rounded-xl shadow-md p-6">
-//         <h2 className="text-lg font-semibold text-gray-800 border-b pb-4 mb-6">
-//           Certifications
-//         </h2>
-
-//         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-//           {certifications.map((cert) => (
-//             <div
-//               key={cert.id}
-//               className="p-5 border border-gray-100 rounded-xl shadow-sm hover:shadow-md transition hover:-translate-y-1"
-//             >
-//               <h3 className="text-md font-semibold text-gray-800">
-//                 {cert.title}
-//               </h3>
-//               <p className="text-sm text-gray-500">{cert.provider}</p>
-//               <p className="text-sm mt-2">Completed: {cert.date}</p>
-//             </div>
-//           ))}
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
-
-// function ProfileField({ label, value }) {
-//   return (
-//     <div>
-//       <p className="text-sm text-gray-500">{label}</p>
-//       <p className="text-base font-medium text-gray-800">{value}</p>
-//     </div>
-//   );
-// }
-
-// export default UserProfile;
-
-"use client";
-
 import { useEffect, useState } from "react";
 import ValuesDisplayCard from "../components/ValuesDisplayCard";
+import axiosInstance from "../utils/axiosInstance";
+
+function getSafeValue(value) {
+  return value ?? "NA";
+}
 
 export default function UserProfile() {
-  const [profile, setProfile] = useState(null);
+  const [profile, setProfile] = useState([]);
   const [leaves, setLeaves] = useState([]);
   const [certifications, setCertifications] = useState([]);
   const [leaveSummary, setLeaveSummary] = useState({ available: 0, used: 0 });
   const [activeTab, setActiveTab] = useState("approved");
 
   useEffect(() => {
-    setProfile({
-      name: "Anirudh Myakam",
-      designation: "Frontend Developer",
-      email: "anirudh@company.com",
-      department: "Engineering",
-      manager: "Ravi Kumar",
-      hr: "Sneha Sharma",
-      employeeId: "EMP-1024",
-    });
-
-    setLeaves([
-      {
-        id: 1,
-        from: "2026-02-01",
-        to: "2026-02-03",
-        days: 3,
-        reason: "Vacation",
-        status: "approved",
-      },
-      {
-        id: 2,
-        from: "2026-03-05",
-        to: "2026-03-06",
-        days: 2,
-        reason: "Medical",
-        status: "pending",
-      },
-      {
-        id: 3,
-        from: "2026-01-10",
-        to: "2026-01-12",
-        days: 3,
-        reason: "Travel",
-        status: "rejected",
-      },
-    ]);
-
-    setCertifications([
-      { id: 1, title: "AI & ML", provider: "Coursera", date: "2025-10-01" },
-      {
-        id: 2,
-        title: "Cloud Computing",
-        provider: "Udemy",
-        date: "2025-12-15",
-      },
-    ]);
-
-    setLeaveSummary({ available: 5, used: 3 });
+    async function fetchUserProfile() {
+      try {
+        const res = await axiosInstance.get("/profile/me");
+        const { profile, leaves, certifications, leaveSummary } = res.data;
+        setProfile(profile);
+        setLeaves(leaves);
+        setCertifications(certifications);
+        setLeaveSummary(leaveSummary);
+      } catch (err) {
+        console.error("Failed to fetch user profile:", err);
+      }
+    }
+    fetchUserProfile();
   }, []);
 
   const filterLeaves = (status) => leaves.filter((l) => l.status === status);
@@ -258,24 +39,30 @@ export default function UserProfile() {
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
         <div className="flex items-center gap-6 border-b border-gray-200 dark:border-gray-700 pb-6">
           <div className="w-20 h-20 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center text-indigo-700 dark:text-indigo-300 text-2xl font-semibold">
-            {profile.name.charAt(0)}
+            {getSafeValue(profile.name).charAt(0)}
           </div>
           <div>
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-              {profile.name}
+              {getSafeValue(profile.name)}
             </h2>
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              {profile.designation}
+              Software Engineer
             </p>
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6">
-          <ProfileField label="Email" value={profile.email} />
-          <ProfileField label="Department" value={profile.department} />
-          <ProfileField label="Manager" value={profile.manager} />
-          <ProfileField label="HR" value={profile.hr} />
-          <ProfileField label="Employee ID" value={profile.employeeId} />
+          <ProfileField label="Email" value={getSafeValue(profile.email)} />
+          <ProfileField
+            label="Department"
+            value={getSafeValue(profile.department)}
+          />
+          <ProfileField label="Manager" value={getSafeValue(profile.manager)} />
+          <ProfileField label="HR" value={getSafeValue(profile.hr)} />
+          <ProfileField
+            label="Employee ID"
+            value={getSafeValue(profile.employeeId)}
+          />
         </div>
       </div>
 
@@ -289,14 +76,14 @@ export default function UserProfile() {
           <ValuesDisplayCard
             data={{
               context: "Available Leaves",
-              value: leaveSummary.available,
+              value: getSafeValue(leaveSummary.available),
               units: "days",
             }}
           />
           <ValuesDisplayCard
             data={{
               context: "Leaves Used",
-              value: leaveSummary.used,
+              value: getSafeValue(leaveSummary.used),
               units: "days",
             }}
           />
@@ -336,10 +123,10 @@ export default function UserProfile() {
                     key={l.id}
                     className="border-t border-gray-200 dark:border-gray-700"
                   >
-                    <td className="px-6 py-4">{l.from}</td>
-                    <td className="px-6 py-4">{l.to}</td>
-                    <td className="px-6 py-4">{l.days}</td>
-                    <td className="px-6 py-4">{l.reason}</td>
+                    <td className="px-6 py-4">{getSafeValue(l.from)}</td>
+                    <td className="px-6 py-4">{getSafeValue(l.to)}</td>
+                    <td className="px-6 py-4">{getSafeValue(l.days)}</td>
+                    <td className="px-6 py-4">{getSafeValue(l.reason)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -361,13 +148,13 @@ export default function UserProfile() {
               className="p-5 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:shadow-md transition hover:-translate-y-1"
             >
               <h3 className="text-md font-semibold text-gray-900 dark:text-white">
-                {cert.title}
+                {getSafeValue(cert.title)}
               </h3>
               <p className="text-sm text-gray-500 dark:text-gray-400">
-                {cert.provider}
+                {getSafeValue(cert.provider)}
               </p>
               <p className="text-sm mt-2 text-gray-600 dark:text-gray-300">
-                Completed: {cert.date}
+                Completed: {getSafeValue(cert.date)}
               </p>
             </div>
           ))}
@@ -382,7 +169,7 @@ function ProfileField({ label, value }) {
     <div>
       <p className="text-sm text-gray-500 dark:text-gray-400">{label}</p>
       <p className="text-base font-medium text-gray-900 dark:text-white">
-        {value}
+        {value ?? "NA"}
       </p>
     </div>
   );

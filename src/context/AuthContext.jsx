@@ -1,25 +1,40 @@
-// context/AuthContext.jsx
-import { createContext, useState } from "react";
-import { setAccessToken } from "../utils/axiosInstance";
-
+// context/AuthContext.js
+import { createContext, useState, useEffect } from "react";
 export const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState(null);
 
-  function login(accessToken) {
-    setAccessToken(accessToken);
-    setIsAuthenticated(true);
+  useEffect(() => {
+    const token =
+      localStorage.getItem("accessToken") ||
+      sessionStorage.getItem("accessToken");
+    const userData =
+      localStorage.getItem("user") || sessionStorage.getItem("user");
+
+    if (token && userData) {
+      setUser(JSON.parse(userData));
+    }
+  }, []);
+
+  function login(accessToken, rememberMe, userObject) {
+    const storage = rememberMe ? localStorage : sessionStorage;
+    storage.setItem("accessToken", accessToken);
+    storage.setItem("user", JSON.stringify(userObject));
+    setUser(userObject);
   }
 
   function logout() {
-    setAccessToken(null);
-    setIsAuthenticated(false);
+    localStorage.clear();
+    sessionStorage.clear();
+    setUser(null);
     window.location.href = "/login";
   }
 
+  const isAuthenticated = !!user;
+
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ user, isAuthenticated, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

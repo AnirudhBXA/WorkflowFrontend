@@ -1,6 +1,5 @@
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
 import axiosInstance from "../utils/axiosInstance";
 
@@ -43,8 +42,14 @@ function LoginComponent() {
         rememberMe: form.remember,
       });
 
-      login(res.data.accessToken);
+      const token = res.data.accessToken;
+      if (form.remember) {
+        localStorage.setItem("accessToken", token);
+      } else {
+        sessionStorage.setItem("accessToken", token);
+      }
 
+      login(token, form.remember, res.data.user);
       navigate("/dashboard");
     } catch (err) {
       setError(

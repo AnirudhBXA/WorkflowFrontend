@@ -6,17 +6,16 @@ const axiosInstance = axios.create({
   withCredentials: true,
 });
 
-let accessToken = null;
-
-export const setAccessToken = (token) => {
-  accessToken = token;
-};
-
-// Attach access token
+// Attach access token from storage
 axiosInstance.interceptors.request.use((config) => {
-  if (accessToken) {
-    config.headers.Authorization = `Bearer ${accessToken}`;
+  const token =
+    localStorage.getItem("accessToken") ||
+    sessionStorage.getItem("accessToken");
+
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
   }
+
   return config;
 });
 
@@ -30,14 +29,18 @@ axiosInstance.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        const res = await axios.post(
-          "/api/v1/auth/refresh-token",
+        const res = await axiosInstance.post(
+          "/auth/refresh",
           {},
           { withCredentials: true },
         );
 
         const newAccessToken = res.data.accessToken;
-        setAccessToken(newAccessToken);
+        if (localStorage.getItem("accessToken") !== null) {
+          localStorage.setItem("accessToken", newAccessToken);
+        } else {
+          sessionStorage.setItem("accessToken", newAccessToken);
+        }
 
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
         return axiosInstance(originalRequest);

@@ -1,57 +1,10 @@
-"use client";
-
 import { useEffect, useState } from "react";
 import { CheckCircle2, Circle, ChevronLeft, ChevronRight } from "lucide-react";
-import axios from "axios";
-
-const defaultTasksData = [
-  {
-    id: 1,
-    title: "Complete Q1 Project Report",
-    priority: "high",
-    status: "pending",
-    dueDate: "2024-02-10",
-  },
-  {
-    id: 2,
-    title: "Review Team Submissions",
-    priority: "high",
-    status: "in-progress",
-    dueDate: "2024-02-05",
-  },
-  {
-    id: 3,
-    title: "Client Meeting Preparation",
-    priority: "medium",
-    status: "completed",
-    dueDate: "2024-02-03",
-  },
-  {
-    id: 4,
-    title: "Update Project Documentation",
-    priority: "medium",
-    status: "pending",
-    dueDate: "2024-02-08",
-  },
-  {
-    id: 5,
-    title: "Budget Allocation Review",
-    priority: "high",
-    status: "pending",
-    dueDate: "2024-02-12",
-  },
-  {
-    id: 6,
-    title: "Performance Metrics Analysis",
-    priority: "low",
-    status: "pending",
-    dueDate: "2024-02-15",
-  },
-];
+import axiosInstance from "../../utils/axiosInstance"; 
 
 function Calendar() {
-  const [currentDate, setCurrentDate] = useState(new Date(2026, 1, 3));
-  const today = new Date(2026, 1, 3);
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const today = new Date();
 
   const daysInMonth = new Date(
     currentDate.getFullYear(),
@@ -158,36 +111,29 @@ function Calendar() {
 
 export default function TasksAndCalendar() {
   const [completedTasks, setCompletedTasks] = useState([]);
-  const [tasksData, setTaskData] = useState([]);
+  const [taskData, setTaskData] = useState([]);
+
+  const fetchUserTasks = async () => {
+    try {
+      const response = await axiosInstance.get("/data/tasks/me");
+      setTaskData(response.data || []);
+    } catch (error) {
+      console.error("Error fetching tasks:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchUserTasks();
+  }, []);
+
   const toggleTask = (id) => {
     setCompletedTasks((prev) =>
       prev.includes(id) ? prev.filter((t) => t !== id) : [...prev, id],
     );
   };
 
-  const processInstanceId = "";
-
-  const tasksApi = `/api/workflows/${processInstanceId}/tasks`
-
-  async function fetchUserTask(){
-    try{
-      const response = await axios.get(
-        tasksApi
-      );
-      setTaskData(response.data); // 👈 store API response
-    } catch (error) {
-      console.error("Error fetching workflow tasks", error);
-    }
-  }
-
-  useEffect(()=>{
-    setTaskData(defaultTasksData);
-    // fetchUserTask()
-
-  },[])
-
   const getPriorityBadge = (priority) => {
-    switch (priority) {
+    switch (priority?.toLowerCase()) {
       case "high":
         return "bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-200";
       case "medium":
@@ -214,7 +160,7 @@ export default function TasksAndCalendar() {
               Tasks
             </h3>
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              {tasksData.length} tasks assigned
+              {taskData.length} tasks assigned
             </p>
           </div>
 
@@ -229,7 +175,7 @@ export default function TasksAndCalendar() {
                 </tr>
               </thead>
               <tbody>
-                {tasksData.map((task) => (
+                {taskData.map((task) => (
                   <tr
                     key={task.id}
                     className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
@@ -254,27 +200,34 @@ export default function TasksAndCalendar() {
                               : "text-gray-900 dark:text-gray-100"
                           }
                         >
-                          {task.title}
+                          {task.title || "Untitled Task"}
                         </span>
                       </button>
                     </td>
                     <td className="px-6 py-4">
                       <span
-                        className={`px-3 py-1 rounded-full text-xs font-semibold ${getPriorityBadge(task.priority)}`}
+                        className={`px-3 py-1 rounded-full text-xs font-semibold ${getPriorityBadge(
+                          task.priority,
+                        )}`}
                       >
-                        {task.priority}
+                        {task.priority || "N/A"}
                       </span>
                     </td>
                     <td className="px-6 py-4 text-gray-600 dark:text-gray-400">
-                      {new Date(task.dueDate).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                      })}
+                      {task.dueDate
+                        ? new Date(task.dueDate).toLocaleDateString("en-US", {
+                            month: "short",
+                            day: "numeric",
+                          })
+                        : "N/A"}
                     </td>
                     <td className="px-6 py-4 text-center">
                       <div className="flex items-center justify-center gap-2">
                         <div
-                          className={`w-2 h-2 rounded-full ${getStatusColor(task.status, completedTasks.includes(task.id))}`}
+                          className={`w-2 h-2 rounded-full ${getStatusColor(
+                            task.status,
+                            completedTasks.includes(task.id),
+                          )}`}
                         ></div>
                         <span className="text-xs text-gray-600 dark:text-gray-400">
                           {completedTasks.includes(task.id)

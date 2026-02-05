@@ -1,11 +1,9 @@
-import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { ChakraProvider } from "@chakra-ui/react";
 import "./index.css";
 import App from "./App.jsx";
 import { system } from "./utils/theme.js";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
 import Dashboard from "./pages/Dashboard.jsx";
 import Timesheets from "./pages/Timesheets.jsx";
 import Leaves from "./pages/Leaves.jsx";
@@ -18,29 +16,79 @@ import UserProfile from "./pages/UserProfile.jsx";
 import AdminPage from "./pages/AdminPage.jsx";
 import { AuthProvider } from "./context/AuthContext.jsx";
 import WorkflowPage from "./pages/WorkflowPage.jsx";
+import ResetPasswordPage from "./pages/ResetPassword.jsx";
+import PublicRoute from "./routes/PublicRoute.jsx";
+import PrivateRoute from "./routes/PrivateRoute.jsx";
+import ProtectedRoute from "./routes/ProtectedRoute.jsx";
+import NotFound from "./pages/NotFound.jsx";
 
 createRoot(document.getElementById("root")).render(
-  <StrictMode>
-    <BrowserRouter>
-      <AuthProvider>
-        <ChakraProvider value={system}>
-          <Routes>
-            <Route path="/" element={<App />}>
-              <Route path="dashboard" element={<Dashboard />}></Route>
-              <Route path="timesheet" element={<Timesheets />}></Route>
-              <Route path="leave" element={<Leaves />}></Route>
-              <Route path="trainings" element={<Trainings />}></Route>
-              <Route path="interviews" element={<Interviews />}></Route>
-              <Route path="certifications" element={<Certifications />}></Route>
-              <Route path="profile" element={<UserProfile />}></Route>
-              <Route path="admin" element={<AdminPage />}></Route>
-              <Route path="workflows" element={<WorkflowPage />}></Route>
-            </Route>
-            <Route path="/login" element={<Login />}></Route>
-            <Route path="/forgot-password" element={<ForgotPassword />}></Route>
-          </Routes>
-        </ChakraProvider>
-      </AuthProvider>
-    </BrowserRouter>
-  </StrictMode>,
+  <BrowserRouter>
+    <AuthProvider>
+      <ChakraProvider value={system}>
+        <Routes>
+          {/* Public Routes */}
+          <Route
+            path="/login"
+            element={
+              <PublicRoute>
+                <Login />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="/forgot-password"
+            element={
+              <PublicRoute>
+                <ForgotPassword />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="/reset-password"
+            element={
+              <PublicRoute>
+                <ResetPasswordPage />
+              </PublicRoute>
+            }
+          />
+
+          {/* Private Routes */}
+          <Route
+            path="/"
+            element={
+              <PrivateRoute>
+                <App />
+              </PrivateRoute>
+            }
+          >
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="timesheet" element={<Timesheets />} />
+            <Route path="leave" element={<Leaves />} />
+            <Route path="trainings" element={<Trainings />} />
+            <Route path="interviews" element={<Interviews />} />
+            <Route path="certifications" element={<Certifications />} />
+            <Route path="profile" element={<UserProfile />} />
+            <Route
+              path="workflows"
+              element={
+                <ProtectedRoute allowedRoles={["ADMIN", "HR"]}>
+                  <WorkflowPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="admin"
+              element={
+                <ProtectedRoute allowedRoles={["ADMIN"]}>
+                  <AdminPage />
+                </ProtectedRoute>
+              }
+            />
+          </Route>
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </ChakraProvider>
+    </AuthProvider>
+  </BrowserRouter>,
 );

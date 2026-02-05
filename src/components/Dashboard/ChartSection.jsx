@@ -39,6 +39,27 @@ export default function ChartsSection() {
   const tooltipBorder = isDark ? "#374151" : "#e2e8f0";
   const tooltipText = isDark ? "#f3f4f6" : "#1f2937";
 
+  const [timesheetData, setTimesheetData] = useState({})
+  const timesheetApi = "/api/timesheets/me";
+
+  useEffect(() => {
+
+    fetchTimesheetData();
+
+  },[])
+
+  async function fetchTimesheetData(){
+
+    try{
+      const timesheetRes = await axios.get(timesheetApi);
+      setTimesheetData(timesheetRes.data)
+
+    } catch(e){
+      console.log("Error occurred while fetching"+e)
+    }
+  }
+
+
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden border-t-4 border-t-blue-500">
       <div className="p-6 space-y-4">

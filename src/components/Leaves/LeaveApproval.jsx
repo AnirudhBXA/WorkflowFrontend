@@ -119,9 +119,10 @@
 
 import { useEffect, useState } from "react";
 import LeaveBriefCard from "./LeaveBriefCard";
+import axios from "axios";
 
 export default function LeaveApprovalComponent() {
-  const [leavesList, setLeavesList] = useState([]);
+  const [LeavesList, setLeavesList] = useState([]);
   const [selectedLeave, setSelectedLeave] = useState(null);
 
   useEffect(() => {
@@ -143,7 +144,27 @@ export default function LeaveApprovalComponent() {
         status: "PENDING",
       },
     ]);
+
+
+    // if(role==="manager"){
+    //   fetchSubordinateLeaves();
+    // }
+
   }, []);
+
+  
+  const subordLeavesApi = "/api/leaves/subordinate-leaves"
+
+  
+  function fetchSubordinateLeaves(){
+    try{
+      const response = axios.get(subordLeavesApi);
+      setLeavesList(response.data);
+    } catch(e){
+      console.log("Error occurred while fetching "+e);
+    }
+  }
+
 
   const updateStatus = (id, status) => {
     setLeavesList((prev) =>
@@ -193,7 +214,7 @@ export default function LeaveApprovalComponent() {
             </tr>
           </thead>
           <tbody>
-            {leavesList.map((item) => (
+            {LeavesList.map((item) => (
               <tr
                 key={item.id}
                 className="border-t border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"

@@ -47,51 +47,6 @@ export default function StatsCards() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // const endpoints = {
-  //   interviews: "/interview/me",
-  //   tasks: "/tasks/me",
-  //   timesheet: "/timesheets/me",
-  //   subordinates: "/users/subordinates-count",
-  // };
-
-  // useEffect(() => {
-  //   const fetchAllStats = async () => {
-  //     try {
-  //       const [interviewRes, taskRes, timesheetRes, subordinatesRes] =
-  //         await Promise.all([
-  //           axiosInstance.get(endpoints.interviews),
-  //           axiosInstance.get(endpoints.tasks),
-  //           axiosInstance.get(endpoints.timesheet),
-  //           axiosInstance.get(endpoints.subordinates),
-  //         ]);
-
-  //       const updatedStats = stats.map((stat) => {
-  //         switch (stat.key) {
-  //           case "interviews":
-  //             return { ...stat, value: interviewRes.data.interviews.length };
-  //           case "tasks":
-  //             return { ...stat, value: taskRes.data.tasks.length };
-  //           case "hours":
-  //             return { ...stat, value: timesheetRes.data.totalHours };
-  //           case "subordinates":
-  //             return { ...stat, value: subordinatesRes.data.count };
-  //           default:
-  //             return stat;
-  //         }
-  //       });
-
-  //       setStats(updatedStats);
-  //     } catch (err) {
-  //       console.error("Error fetching dashboard stats:", err);
-  //       setError("Failed to load dashboard data.");
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   fetchAllStats();
-  // }, []);
-
   useEffect(() => {
     const fetchDashboardSummary = async () => {
       try {

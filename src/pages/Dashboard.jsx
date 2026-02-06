@@ -14,29 +14,8 @@ export default function DashboardPage() {
     >
       <Container maxW="7xl">
         <VStack align="stretch" spacing={4} gap={10}>
-          {/* Header */}
-          {/* <Box>
-            <Heading
-              as="h1"
-              size="2xl"
-              mb={2}
-              color="gray.900"
-              _dark={{ color: "white" }}
-            >
-              Employee Dashboard
-            </Heading>
-            <Text fontSize="lg" color="gray.600" _dark={{ color: "gray.400" }}>
-              Welcome back! Here's your performance overview.
-            </Text>
-          </Box> */}
-
-          {/* Stats Cards */}
           <StatsCards />
-
-          {/* Charts Section */}
           <ChartsSection />
-
-          {/* Tasks and Calendar */}
           <TasksAndCalendar />
         </VStack>
       </Container>

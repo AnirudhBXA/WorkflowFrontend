@@ -12,9 +12,6 @@ export default function ValuesDisplayCard({ data }) {
           <span className="text-sm text-gray-400">{data.units}</span>
         </div>
       </div>
-      <div className="h-10 w-10 flex items-center justify-center rounded-lg bg-indigo-50 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-300 font-bold">
-        {data.context.includes("Available") ? "+" : "–"}
-      </div>
     </div>
   );
 }

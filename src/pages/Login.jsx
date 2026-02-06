@@ -62,7 +62,7 @@ function LoginComponent() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 to-indigo-100 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-indigo-50 to-indigo-100 px-4">
       <div className="w-full max-w-md bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl p-8 border border-indigo-100">
         <div className="text-center mb-8">
           <h1 className="text-2xl font-semibold text-gray-800">Welcome Back</h1>

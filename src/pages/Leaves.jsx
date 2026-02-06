@@ -3,6 +3,7 @@ import axiosInstance from "../utils/axiosInstance";
 import ValuesDisplayCard from "../components/ValuesDisplayCard";
 import LeaveApprovalComponent from "../components/Leaves/LeaveApproval";
 import { AuthContext } from "../context/AuthContext";
+import DepartmentLeaves from "../components/Leaves/DepartmentLeaves";
 
 function formatDateToDDMMYYYY(dateString) {
   const date = new Date(dateString);
@@ -123,6 +124,15 @@ export default function LeavesComponent() {
             Manager Actions
           </h2>
           <LeaveApprovalComponent />
+        </div>
+      )}
+
+      {(user?.role === "HR") && (
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 space-y-5">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+            Department leaves status
+          </h2>
+          <DepartmentLeaves />
         </div>
       )}
     </div>

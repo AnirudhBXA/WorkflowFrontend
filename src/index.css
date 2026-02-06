@@ -1,12 +1,25 @@
 @import "tailwindcss";
 
-/* Global Font */
 :root {
-  --font-sans:
-    "Segoe UI Variable", "Segoe UI", system-ui, -apple-system,
-    BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  /* Define a variable for easy updates */
+  --main-font:
+    "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 body {
-  font-family: var(--font-sans);
+  margin: 0;
+  background-color: #f9fafb; /* Light neutral grey common in dashboards */
+  color: #111827; /* Near black for high contrast */
+  font-family: "Nunito", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
+}
+
+/* Ensure buttons and inputs inherit the font */
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
 }

@@ -53,7 +53,6 @@ createRoot(document.getElementById("root")).render(
             }
           />
 
-          {/* Private Routes */}
           <Route
             path="/"
             element={

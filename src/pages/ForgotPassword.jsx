@@ -72,7 +72,7 @@ function ForgotPasswordComponent() {
           </div>
           <h2 className="text-5xl font-black text-gray-900 leading-[1.1] tracking-tight">
             Forgot your <br />
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">
+            <span className="bg-clip-text text-transparent bg-linear-to-r from-indigo-600 to-purple-600">
               access keys?
             </span>
           </h2>
@@ -84,8 +84,8 @@ function ForgotPasswordComponent() {
 
         {/* Abstract Background Decoration */}
         <div className="absolute top-0 right-0 w-full h-full opacity-40 pointer-events-none">
-          <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-indigo-200/50 rounded-full blur-[120px]"></div>
-          <div className="absolute bottom-[-5%] left-[-5%] w-[300px] h-[300px] bg-purple-200/40 rounded-full blur-[100px]"></div>
+          <div className="absolute top-[-10%] right-[-10%] w-125 h-125 bg-indigo-200/50 rounded-full blur-[120px]"></div>
+          <div className="absolute bottom-[-5%] left-[-5%] w-75 h-75 bg-purple-200/40 rounded-full blur-[100px]"></div>
         </div>
       </div>
 

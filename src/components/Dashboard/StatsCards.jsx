@@ -98,27 +98,32 @@ export default function StatsCards() {
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
       {stats.map((stat) => {
         const Icon = stat.icon;
         return (
           <div
             key={stat.title}
-            className={`flex items-center gap-4 bg-white/80 dark:bg-gray-800/80 rounded-lg shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1 cursor-pointer border-l-4 ${stat.borderColor} p-4`}
+            className="group bg-white p-6 rounded-3xl border border-indigo-50 shadow-sm hover:shadow-xl hover:shadow-indigo-500/5 transition-all duration-300"
           >
-            <div className={`p-3 rounded-md ${stat.bgColor} shrink-0`}>
-              <Icon className={`w-5 h-5 ${stat.textColor}`} />
+            <div className="flex items-center justify-between mb-4">
+              <div
+                className={`p-3 rounded-2xl ${stat.bgColor} transition-transform group-hover:scale-110`}
+              >
+                <Icon className={`w-6 h-6 ${stat.textColor}`} />
+              </div>
+              <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">
+                Live
+              </span>
             </div>
-            <div className="flex flex-col leading-tight">
-              <p className="text-xs font-medium text-gray-600 dark:text-gray-400">
-                {stat.title}
-              </p>
-              <div className="flex items-baseline gap-1">
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+            <div>
+              <p className="text-sm font-bold text-gray-500">{stat.title}</p>
+              <div className="flex items-baseline gap-2 mt-1">
+                <h3 className="text-3xl font-black text-gray-900 tracking-tight">
                   {stat.value}
                 </h3>
                 {stat.unit && (
-                  <span className="text-xs text-gray-500 dark:text-gray-400">
+                  <span className="text-sm font-bold text-indigo-400">
                     {stat.unit}
                   </span>
                 )}

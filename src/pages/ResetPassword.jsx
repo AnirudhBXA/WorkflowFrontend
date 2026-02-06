@@ -1,100 +1,3 @@
-// import { useState, useEffect } from "react";
-// import { useNavigate, useSearchParams } from "react-router-dom";
-// import axiosInstance from "../utils/axiosInstance";
-
-// function ResetPasswordPage() {
-//   const navigate = useNavigate();
-//   const [searchParams] = useSearchParams();
-//   const token = searchParams.get("token");
-
-//   const [form, setForm] = useState({
-//     password: "",
-//     confirmPassword: "",
-//   });
-
-//   const [loading, setLoading] = useState(false);
-//   const [error, setError] = useState("");
-//   const [success, setSuccess] = useState("");
-
-//   useEffect(() => {
-//     if (!token) {
-//       setError("Invalid or missing reset token.");
-//     }
-//   }, [token]);
-
-//   function handleChange(e) {
-//     setForm({ ...form, [e.target.name]: e.target.value });
-//   }
-
-//   async function handleReset() {
-//     if (form.password !== form.confirmPassword) {
-//       setError("Passwords do not match.");
-//       return;
-//     }
-
-//     try {
-//       setLoading(true);
-//       setError("");
-//       await axiosInstance.post("/auth/reset-password", {
-//         token,
-//         newPassword: form.password,
-//       });
-//       setSuccess("Password reset successful. Redirecting to login...");
-//       setTimeout(() => navigate("/login"), 2000);
-//     } catch (err) {
-//       setError(err.response?.data?.message || "Failed to reset password.");
-//     } finally {
-//       setLoading(false);
-//     }
-//   }
-
-//   return (
-//     <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-indigo-50 to-indigo-100 px-4">
-//       <div className="w-full max-w-md bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl p-8 border border-indigo-100 space-y-5">
-//         <h2 className="text-xl font-semibold text-center text-gray-800">
-//           Set New Password
-//         </h2>
-
-//         {success && (
-//           <p className="text-sm text-green-600 bg-green-50 p-2 rounded-md border border-green-200">
-//             {success}
-//           </p>
-//         )}
-//         {error && (
-//           <p className="text-sm text-red-600 bg-red-50 p-2 rounded-md border border-red-200">
-//             {error}
-//           </p>
-//         )}
-
-//         <input
-//           type="password"
-//           name="password"
-//           placeholder="New password"
-//           value={form.password}
-//           onChange={handleChange}
-//           className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
-//         />
-//         <input
-//           type="password"
-//           name="confirmPassword"
-//           placeholder="Confirm password"
-//           value={form.confirmPassword}
-//           onChange={handleChange}
-//           className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
-//         />
-//         <button
-//           onClick={handleReset}
-//           disabled={loading || !token}
-//           className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-lg"
-//         >
-//           {loading ? "Resetting..." : "Reset Password"}
-//         </button>
-//       </div>
-//     </div>
-//   );
-// }
-
-// export default ResetPasswordPage;
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import axiosInstance from "../utils/axiosInstance";
@@ -184,7 +87,7 @@ function ResetPasswordPage() {
           </div>
           <h2 className="text-5xl font-black text-gray-900 leading-[1.1] tracking-tight">
             Secure your <br />
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">
+            <span className="bg-clip-text text-transparent bg-linear-to-r from-indigo-600 to-purple-600">
               workspace access.
             </span>
           </h2>
@@ -196,8 +99,8 @@ function ResetPasswordPage() {
         </div>
         {/* Decorative Background */}
         <div className="absolute top-0 right-0 w-full h-full opacity-40 pointer-events-none">
-          <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-indigo-200/50 rounded-full blur-[120px]"></div>
-          <div className="absolute bottom-[-5%] left-[-5%] w-[300px] h-[300px] bg-purple-200/40 rounded-full blur-[100px]"></div>
+          <div className="absolute top-[-10%] right-[-10%] w-125 h-125 bg-indigo-200/50 rounded-full blur-[120px]"></div>
+          <div className="absolute bottom-[-5%] left-[-5%] w-75 h-75 bg-purple-200/40 rounded-full blur-[100px]"></div>
         </div>
       </div>
 
@@ -266,7 +169,7 @@ function ResetPasswordPage() {
             {/* Status Messages */}
             {success && (
               <div className="bg-emerald-50 text-emerald-700 text-sm p-4 rounded-xl border border-emerald-100 flex items-center gap-3 font-medium animate-in fade-in zoom-in duration-300">
-                <CheckCircle2 className="w-5 h-5 flex-shrink-0" />
+                <CheckCircle2 className="w-5 h-5 shrink-0" />
                 {success}
               </div>
             )}

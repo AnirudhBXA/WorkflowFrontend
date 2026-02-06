@@ -1,66 +1,52 @@
-// function TrainingCard({ data }) {
-//   const statusColor = {
-//     PLANNED: "blue.500",
-//     ONGOING: "yellow.500",
-//     COMPLETED: "green.500",
-//   };
+import { User, Calendar, GraduationCap } from "lucide-react";
 
-//   return (
-//     <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 hover:shadow-md transition hover:-translate-y-1">
-//       <div className="flex justify-between items-start mb-3">
-//         <h3 className="text-lg font-semibold text-gray-800">
-//           {data.trainingName}
-//         </h3>
-//         <span
-//           className="text-xs font-medium px-2 py-1 rounded-full"
-//           style={{ backgroundColor: "#EEF2FF", color: "#4F46E5" }}
-//         >
-//           {data.status}
-//         </span>
-//       </div>
-
-//       <p className="text-sm text-gray-600 mb-1">
-//         Trainer: <span className="font-medium">{data.trainerName}</span>
-//       </p>
-//       <p className="text-sm text-gray-500">
-//         {data.startDate} → {data.endDate}
-//       </p>
-//     </div>
-//   );
-// }
-
-// export default TrainingCard;
 export default function TrainingCard({ data }) {
   const statusStyles = {
-    PLANNED: "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300",
-    ONGOING:
-      "bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300",
-    COMPLETED:
-      "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300",
+    PLANNED: "bg-indigo-50 text-indigo-700 border-indigo-100",
+    ONGOING: "bg-amber-50 text-amber-700 border-amber-100",
+    COMPLETED: "bg-emerald-50 text-emerald-700 border-emerald-100",
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg p-5 shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition hover:-translate-y-1">
-      <div className="flex justify-between items-start mb-3">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-          {data.trainingName}
-        </h3>
+    <div className="group bg-white rounded-3xl p-6 shadow-sm border border-indigo-50 hover:shadow-xl hover:shadow-indigo-500/5 transition-all duration-300 hover:-translate-y-1">
+      <div className="flex justify-between items-start mb-6">
+        <div className="p-3 bg-indigo-50 rounded-2xl text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+          <GraduationCap size={24} />
+        </div>
         <span
-          className={`text-xs font-semibold px-3 py-1 rounded-full ${statusStyles[data.status]}`}
+          className={`px-3 py-1 rounded-lg border text-[10px] font-black uppercase tracking-wider ${statusStyles[data.status]}`}
         >
           {data.status}
         </span>
       </div>
 
-      <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">
-        Trainer:{" "}
-        <span className="font-medium text-gray-800 dark:text-gray-200">
-          {data.trainerName}
-        </span>
-      </p>
-      <p className="text-sm text-gray-500 dark:text-gray-400">
-        {data.startDate} → {data.endDate}
-      </p>
+      <h3 className="text-xl font-black text-gray-900 tracking-tight mb-4 group-hover:text-indigo-600 transition-colors">
+        {data.trainingName}
+      </h3>
+
+      <div className="space-y-3 pt-4 border-t border-gray-50">
+        <div className="flex items-center gap-3">
+          <User size={14} className="text-gray-400" />
+          <p className="text-sm font-bold text-gray-600">
+            Trainer: <span className="text-gray-900">{data.trainerName}</span>
+          </p>
+        </div>
+        <div className="flex items-center gap-3">
+          <Calendar size={14} className="text-gray-400" />
+          <p className="text-xs font-bold text-gray-500 uppercase tracking-tight">
+            {new Date(data.startDate).toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+            })}
+            <span className="mx-2 text-gray-300">→</span>
+            {new Date(data.endDate).toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+              year: "numeric",
+            })}
+          </p>
+        </div>
+      </div>
     </div>
   );
 }

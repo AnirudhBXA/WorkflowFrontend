@@ -136,45 +136,69 @@ export default function ChartsSection() {
   const tooltipText = isDark ? "#f3f4f6" : "#1f2937";
 
   return (
-    <div className="flex flex-col lg:flex-row gap-6 py-6">
-      {/* Chart Container */}
-      <div className="flex-1 bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden border-t-4 border-t-blue-500 p-6">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
-          Monthly Working Hours
-        </h3>
-        <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-          Actual working hours
-        </p>
+    <div className="flex flex-col lg:flex-row gap-8">
+      {/* Hours Chart */}
+      <div className="flex-1 bg-white rounded-3xl border border-indigo-50 shadow-sm p-8">
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h3 className="text-xl font-bold text-gray-900 tracking-tight">
+              Productivity Analysis
+            </h3>
+            <p className="text-sm text-gray-500 font-medium">
+              Monthly Working Hours
+            </p>
+          </div>
+          <select className="bg-gray-50 border-none rounded-lg text-xs font-bold text-gray-500 px-3 py-1 focus:ring-2 focus:ring-indigo-500/20">
+            <option>Last 4 Weeks</option>
+          </select>
+        </div>
 
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={weeklyData} barGap={6}>
-            <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
-            <XAxis dataKey="week" stroke={axisColor} />
-            <YAxis stroke={axisColor} />
-            <Tooltip
-              contentStyle={{
-                backgroundColor: tooltipBg,
-                border: `1px solid ${tooltipBorder}`,
-                borderRadius: "8px",
-                color: tooltipText,
-              }}
-            />
-            <Legend wrapperStyle={{ color: axisColor }} />
-            <Bar
-              dataKey="actual"
-              fill="#a78bfa"
-              radius={[6, 6, 0, 0]}
-              name="Actual Hours"
-            />
-          </BarChart>
-        </ResponsiveContainer>
+        <div className="h-75 w-full">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={weeklyData}>
+              <CartesianGrid
+                strokeDasharray="3 3"
+                vertical={false}
+                stroke="#F1F5F9"
+              />
+              <XAxis
+                dataKey="week"
+                axisLine={false}
+                tickLine={false}
+                tick={{ fontSize: 12, fontWeight: 600, fill: "#94A3B8" }}
+                dy={10}
+              />
+              <YAxis
+                axisLine={false}
+                tickLine={false}
+                tick={{ fontSize: 12, fontWeight: 600, fill: "#94A3B8" }}
+              />
+              <Tooltip
+                cursor={{ fill: "#F8FAFC" }}
+                contentStyle={{
+                  borderRadius: "16px",
+                  border: "none",
+                  boxShadow: "0 10px 15px -3px rgba(0,0,0,0.1)",
+                  padding: "12px",
+                }}
+              />
+              <Bar
+                dataKey="actual"
+                fill="#6366F1"
+                radius={[6, 6, 6, 6]}
+                barSize={32}
+              />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
       </div>
 
-      {/* Calendar Container (Styled Separately) */}
-      <div className="w-full lg:w-80">
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border-t-4 border-t-cyan-500 p-4 h-full">
-          <Calendar />
-        </div>
+      {/* Calendar */}
+      <div className="w-full lg:w-95 bg-white rounded-3xl border border-indigo-50 shadow-sm p-8">
+        <h3 className="text-xl font-bold text-gray-900 tracking-tight mb-6">
+          Schedule
+        </h3>
+        <Calendar />
       </div>
     </div>
   );

@@ -1,117 +1,66 @@
-// import { useEffect, useState } from "react";
-// import { Table, Tabs, SimpleGrid, For } from "@chakra-ui/react";
-// import CertificationBriefCard from "./CertificationBriefCard";
+import { ShieldCheck, ArrowRight } from "lucide-react";
 
-// function CertificationApprovalComponent() {
-//   const [items, setItems] = useState([]);
-//   const [isCardActive, setIsCardActive] = useState(false);
-//   const [cardItem, setCardItem] = useState(null);
-
-//   useEffect(() => {
-//     setItems([
-//       { id: 1, name: "Laptop", category: "Electronics", price: 999.99 },
-//       {
-//         id: 2,
-//         name: "Coffee Maker",
-//         category: "Home Appliances",
-//         price: 49.99,
-//       },
-//       { id: 3, name: "Desk Chair", category: "Furniture", price: 150.0 },
-//       { id: 4, name: "Smartphone", category: "Electronics", price: 799.99 },
-//       { id: 5, name: "Headphones", category: "Accessories", price: 199.99 },
-//     ]);
-//   }, []);
-
-//   function openApprovalCard(item) {
-//     console.log(item);
-//     setIsCardActive(true);
-//   }
-
-//   return (
-//     <>
-//       {isCardActive && (
-//         <>
-//           <CertificationBriefCard item={cardItem}></CertificationBriefCard>
-//         </>
-//       )}
-
-//       <Table.ScrollArea borderWidth="1px" rounded="md" height="160px">
-//         <Table.Root size="sm" stickyHeader>
-//           <Table.Header>
-//             <Table.Row bg="bg.subtle">
-//               <Table.ColumnHeader>Product</Table.ColumnHeader>
-//               <Table.ColumnHeader>Category</Table.ColumnHeader>
-//               <Table.ColumnHeader textAlign="end">Price</Table.ColumnHeader>
-//             </Table.Row>
-//           </Table.Header>
-
-//           <Table.Body>
-//             {items.map((item) => (
-//               <Table.Row
-//                 key={item.id}
-//                 onClick={(item) => openApprovalCard(item)}
-//               >
-//                 <Table.Cell>{item.name}</Table.Cell>
-//                 <Table.Cell>{item.category}</Table.Cell>
-//                 <Table.Cell textAlign="end">{item.price}</Table.Cell>
-//               </Table.Row>
-//             ))}
-//           </Table.Body>
-//         </Table.Root>
-//       </Table.ScrollArea>
-//     </>
-//   );
-// }
-
-// export default CertificationApprovalComponent;
-
-import { useEffect, useState } from "react";
-import CertificationBriefCard from "./CertificationBriefCard";
-
-export default function CertificationApprovalComponent() {
-  const [items, setItems] = useState([]);
-  const [selected, setSelected] = useState(null);
-
-  useEffect(() => {
-    setItems([
-      { id: 1, name: "AWS Architect", employeeName: "Anirudh" },
-      { id: 2, name: "Azure Admin", employeeName: "Sneha" },
-    ]);
-  }, []);
-
+// Destructure props passed from the parent
+export default function CertificationApprovalComponent({ items, setSelected }) {
   return (
-    <>
-      {selected && (
-        <CertificationBriefCard
-          item={selected}
-          onClose={() => setSelected(null)}
-          onApprove={() => setSelected(null)}
-          onReject={() => setSelected(null)}
-        />
-      )}
+    <div className="space-y-6 pt-6 border-t border-dashed border-gray-200">
+      <div className="flex items-center gap-2 px-2">
+        <ShieldCheck className="w-6 h-6 text-indigo-600" />
+        <h2 className="text-xl font-bold text-gray-900 tracking-tight">
+          Pending Verifications
+        </h2>
+      </div>
 
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
-        <table className="w-full text-sm">
-          <thead className="bg-gray-50 dark:bg-gray-900 text-gray-600 dark:text-gray-400">
-            <tr>
-              <th className="px-6 py-3 text-left">Employee</th>
-              <th className="px-6 py-3 text-left">Certification</th>
+      <div className="bg-white rounded-4xl shadow-sm border border-indigo-50 overflow-hidden">
+        <table className="w-full">
+          <thead>
+            <tr className="bg-gray-50/50 text-[10px] font-black uppercase tracking-widest text-gray-400">
+              <th className="px-8 py-5 text-left">Employee</th>
+              <th className="px-8 py-5 text-left">Certification</th>
+              <th className="px-8 py-5 text-center">Action</th>
             </tr>
           </thead>
-          <tbody>
-            {items.map((item) => (
-              <tr
-                key={item.id}
-                onClick={() => setSelected(item)}
-                className="border-t border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer"
-              >
-                <td className="px-6 py-4">{item.employeeName}</td>
-                <td className="px-6 py-4">{item.name}</td>
+          <tbody className="divide-y divide-gray-50">
+            {items.length === 0 ? (
+              <tr>
+                <td
+                  colSpan="3"
+                  className="px-8 py-10 text-center text-gray-400 font-medium"
+                >
+                  No pending certifications to review.
+                </td>
               </tr>
-            ))}
+            ) : (
+              items.map((item) => (
+                <tr
+                  key={item.id}
+                  className="group hover:bg-indigo-50/30 transition-colors cursor-pointer"
+                  onClick={() => setSelected(item)} // This updates parent state
+                >
+                  <td className="px-8 py-6">
+                    <div className="flex items-center gap-3">
+                      <div className="w-9 h-9 bg-indigo-100 rounded-xl flex items-center justify-center text-indigo-700 font-black text-xs">
+                        {item.employeeName.charAt(0)}
+                      </div>
+                      <span className="font-bold text-gray-900">
+                        {item.employeeName}
+                      </span>
+                    </div>
+                  </td>
+                  <td className="px-8 py-6 font-bold text-gray-700">
+                    {item.name}
+                  </td>
+                  <td className="px-8 py-6 text-center">
+                    <div className="inline-flex items-center gap-2 text-indigo-600 font-bold text-xs uppercase group-hover:gap-4 transition-all">
+                      Review <ArrowRight size={14} />
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>
-    </>
+    </div>
   );
 }

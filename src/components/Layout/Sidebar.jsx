@@ -1,73 +1,105 @@
-import { Leaf, Clock, FileText, Award, Monitor } from "lucide-react";
-import { cn } from "../../utils/cn";
+import {
+  LayoutGrid,
+  Calendar,
+  BookOpen,
+  Clock,
+  Award,
+  Users,
+  ChevronRight,
+} from "lucide-react";
 import { NavLink } from "react-router-dom";
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 
 const navItems = [
-  { icon: Monitor, label: "Dashboard", navPath: "/dashboard" },
-  { icon: Leaf, label: "Leaves", navPath: "/leave" },
-  { icon: Clock, label: "Trainings", navPath: "/trainings" },
-  { icon: FileText, label: "Timesheet", navPath: "/timesheet" },
+  { icon: LayoutGrid, label: "Dashboard", navPath: "/dashboard" },
+  { icon: Calendar, label: "Leaves", navPath: "/leave" },
+  { icon: BookOpen, label: "Trainings", navPath: "/trainings" },
+  { icon: Clock, label: "Timesheet", navPath: "/timesheet" },
   { icon: Award, label: "Certifications", navPath: "/certifications" },
-  { icon: Monitor, label: "Interviews", navPath: "/interviews" },
-  // { icon: FileText, label: "Work flows", navPath: "/workflows" },
+  { icon: Users, label: "Interviews", navPath: "/interviews" },
 ];
 
 export default function NavigationSidebar() {
-
   const { user } = useContext(AuthContext);
 
   return (
-    <aside className="flex h-screen w-40 flex-col bg-[#2f5db7] text-white">
-      {/* ===== Header ===== */}
-      <div className="flex flex-col items-center bg-[#1f3f8b] py-6">
-        <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full border-2 border-white">
-          <span className="text-xl font-semibold">IS</span>
+    <aside className="h-screen w-64 bg-[#FDFDFF] border-r border-indigo-50 flex flex-col shrink-0">
+      {/* Branding Section */}
+      <div className="p-8 flex items-center gap-3">
+        <div className="bg-indigo-600 p-2 rounded-xl shadow-lg shadow-indigo-100">
+          <LayoutGrid className="text-white w-5 h-5" />
         </div>
+        <span className="text-xl font-black tracking-tight text-gray-900">
+          DarwinFlow<span className="text-indigo-600"></span>
+        </span>
       </div>
 
-      {/* ===== Navigation ===== */}
-      <nav className="flex-1 py-6">
-        <ul className="space-y-1">
-          {navItems.map((item) => (
-            <li key={item.label}>
-              <NavLink
-                to={item.navPath}
-                style={({ isActive }) => ({
-                  backgroundColor: isActive ? "#1f3f8b" : "transparent",
-                  color: isActive ? "#ffffff" : "#cbd5e1",
-                  borderRadius: "8px",
-                })}
-                className={cn(
-                  "flex w-full items-center gap-4 px-6 py-3 text-sm transition",
-                )}
-              >
-                <item.icon className="h-5  w-5" strokeWidth={1.5} />
-                <span>{item.label}</span>
-              </NavLink>
-            </li>
-          ))}
+      {/* Navigation Links */}
+      <nav className="flex-1 px-4 py-4 space-y-2 overflow-y-auto">
+        <p className="px-4 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-4">
+          Main Menu
+        </p>
 
-          {(user?.role === "MANAGER" || user?.role === "HR") && (
-            <li key="workflow">
-              <NavLink
-                to="/workflows"
-                style={({ isActive }) => ({
-                  backgroundColor: isActive ? "#1f3f8b" : "transparent",
-                  color: isActive ? "#ffffff" : "#cbd5e1",
-                  borderRadius: "8px",
-                })}
-                className={cn(
-                  "flex w-full items-center gap-4 px-6 py-3 text-sm transition",
-                )}
-              >
-                <FileText className="h-5  w-5" strokeWidth={1.5} />
-                <span>Workflows</span>
-              </NavLink>
-            </li>
-          )}
-        </ul>
+        {navItems.map((item) => (
+          <NavLink
+            key={item.label}
+            to={item.navPath}
+            className={({ isActive }) => `
+              flex items-center justify-between px-4 py-3 rounded-2xl transition-all group
+              ${
+                isActive
+                  ? "bg-indigo-600 text-white shadow-lg shadow-indigo-200"
+                  : "text-gray-500 hover:bg-indigo-50 hover:text-indigo-600"
+              }
+            `}
+          >
+            {/* IMPORTANT: We must pass isActive through the children function 
+               if we want to use it for the icon strokeWidth 
+            */}
+            {({ isActive }) => (
+              <>
+                <div className="flex items-center gap-4">
+                  <item.icon
+                    className="h-5 w-5"
+                    strokeWidth={isActive ? 2.5 : 2}
+                  />
+                  <span className="text-sm font-bold">{item.label}</span>
+                </div>
+                <ChevronRight
+                  className={`h-4 w-4 transition-transform group-hover:translate-x-1 opacity-0 group-hover:opacity-100`}
+                />
+              </>
+            )}
+          </NavLink>
+        ))}
+
+        {/* Manager Exclusive Section */}
+        {(user?.role === "ADMIN" || user?.role === "HR") && (
+          <div className="pt-8">
+            <p className="px-4 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-4">
+              Admin Hub
+            </p>
+            <NavLink
+              to="/workflows"
+              className={({ isActive }) => `
+                flex items-center gap-4 px-4 py-3 rounded-2xl transition-all
+                ${
+                  isActive
+                    ? "bg-indigo-600 text-white shadow-lg shadow-indigo-200"
+                    : "text-gray-500 hover:bg-indigo-50 hover:text-indigo-600"
+                }
+              `}
+            >
+              {({ isActive }) => (
+                <>
+                  <Users className="h-5 w-5" strokeWidth={isActive ? 2.5 : 2} />
+                  <span className="text-sm font-bold">Team Workflows</span>
+                </>
+              )}
+            </NavLink>
+          </div>
+        )}
       </nav>
     </aside>
   );

@@ -1,295 +1,21 @@
-// import { useEffect, useState } from "react";
-// import {
-//   Stack,
-//   Accordion,
-//   Table,
-//   Badge,
-//   Box,
-//   Heading,
-//   Spinner,
-//   Button,
-// } from "@chakra-ui/react";
-// import axiosInstance from "../utils/axiosInstance";
-// import ValuesDisplayCard from "../components/ValuesDisplayCard";
-
-// function CertificationsComponent() {
-//   const [role, setRole] = useState("HR");
-//   const [loading, setLoading] = useState(true);
-//   const [myCerts, setMyCerts] = useState([]);
-//   const [teamCerts, setTeamCerts] = useState([]);
-//   const [reimbursements, setReimbursements] = useState([]);
-//   const [summary, setSummary] = useState({ left: 0, used: 0 });
-
-//   const dummyMyCerts = [
-//     {
-//       id: 1,
-//       title: "AWS Architect",
-//       provider: "Amazon",
-//       date: "2026-02-01",
-//       status: "APPROVED",
-//     },
-//     {
-//       id: 2,
-//       title: "Azure Fundamentals",
-//       provider: "Microsoft",
-//       date: "2026-03-01",
-//       status: "SUBMITTED",
-//     },
-//   ];
-
-//   const dummyTeamCerts = [
-//     { id: 1, employee: "Rohit", title: "GCP Engineer", status: "SUBMITTED" },
-//   ];
-
-//   const dummyHRData = [
-//     {
-//       id: 1,
-//       employee: "Sneha",
-//       title: "Scrum Master",
-//       amount: 15000,
-//       status: "APPROVED",
-//     },
-//   ];
-
-//   useEffect(() => {
-//     // Simulate data fetching delay
-//     setTimeout(() => {
-//       console.log("Using dummy certification data");
-//       setMyCerts(dummyMyCerts);
-//       setTeamCerts(dummyTeamCerts);
-//       setReimbursements(dummyHRData);
-//       setSummary({ left: 20000, used: 30000 });
-//       setLoading(false);
-//     }, 1000);
-//   }, []);
-
-//   // useEffect(() => {
-//   //   async function fetchCertData() {
-//   //     try {
-//   //       const [myRes, summaryRes, teamRes, hrRes] = await Promise.all([
-//   //         axiosInstance.get("/certifications/my"),
-//   //         axiosInstance.get("/certifications/summary"),
-//   //         role === "manager"
-//   //           ? axiosInstance.get("/certifications/team/pending")
-//   //           : Promise.resolve({ data: [] }),
-//   //         role === "HR"
-//   //           ? axiosInstance.get("/certifications/hr/reimbursements")
-//   //           : Promise.resolve({ data: [] }),
-//   //       ]);
-
-//   //       setMyCerts(myRes.data);
-//   //       setSummary(summaryRes.data);
-//   //       setTeamCerts(teamRes.data);
-//   //       setReimbursements(hrRes.data);
-//   //     } catch (err) {
-//   //       console.log("Using dummy certification data");
-//   //       setMyCerts(dummyMyCerts);
-//   //       setTeamCerts(dummyTeamCerts);
-//   //       setReimbursements(dummyHRData);
-//   //       setSummary({ left: 20000, used: 30000 });
-//   //     } finally {
-//   //       setLoading(false);
-//   //     }
-//   //   }
-
-//   //   fetchCertData();
-//   // }, [role]);
-
-//   const getStatusBadge = (status) => {
-//     const map = {
-//       SUBMITTED: "blue",
-//       APPROVED: "green",
-//       REJECTED: "red",
-//       REIMBURSED: "purple",
-//     };
-//     return <Badge colorScheme={map[status]}>{status}</Badge>;
-//   };
-
-//   if (loading) {
-//     return (
-//       <Box p={6} textAlign="center">
-//         <Spinner size="lg" color="indigo.500" />
-//       </Box>
-//     );
-//   }
-
-//   return (
-//     <Stack spacing={6} p={8} bg="gray.50" minH="100vh">
-//       <Heading size="lg">Certifications</Heading>
-
-//       {/* SUMMARY CARDS */}
-//       <Stack direction={{ base: "column", md: "row" }} spacing={6}>
-//         <ValuesDisplayCard
-//           data={{
-//             context: "Refund Amount Left",
-//             value: summary.left,
-//             units: "₹",
-//           }}
-//         />
-//         <ValuesDisplayCard
-//           data={{
-//             context: "Refund Amount Used",
-//             value: summary.used,
-//             units: "₹",
-//           }}
-//         />
-//       </Stack>
-
-//       <Accordion.Root collapsible defaultValue={["my"]}>
-//         {/* MY CERTIFICATIONS */}
-//         <Accordion.Item value="my">
-//           <Accordion.ItemTrigger fontWeight="semibold">
-//             My Certifications
-//           </Accordion.ItemTrigger>
-
-//           <Accordion.ItemContent>
-//             <Accordion.ItemBody>
-//               <Box
-//                 bg="white"
-//                 rounded="xl"
-//                 shadow="sm"
-//                 border="1px solid"
-//                 borderColor="gray.100"
-//               >
-//                 <Table.Root size="sm">
-//                   <Table.Header bg="gray.50">
-//                     <Table.Row>
-//                       <Table.ColumnHeader>Name</Table.ColumnHeader>
-//                       <Table.ColumnHeader>Provider</Table.ColumnHeader>
-//                       <Table.ColumnHeader>Date</Table.ColumnHeader>
-//                       <Table.ColumnHeader>Status</Table.ColumnHeader>
-//                     </Table.Row>
-//                   </Table.Header>
-//                   <Table.Body>
-//                     {myCerts.map((c) => (
-//                       <Table.Row key={c.id} _hover={{ bg: "indigo.50" }}>
-//                         <Table.Cell>{c.title}</Table.Cell>
-//                         <Table.Cell>{c.provider}</Table.Cell>
-//                         <Table.Cell>{c.date}</Table.Cell>
-//                         <Table.Cell>{getStatusBadge(c.status)}</Table.Cell>
-//                       </Table.Row>
-//                     ))}
-//                   </Table.Body>
-//                 </Table.Root>
-//               </Box>
-//             </Accordion.ItemBody>
-//           </Accordion.ItemContent>
-//         </Accordion.Item>
-
-//         {/* MANAGER APPROVALS */}
-//         {role === "manager" && (
-//           <Accordion.Item value="manager">
-//             <Accordion.ItemTrigger fontWeight="semibold">
-//               Team Certification Approvals
-//             </Accordion.ItemTrigger>
-
-//             <Accordion.ItemContent>
-//               <Accordion.ItemBody>
-//                 <Box
-//                   bg="white"
-//                   rounded="xl"
-//                   shadow="sm"
-//                   border="1px solid"
-//                   borderColor="gray.100"
-//                 >
-//                   <Table.Root size="sm">
-//                     <Table.Header bg="gray.50">
-//                       <Table.Row>
-//                         <Table.ColumnHeader>Employee</Table.ColumnHeader>
-//                         <Table.ColumnHeader>Certification</Table.ColumnHeader>
-//                         <Table.ColumnHeader>Status</Table.ColumnHeader>
-//                         <Table.ColumnHeader>Action</Table.ColumnHeader>
-//                       </Table.Row>
-//                     </Table.Header>
-//                     <Table.Body>
-//                       {teamCerts.map((c) => (
-//                         <Table.Row key={c.id}>
-//                           <Table.Cell>{c.employee}</Table.Cell>
-//                           <Table.Cell>{c.title}</Table.Cell>
-//                           <Table.Cell>{getStatusBadge(c.status)}</Table.Cell>
-//                           <Table.Cell>
-//                             <Button size="xs" colorScheme="green" mr={2}>
-//                               Approve
-//                             </Button>
-//                             <Button size="xs" colorScheme="red">
-//                               Reject
-//                             </Button>
-//                           </Table.Cell>
-//                         </Table.Row>
-//                       ))}
-//                     </Table.Body>
-//                   </Table.Root>
-//                 </Box>
-//               </Accordion.ItemBody>
-//             </Accordion.ItemContent>
-//           </Accordion.Item>
-//         )}
-
-//         {/* HR REIMBURSEMENT PROCESSING */}
-//         {role === "HR" && (
-//           <Accordion.Item value="hr">
-//             <Accordion.ItemTrigger fontWeight="semibold">
-//               Reimbursement Processing
-//             </Accordion.ItemTrigger>
-
-//             <Accordion.ItemContent>
-//               <Accordion.ItemBody>
-//                 <Box
-//                   bg="white"
-//                   rounded="xl"
-//                   shadow="sm"
-//                   border="1px solid"
-//                   borderColor="gray.100"
-//                 >
-//                   <Table.Root size="sm">
-//                     <Table.Header bg="gray.50">
-//                       <Table.Row>
-//                         <Table.ColumnHeader>Employee</Table.ColumnHeader>
-//                         <Table.ColumnHeader>Certification</Table.ColumnHeader>
-//                         <Table.ColumnHeader>Amount</Table.ColumnHeader>
-//                         <Table.ColumnHeader>Status</Table.ColumnHeader>
-//                         <Table.ColumnHeader>Action</Table.ColumnHeader>
-//                       </Table.Row>
-//                     </Table.Header>
-//                     <Table.Body>
-//                       {reimbursements.map((r) => (
-//                         <Table.Row key={r.id}>
-//                           <Table.Cell>{r.employee}</Table.Cell>
-//                           <Table.Cell>{r.title}</Table.Cell>
-//                           <Table.Cell>₹{r.amount}</Table.Cell>
-//                           <Table.Cell>{getStatusBadge(r.status)}</Table.Cell>
-//                           <Table.Cell>
-//                             <Button size="xs" colorScheme="purple">
-//                               Mark Reimbursed
-//                             </Button>
-//                           </Table.Cell>
-//                         </Table.Row>
-//                       ))}
-//                     </Table.Body>
-//                   </Table.Root>
-//                 </Box>
-//               </Accordion.ItemBody>
-//             </Accordion.ItemContent>
-//           </Accordion.Item>
-//         )}
-//       </Accordion.Root>
-//     </Stack>
-//   );
-// }
-
-// export default CertificationsComponent;
-
 import { useEffect, useState } from "react";
 import ValuesDisplayCard from "../components/ValuesDisplayCard";
 import CertificationApprovalComponent from "../components/Certifications/CertificationApproval";
+import CertificationBriefCard from "../components/Certifications/CertificationBriefCard"; // Import the modal
+import { Award, Wallet, History, Plus } from "lucide-react";
 
 export default function CertificationsComponent() {
   const [role] = useState("HR");
   const [loading, setLoading] = useState(true);
   const [myCerts, setMyCerts] = useState([]);
-  const [summary, setSummary] = useState({ left: 20000, used: 30000 });
+  const [summary] = useState({ left: 20000, used: 30000 });
+
+  // States for Approval Workflow
+  const [pendingItems, setPendingItems] = useState([]);
+  const [selected, setSelected] = useState(null);
 
   useEffect(() => {
+    // Mocking API Data
     setTimeout(() => {
       setMyCerts([
         {
@@ -307,89 +33,138 @@ export default function CertificationsComponent() {
           status: "SUBMITTED",
         },
       ]);
+
+      setPendingItems([
+        {
+          id: 101,
+          name: "AWS Cloud Practitioner",
+          employeeName: "Anirudh",
+          date: "2026-02-05",
+        },
+        {
+          id: 102,
+          name: "Google Data Engineer",
+          employeeName: "Sneha",
+          date: "2026-02-04",
+        },
+      ]);
+
       setLoading(false);
     }, 1000);
   }, []);
 
   const badge = (status) => {
     const map = {
-      SUBMITTED:
-        "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300",
-      APPROVED:
-        "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300",
-      REJECTED: "bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300",
+      SUBMITTED: "bg-indigo-50 text-indigo-700 border-indigo-100",
+      APPROVED: "bg-emerald-50 text-emerald-700 border-emerald-100",
+      REJECTED: "bg-rose-50 text-rose-700 border-rose-100",
     };
     return (
       <span
-        className={`px-3 py-1 rounded-full text-xs font-semibold ${map[status]}`}
+        className={`px-3 py-1 rounded-lg border text-[10px] font-black uppercase tracking-wider ${map[status]}`}
       >
         {status}
       </span>
     );
   };
 
-  if (loading) {
+  if (loading)
     return (
-      <div className="flex justify-center items-center h-64">
-        <div className="h-10 w-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+      <div className="h-96 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600" />
       </div>
     );
-  }
 
   return (
-    <div className="space-y-6 p-6">
-      <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-        Certifications
-      </h1>
+    <div className="max-w-7xl mx-auto space-y-10 p-2">
+      {/* 1. Modal Logic */}
+      {selected && (
+        <CertificationBriefCard
+          item={selected}
+          onClose={() => setSelected(null)}
+          onApprove={() => {
+            // Logic to remove from pending and add to history would go here
+            setPendingItems((prev) => prev.filter((i) => i.id !== selected.id));
+            setSelected(null);
+          }}
+          onReject={() => {
+            setPendingItems((prev) => prev.filter((i) => i.id !== selected.id));
+            setSelected(null);
+          }}
+        />
+      )}
 
-      <div className="grid sm:grid-cols-2 gap-6">
+      {/* 2. Header */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-black text-gray-900 tracking-tight">
+            Professional <span className="text-indigo-600">Certifications</span>
+          </h1>
+          <p className="text-gray-500 font-medium mt-1 italic">
+            Manage your credentials and reimbursements
+          </p>
+        </div>
+        <button className="flex items-center gap-2 bg-indigo-600 text-white px-6 py-3 rounded-2xl font-bold text-sm shadow-xl shadow-indigo-100 hover:bg-indigo-700 transition-all">
+          <Plus size={18} /> Submit New Cert
+        </button>
+      </div>
+
+      {/* 3. Financial Summary */}
+      <div className="grid sm:grid-cols-2 gap-8">
         <ValuesDisplayCard
           data={{
-            context: "Refund Amount Left",
+            context: "Available Reimbursement",
             value: summary.left,
             units: "₹",
           }}
         />
         <ValuesDisplayCard
-          data={{
-            context: "Refund Amount Used",
-            value: summary.used,
-            units: "₹",
-          }}
+          data={{ context: "Total Claimed", value: summary.used, units: "₹" }}
         />
       </div>
 
-      {/* My Certifications */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
-        <div className="p-4 border-b border-gray-200 dark:border-gray-700 font-semibold text-gray-700 dark:text-gray-200">
-          My Certifications
+      {/* 4. Personal History */}
+      <div className="bg-white rounded-4xl shadow-sm border border-indigo-50 overflow-hidden">
+        <div className="px-8 py-5 border-b border-gray-50 flex items-center gap-2">
+          <History className="w-5 h-5 text-indigo-600" />
+          <h2 className="font-bold text-gray-800">My Credential History</h2>
         </div>
-        <table className="w-full text-sm">
-          <thead className="bg-gray-50 dark:bg-gray-900 text-gray-600 dark:text-gray-400">
-            <tr>
-              <th className="px-6 py-3 text-left">Name</th>
-              <th className="px-6 py-3 text-left">Provider</th>
-              <th className="px-6 py-3 text-left">Date</th>
-              <th className="px-6 py-3 text-left">Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {myCerts.map((c) => (
-              <tr
-                key={c.id}
-                className="border-t border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
-              >
-                <td className="px-6 py-4">{c.title}</td>
-                <td className="px-6 py-4">{c.provider}</td>
-                <td className="px-6 py-4">{c.date}</td>
-                <td className="px-6 py-4">{badge(c.status)}</td>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="bg-gray-50/50 text-[10px] font-black uppercase tracking-widest text-gray-400">
+                <th className="px-8 py-4 text-left">Certification Name</th>
+                <th className="px-8 py-4 text-left">Provider</th>
+                <th className="px-8 py-4 text-left">Status</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y divide-gray-50">
+              {myCerts.map((c) => (
+                <tr
+                  key={c.id}
+                  className="hover:bg-indigo-50/30 transition-colors"
+                >
+                  <td className="px-8 py-5 font-bold text-gray-800">
+                    {c.title}
+                  </td>
+                  <td className="px-8 py-5 text-gray-500 font-medium">
+                    {c.provider}
+                  </td>
+                  <td className="px-8 py-5">{badge(c.status)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
-      {role === "HR" && <CertificationApprovalComponent />}
+      {/* 5. HR Section - Passing Props Correctly */}
+      {role === "HR" && (
+        <CertificationApprovalComponent
+          items={pendingItems}
+          setSelected={setSelected}
+        />
+      )}
     </div>
   );
 }

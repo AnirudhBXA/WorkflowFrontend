@@ -1,176 +1,155 @@
-import { Bell } from "lucide-react";
-import { useEffect, useState } from "react";
+import {
+  Bell,
+  Search,
+  Settings,
+  LogOut,
+  User as UserIcon,
+} from "lucide-react";
+import { useEffect, useState, useContext } from "react";
 import { Menu, Portal } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
-import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import axiosInstance from "../../utils/axiosInstance";
 
 function HeaderComponent() {
   const [notifications, setNotifications] = useState([]);
-  const { logout } = useContext(AuthContext);
+  const { logout, user } = useContext(AuthContext);
+
   useEffect(() => {
+    // Mock data for styling
     setNotifications([
       {
         id: 1,
         title: "Flexi declaration open 📢",
-        description: "Flexi declaration for 2025-2026 is now open",
-        time: "3 weeks ago",
+        description: "Declaration for 2025-2026 is now live",
+        time: "2h ago",
         unread: true,
       },
       {
         id: 2,
-        title: "Tax regime is now open 📢",
-        description: "Tax regime for 2025-2026 has been released",
-        time: "3 weeks ago",
-        unread: true,
+        title: "Timesheet Approved ✅",
+        description: "Your manager approved last week's entries",
+        time: "5h ago",
+        unread: false,
       },
     ]);
-
-    // fetchNotifications();
   }, []);
-
-  const notificationsApi = "/api/notifications/my";
-
-  async function fetchNotifications(){
-    try{
-      const response = await axios.get(notificationsApi)
-      setNotifications(response.data)
-    } catch(e){
-      console.log("Error fetching Notifications "+e);
-    }
-  }
-
-  function markAllAsRead() {
-    setNotifications((prev) => prev.map((n) => ({ ...n, unread: false })));
-  }
-
-  function clearAll() {
-    setNotifications([]);
-  }
 
   function handleLogout() {
     axiosInstance.post("/auth/logout");
     logout();
   }
 
-  function getProfileIcon(){
-    return "AM";
-  }
-
   return (
-    <header className="w-full h-16 bg-white border-b flex items-center justify-between px-8">
-      {/* Left: App Name */}
-      <div className="text-lg font-semibold text-gray-700 tracking-wide">
-        Darwinflow
+    <header className="sticky top-0 z-50 w-full h-20 bg-white/80 backdrop-blur-md border-b flex items-center justify-between px-10">
+      {/* Left: Search Bar (New) */}
+      <div className="hidden md:flex items-center relative w-72">
+        <Search className="absolute left-3 w-4 h-4 text-gray-400" />
+        <input
+          type="text"
+          placeholder="Quick search..."
+          className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-100 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/10 transition-all"
+        />
       </div>
 
       {/* Right Side */}
-      <div className="flex items-center gap-6">
+      <div className="flex items-center gap-4">
         {/* 🔔 Notifications */}
         <Menu.Root>
           <Menu.Trigger asChild>
-            <div className="relative cursor-pointer p-2 rounded-full hover:bg-gray-100 transition">
-              <Bell size={20} className="text-gray-600" />
+            <button className="relative p-2.5 rounded-xl hover:bg-indigo-50 text-gray-500 hover:text-indigo-600 transition-all">
+              <Bell size={22} strokeWidth={2} />
               {notifications.some((n) => n.unread) && (
-                <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                <span className="absolute top-2.5 right-2.5 w-2.5 h-2.5 bg-indigo-600 border-2 border-white rounded-full"></span>
               )}
-            </div>
+            </button>
           </Menu.Trigger>
 
           <Portal>
             <Menu.Positioner>
-              <Menu.Content className="outline-none">
-                <div className="w-95 bg-white rounded-xl shadow-xl border">
-                  {/* Header */}
-                  <div className="px-5 py-4 border-b flex justify-between items-center">
-                    <h3 className="text-lg font-semibold text-gray-800">
-                      Notifications
+              <Menu.Content className="outline-none z-60">
+                <div className="w-80 bg-white rounded-2xl shadow-2xl border border-indigo-50 overflow-hidden mt-2">
+                  <div className="px-6 py-4 border-b border-gray-50 flex justify-between items-center bg-gray-50/50">
+                    <h3 className="text-sm font-bold text-gray-900">
+                      Activity
                     </h3>
-                    <button
-                      onClick={markAllAsRead}
-                      className="text-xs text-indigo-600 hover:underline"
-                    >
-                      Mark all read
+                    <button className="text-[10px] font-black uppercase tracking-widest text-indigo-600 hover:text-indigo-700">
+                      Mark Read
                     </button>
                   </div>
 
-                  {/* List */}
-                  <div className="max-h-90 overflow-y-auto divide-y">
-                    {notifications.length === 0 && (
-                      <div className="p-6 text-center text-gray-500 text-sm">
-                        No notifications 🎉
-                      </div>
-                    )}
-
+                  <div className="max-h-80 overflow-y-auto">
                     {notifications.map((n) => (
                       <div
                         key={n.id}
-                        className="flex gap-4 px-5 py-4 hover:bg-gray-50 transition cursor-pointer"
+                        className="p-5 hover:bg-indigo-50/30 transition-colors cursor-pointer border-b border-gray-50 last:border-0 flex gap-4"
                       >
-                        <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600">
-                          📄
-                        </div>
-
-                        <div className="flex-1">
-                          <p className="text-sm font-medium text-gray-800">
+                        <div
+                          className={`w-2 h-2 mt-2 rounded-full shrink-0 ${n.unread ? "bg-indigo-600" : "bg-transparent"}`}
+                        />
+                        <div>
+                          <p className="text-sm font-bold text-gray-800 leading-tight">
                             {n.title}
                           </p>
-                          <p className="text-sm text-gray-500">
+                          <p className="text-xs text-gray-500 mt-1">
                             {n.description}
                           </p>
-                          <p className="text-xs text-gray-400 mt-1">{n.time}</p>
+                          <p className="text-[10px] font-medium text-gray-400 mt-2">
+                            {n.time}
+                          </p>
                         </div>
-
-                        {n.unread && (
-                          <span className="w-2 h-2 bg-indigo-600 rounded-full mt-2"></span>
-                        )}
                       </div>
                     ))}
                   </div>
-
-                  {/* Footer */}
-                  {notifications.length > 0 && (
-                    <div className="px-5 py-3 border-t flex justify-between text-sm">
-                      <button
-                        onClick={clearAll}
-                        className="text-gray-500 hover:text-red-500 transition"
-                      >
-                        Clear All
-                      </button>
-                      <button className="text-indigo-600 hover:underline">
-                        View All
-                      </button>
-                    </div>
-                  )}
                 </div>
               </Menu.Content>
             </Menu.Positioner>
           </Portal>
         </Menu.Root>
 
+        {/* Divider */}
+        <div className="h-8 w-px bg-gray-100 mx-2" />
+
         {/* 👤 Profile Menu */}
         <Menu.Root>
           <Menu.Trigger asChild>
-            <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 text-sm font-semibold tracking-wide cursor-pointer hover:shadow-sm transition">
-              {getProfileIcon()}
+            <div className="flex items-center gap-3 pl-2 cursor-pointer group">
+              <div className="flex flex-col items-end sm:flex">
+                <p className="text-sm font-bold text-gray-900 leading-none">
+                  Aryan Mehra
+                </p>
+                <p className="text-[10px] font-bold text-indigo-500 uppercase tracking-tight mt-1">
+                  Engineer
+                </p>
+              </div>
+              <div className="w-10 h-10 rounded-xl bg-linear-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-xs font-black shadow-lg shadow-indigo-100 group-hover:scale-105 transition-transform">
+                AM
+              </div>
             </div>
           </Menu.Trigger>
 
           <Portal>
             <Menu.Positioner>
-              <Menu.Content>
-                <Link to="/profile">
-                  <Menu.Item value="profile">Profile</Menu.Item>
-                </Link>
-
-                <Link to="/settings">
-                  <Menu.Item value="settings">Settings</Menu.Item>
-                </Link>
-
-                <Menu.Item value="logout" onClick={handleLogout}>
-                  Logout
-                </Menu.Item>
+              <Menu.Content className="outline-none">
+                <div className="w-56 bg-white rounded-2xl shadow-2xl border border-indigo-50 p-2 mt-2">
+                  <Link to="/profile">
+                    <div className="flex items-center gap-3 px-4 py-3 text-sm font-bold text-gray-700 hover:bg-indigo-50 rounded-xl transition-colors">
+                      <UserIcon size={18} className="text-gray-400" /> Profile
+                    </div>
+                  </Link>
+                  <Link to="/settings">
+                    <div className="flex items-center gap-3 px-4 py-3 text-sm font-bold text-gray-700 hover:bg-indigo-50 rounded-xl transition-colors">
+                      <Settings size={18} className="text-gray-400" /> Settings
+                    </div>
+                  </Link>
+                  <div className="h-px bg-gray-50 my-2" />
+                  <div
+                    onClick={handleLogout}
+                    className="flex items-center gap-3 px-4 py-3 text-sm font-bold text-red-600 hover:bg-red-50 rounded-xl transition-colors cursor-pointer"
+                  >
+                    <LogOut size={18} /> Logout
+                  </div>
+                </div>
               </Menu.Content>
             </Menu.Positioner>
           </Portal>

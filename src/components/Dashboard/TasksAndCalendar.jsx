@@ -43,98 +43,86 @@ export default function TasksAndCalendar() {
   };
 
   return (
-    <div className="grid grid-cols-1 gap-6 w-full">
-      <div className="lg:col-span-2">
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border-t-4 border-purple-500">
-          <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-              Tasks
-            </h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              {taskData.length} tasks assigned
-            </p>
-          </div>
-
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-gray-50 dark:bg-gray-900 text-gray-600 dark:text-gray-400">
-                <tr>
-                  <th className="px-6 py-4 text-left">Task</th>
-                  <th className="px-6 py-4 text-left">Priority</th>
-                  <th className="px-6 py-4 text-left">Due Date</th>
-                  <th className="px-6 py-4 text-center">Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {taskData.map((task) => (
-                  <tr
-                    key={task.id}
-                    className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
-                  >
-                    <td className="px-6 py-4">
-                      <button
-                        onClick={() => toggleTask(task.id)}
-                        className="flex items-center gap-3 text-left"
-                      >
-                        {completedTasks.includes(task.id) ? (
-                          <CheckCircle2 size={20} className="text-green-500" />
-                        ) : (
-                          <Circle
-                            size={20}
-                            className="text-gray-300 dark:text-gray-600"
-                          />
-                        )}
-                        <span
-                          className={
-                            completedTasks.includes(task.id)
-                              ? "line-through text-gray-400"
-                              : "text-gray-900 dark:text-gray-100"
-                          }
-                        >
-                          {task.title || "Untitled Task"}
-                        </span>
-                      </button>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs font-semibold ${getPriorityBadge(
-                          task.priority,
-                        )}`}
-                      >
-                        {task.priority || "N/A"}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-gray-600 dark:text-gray-400">
-                      {task.dueDate
-                        ? new Date(task.dueDate).toLocaleDateString("en-US", {
-                            month: "short",
-                            day: "numeric",
-                          })
-                        : "N/A"}
-                    </td>
-                    <td className="px-6 py-4 text-center">
-                      <div className="flex items-center justify-center gap-2">
-                        <div
-                          className={`w-2 h-2 rounded-full ${getStatusColor(
-                            task.status,
-                            completedTasks.includes(task.id),
-                          )}`}
-                        ></div>
-                        <span className="text-xs text-gray-600 dark:text-gray-400">
-                          {completedTasks.includes(task.id)
-                            ? "Done"
-                            : task.status === "in-progress"
-                              ? "In Progress"
-                              : "Pending"}
-                        </span>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+    <div className="bg-white rounded-3xl border border-indigo-50 shadow-sm overflow-hidden">
+      <div className="p-8 flex items-center justify-between border-b border-gray-50">
+        <div>
+          <h3 className="text-xl font-bold text-gray-900 tracking-tight">
+            Active Tasks
+          </h3>
+          <p className="text-sm text-gray-500 font-medium mt-1">
+            You have {taskData.length} items to complete
+          </p>
         </div>
+        <button className="text-sm font-bold text-indigo-600 hover:text-indigo-700 transition-colors">
+          View All Tasks
+        </button>
+      </div>
+
+      <div className="overflow-x-auto">
+        <table className="w-full">
+          <thead>
+            <tr className="text-[11px] font-black uppercase tracking-widest text-gray-400 bg-gray-50/50">
+              <th className="px-8 py-4 text-left">Task Description</th>
+              <th className="px-8 py-4 text-left">Priority</th>
+              <th className="px-8 py-4 text-left">Timeline</th>
+              <th className="px-8 py-4 text-center">Action</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-50">
+            {taskData.map((task) => (
+              <tr
+                key={task.id}
+                className="group hover:bg-indigo-50/30 transition-colors"
+              >
+                <td className="px-8 py-5">
+                  <div className="flex items-center gap-4">
+                    <button
+                      onClick={() => toggleTask(task.id)}
+                      className="transition-transform active:scale-90"
+                    >
+                      {completedTasks.includes(task.id) ? (
+                        <CheckCircle2 size={22} className="text-emerald-500" />
+                      ) : (
+                        <Circle
+                          size={22}
+                          className="text-gray-300 group-hover:text-indigo-400 transition-colors"
+                        />
+                      )}
+                    </button>
+                    <span
+                      className={`text-sm font-bold ${completedTasks.includes(task.id) ? "text-gray-400 line-through" : "text-gray-700"}`}
+                    >
+                      {task.title}
+                    </span>
+                  </div>
+                </td>
+                <td className="px-8 py-5">
+                  <span
+                    className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider ${getPriorityBadge(task.priority)}`}
+                  >
+                    {task.priority}
+                  </span>
+                </td>
+                <td className="px-8 py-5">
+                  <div className="flex items-center gap-2 text-xs font-bold text-gray-500">
+                    <Clock size={14} className="text-gray-400" />
+                    {task.dueDate
+                      ? new Date(task.dueDate).toLocaleDateString("en-US", {
+                          month: "short",
+                          day: "numeric",
+                        })
+                      : "No Date"}
+                  </div>
+                </td>
+                <td className="px-8 py-5 text-center">
+                  <button className="p-2 hover:bg-white rounded-lg border border-transparent hover:border-gray-200 transition-all">
+                    <ChevronRight size={16} className="text-gray-400" />
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );

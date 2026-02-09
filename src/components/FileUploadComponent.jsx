@@ -30,13 +30,24 @@ function FileUploadComponent() {
       options.push(
         {
           workflowName: "Leave Workflow",
-          relatedApi: "/leaves/upload-leave-requests",
+          relatedApi: "/leaves/workflow/upload-leave-requests",
         },
         {
           workflowName: "Certifications",
           relatedApi: "/certifications/upload",
         },
-        { workflowName: "Interview Workflow", relatedApi: "/interview/upload" },
+        { 
+          workflowName: "Interview Workflow", 
+          relatedApi: "/interview/upload" 
+        },
+        {
+          workflowName: "Timesheet Workflow",
+          relatedApi: "/timesheets/upload"
+        },
+        {
+          workflowName: "Trainings Workflow",
+          relatedApi: "/trainings/upload"
+        }
       );
     } else if (role === "MANAGER") {
       options.push({

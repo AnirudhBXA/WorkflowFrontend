@@ -40,6 +40,14 @@ function HeaderComponent() {
     logout();
   }
 
+  function getProfileIcon() {
+    return user?.username
+      ?.split(" ")
+      .map(word => word[0])
+      .join("")
+      .toUpperCase() || "";
+  }
+
   return (
     <header className="sticky top-0 z-50 w-full h-20 bg-white/80 backdrop-blur-md border-b flex items-center justify-between px-10">
       {/* Left: Search Bar (New) */}
@@ -116,14 +124,14 @@ function HeaderComponent() {
             <div className="flex items-center gap-3 pl-2 cursor-pointer group">
               <div className="flex flex-col items-end sm:flex">
                 <p className="text-sm font-bold text-gray-900 leading-none">
-                  Aryan Mehra
+                  {user.username}
                 </p>
                 <p className="text-[10px] font-bold text-indigo-500 uppercase tracking-tight mt-1">
-                  Engineer
+                  {user.role}
                 </p>
               </div>
               <div className="w-10 h-10 rounded-xl bg-linear-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-xs font-black shadow-lg shadow-indigo-100 group-hover:scale-105 transition-transform">
-                AM
+                {getProfileIcon()}
               </div>
             </div>
           </Menu.Trigger>

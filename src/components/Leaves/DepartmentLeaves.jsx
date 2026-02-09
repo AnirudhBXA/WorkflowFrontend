@@ -17,7 +17,7 @@ export default function DepartmentLeaves() {
 
   const fetchDepartmentLeaves = async () => {
     try {
-      const response = await axiosInstance.get("/leaves");
+      const response = await axiosInstance.get("/leaves/dept-leaves");
       setLeavesList(response.data || []);
       console.log("Fetched subordinate leaves:", response.data);
     } catch (e) {
@@ -85,7 +85,7 @@ export default function DepartmentLeaves() {
                 key={item.id}
                 className="border-t border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
               >
-                <td className="px-6 py-4">{item.empEmail}</td>
+                <td className="px-6 py-4">{item.name}</td>
                 <td className="px-6 py-4">{item.leaveType}</td>
                 <td className="px-6 py-4">
                   {formatDateToDDMMYYYY(item.startDate)}

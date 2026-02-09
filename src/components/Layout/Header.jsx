@@ -34,11 +34,13 @@ function HeaderComponent() {
   }
 
   function getProfileIcon() {
-    return user?.username
-      ?.split(" ")
-      .map(word => word[0])
-      .join("")
-      .toUpperCase() || "";
+    return (
+      user?.username
+        ?.split(" ")
+        .map((word) => word[0])
+        .join("")
+        .toUpperCase() || ""
+    );
   }
 
   return (
@@ -115,29 +117,20 @@ function HeaderComponent() {
         <Menu.Root>
           <Menu.Trigger asChild>
             <div className="flex items-center gap-3 pl-2 cursor-pointer group">
-              <div className="flex flex-col items-end sm:flex">
+              {/* User Info */}
+              <div className="flex flex-col items-end">
                 <p className="text-sm font-bold text-gray-900 leading-none">
                   {user?.name || "John Doe"}
                 </p>
-                <p className="text-[10px] font-bold text-indigo-500 uppercase tracking-tight mt-1">
+                {/* <p className="text-[10px] font-bold text-indigo-500 uppercase tracking-tight mt-1">
                   {user?.department || "Engineering"}
+                </p> */}
+                <p className="text-[10px] font-bold text-gray-500 uppercase tracking-tight mt-1">
+                  {user?.role || "USER"}
                 </p>
               </div>
-              <div className="w-10 h-10 rounded-xl bg-linear-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-xs font-black shadow-lg shadow-indigo-100 group-hover:scale-105 transition-transform">
-                <p>
-                {user?.name
-                  ? user.name
-                      .split(" ")
-                      .map((n) => n[0])
-                      .join("")
-                      .toUpperCase()
-                  : "JD"}
-                  {user.username}
-                </p>
-                <p className="text-[10px] font-bold text-indigo-500 uppercase tracking-tight mt-1">
-                  {user.role}
-                </p>
-              </div>
+
+              {/* Profile Icon */}
               <div className="w-10 h-10 rounded-xl bg-linear-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-xs font-black shadow-lg shadow-indigo-100 group-hover:scale-105 transition-transform">
                 {getProfileIcon()}
               </div>

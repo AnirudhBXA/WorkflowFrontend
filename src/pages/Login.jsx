@@ -53,7 +53,7 @@ function LoginComponent() {
     try {
       setLoading(true);
       const res = await axiosInstance.post("/auth/login", {
-        username: form.username,
+        identifier: form.username,
         password: form.password,
         rememberMe: form.remember,
       });

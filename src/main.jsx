@@ -69,18 +69,18 @@ createRoot(document.getElementById("root")).render(
             <Route path="certifications" element={<Certifications />} />
             <Route path="profile" element={<UserProfile />} />
             <Route
-              path="workflows"
-              element={
-                <ProtectedRoute allowedRoles={["ADMIN", "HR"]}>
-                  <WorkflowPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
               path="admin"
               element={
                 <ProtectedRoute allowedRoles={["ADMIN"]}>
                   <AdminPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="workflows"
+              element={
+                <ProtectedRoute allowedRoles={["ADMIN", "HR"]}>
+                  <WorkflowPage />
                 </ProtectedRoute>
               }
             />

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { CheckCircle2, Circle } from "lucide-react";
+import { CheckCircle2, ChevronRight, Circle, Clock } from "lucide-react";
 import axiosInstance from "../../utils/axiosInstance";
 
 export default function TasksAndCalendar() {
@@ -9,6 +9,7 @@ export default function TasksAndCalendar() {
     try {
       const response = await axiosInstance.get("/data/tasks/me");
       setTaskData(response.data || []);
+      console.log("Fetched tasks:", response.data);
     } catch (error) {
       console.error("Error fetching tasks:", error);
     }
@@ -35,11 +36,6 @@ export default function TasksAndCalendar() {
       default:
         return "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200";
     }
-  };
-
-  const getStatusColor = (status, done) => {
-    if (done) return "bg-green-500";
-    return status === "in-progress" ? "bg-blue-500" : "bg-yellow-500";
   };
 
   return (
@@ -100,9 +96,10 @@ export default function TasksAndCalendar() {
                   <span
                     className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider ${getPriorityBadge(task.priority)}`}
                   >
-                    {task.priority}
+                    {task?.priority || "Unknown"}
                   </span>
                 </td>
+
                 <td className="px-8 py-5">
                   <div className="flex items-center gap-2 text-xs font-bold text-gray-500">
                     <Clock size={14} className="text-gray-400" />

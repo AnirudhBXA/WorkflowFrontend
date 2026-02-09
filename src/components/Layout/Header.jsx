@@ -1,10 +1,4 @@
-import {
-  Bell,
-  Search,
-  Settings,
-  LogOut,
-  User as UserIcon,
-} from "lucide-react";
+import { Bell, Search, Settings, LogOut, User as UserIcon } from "lucide-react";
 import { useEffect, useState, useContext } from "react";
 import { Menu, Portal } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
@@ -16,7 +10,6 @@ function HeaderComponent() {
   const { logout, user } = useContext(AuthContext);
 
   useEffect(() => {
-    // Mock data for styling
     setNotifications([
       {
         id: 1,
@@ -116,14 +109,20 @@ function HeaderComponent() {
             <div className="flex items-center gap-3 pl-2 cursor-pointer group">
               <div className="flex flex-col items-end sm:flex">
                 <p className="text-sm font-bold text-gray-900 leading-none">
-                  Aryan Mehra
+                  {user?.name || "John Doe"}
                 </p>
                 <p className="text-[10px] font-bold text-indigo-500 uppercase tracking-tight mt-1">
-                  Engineer
+                  {user?.department || "Engineering"}
                 </p>
               </div>
               <div className="w-10 h-10 rounded-xl bg-linear-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-xs font-black shadow-lg shadow-indigo-100 group-hover:scale-105 transition-transform">
-                AM
+                {user?.name
+                  ? user.name
+                      .split(" ")
+                      .map((n) => n[0])
+                      .join("")
+                      .toUpperCase()
+                  : "JD"}
               </div>
             </div>
           </Menu.Trigger>

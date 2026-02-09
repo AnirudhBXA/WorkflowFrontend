@@ -39,6 +39,27 @@ export default function InterviewsComponent() {
     fetchInterviews();
   }, []);
 
+  async function handleStatusUpdate(newStatus, taskId) {
+    try {
+      await axiosInstance.post(`/interview/complete/${taskId}`, {
+        status: newStatus,
+      });
+      setLoading(true);
+
+      setInterviews((prev) =>
+        prev.map((i) =>
+          i.taskId === taskId ? { ...i, status: newStatus } : i,
+        ),
+      );
+    } catch (error) {
+      console.error("Failed to update interview status:", error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function hrCloseInterview(taskId) {}
+
   const badgeStyles = {
     PENDING: "bg-amber-50 text-amber-700 border-amber-100",
     COMPLETED: "bg-emerald-50 text-emerald-700 border-emerald-100",
@@ -82,7 +103,7 @@ export default function InterviewsComponent() {
     );
 
   return (
-    <div className="max-w-7xl mx-auto space-y-10 p-2 font-['Inter',sans-serif]">
+    <div className="max-w-7xl mx-auto space-y-10 p-2">
       {/* Header */}
       <div>
         <h1 className="text-3xl font-black text-gray-900 tracking-tight">

@@ -42,7 +42,7 @@ export default function TimesheetsComponent() {
     );
 
   return (
-    <div className="max-w-7xl mx-auto space-y-10 p-2 font-['Inter',sans-serif]">
+    <div className="max-w-7xl mx-auto space-y-10 p-2">
       {/* Header Area */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>

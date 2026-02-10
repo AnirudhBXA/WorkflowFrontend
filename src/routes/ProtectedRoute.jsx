@@ -1,10 +1,14 @@
+import { useContext } from "react";
 import { Navigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
-import { useContext } from "react";
 
-const ProtectedRoute = ({ allowedRoles, children }) => {
-  const { user } = useContext(AuthContext);
-  console.log("User role:", user.role, "Allowed:", allowedRoles);
+export default function ProtectedRoute({ allowedRoles, children }) {
+  const { user, loading } = useContext(AuthContext);
+
+  // Stop the redirect from happening while we are still checking storage
+  if (loading) {
+    return <div>Loading...</div>; // Or a Spinner
+  }
 
   if (!user) {
     return <Navigate to="/login" replace />;
@@ -14,11 +18,8 @@ const ProtectedRoute = ({ allowedRoles, children }) => {
   const isAllowed = allowedRoles.includes(userRole);
 
   if (!isAllowed) {
-    console.warn(`Access denied for role: ${userRole}. Allowed roles: ${allowedRoles.join(", ")}`);
     return <Navigate to="/dashboard" replace />;
   }
 
   return children;
-};
-
-export default ProtectedRoute;
+}

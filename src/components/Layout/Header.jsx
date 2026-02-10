@@ -35,7 +35,7 @@ function HeaderComponent() {
 
   function getProfileIcon() {
     return (
-      user?.username
+      user?.name
         ?.split(" ")
         .map((word) => word[0])
         .join("")

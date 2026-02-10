@@ -52,7 +52,6 @@ createRoot(document.getElementById("root")).render(
               </PublicRoute>
             }
           />
-
           <Route
             path="/"
             element={
@@ -69,14 +68,6 @@ createRoot(document.getElementById("root")).render(
             <Route path="certifications" element={<Certifications />} />
             <Route path="profile" element={<UserProfile />} />
             <Route
-              path="admin"
-              element={
-                <ProtectedRoute allowedRoles={["ADMIN"]}>
-                  <AdminPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
               path="workflows"
               element={
                 <ProtectedRoute allowedRoles={["ADMIN", "HR"]}>
@@ -86,6 +77,14 @@ createRoot(document.getElementById("root")).render(
             />
           </Route>
           <Route path="*" element={<NotFound />} />
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute allowedRoles={["ADMIN"]}>
+                <AdminPage />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </ChakraProvider>
     </AuthProvider>

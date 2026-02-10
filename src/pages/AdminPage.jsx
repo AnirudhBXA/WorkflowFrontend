@@ -1,146 +1,138 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axiosInstance from "../utils/axiosInstance";
+import AdminSidebar from "../components/Admin/AdminSidebar";
+import UserRegistryView from "../components/Admin/UserRegistery";
 
-function AdminPage() {
-  const [users, setUsers] = useState([
-    {
-      id: 1,
-      name: "Anirudh Myakam",
-      email: "anirudh@company.com",
-      role: "Employee",
-      department: "Engineering",
-    },
-    {
-      id: 2,
-      name: "Ravi Kumar",
-      email: "ravi@company.com",
-      role: "Manager",
-      department: "Engineering",
-    },
-  ]);
+export default function AdminPage() {
+  const [activeTab, setActiveTab] = useState("users");
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     role: "",
-    department: "",
+    username: "",
   });
 
+  /* ---------------- Utils ---------------- */
+
+  const isValidEmail = (email) => /\S+@\S+\.\S+/.test(email);
+
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleAddUser = () => {
-    if (!formData.name || !formData.email) return;
+  /* ---------------- Fetch Users ---------------- */
 
-    setUsers([...users, { ...formData, id: Date.now() }]);
+  useEffect(() => {
+    axiosInstance
+      .get("/admin/users")
+      .then((res) => setUsers(res.data ?? []))
+      .catch(() => setError("Failed to load users"));
+  }, []);
 
-    setFormData({ name: "", email: "", role: "", department: "" });
+  /* ---------------- Add User ---------------- */
+
+  const handleAddUser = async (e) => {
+    e.preventDefault();
+    setError("");
+
+    if (
+      !formData.name ||
+      !formData.email ||
+      !formData.role ||
+      !formData.username
+    ) {
+      setError("Please fill in all fields.");
+      return;
+    }
+
+    if (!isValidEmail(formData.email)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+
+    const tempPassword = Math.random().toString(36).slice(-8);
+
+    const payload = {
+      ...formData,
+      password: tempPassword,
+    };
+
+    try {
+      setLoading(true);
+      const res = await axiosInstance.post("/admin/user/create", payload);
+
+      setUsers((prev) => [
+        ...prev,
+        {
+          ...payload,
+          id: res.data?.id ?? Date.now(),
+          status: "Active",
+        },
+      ]);
+
+      alert("User created successfully. Password sent securely.");
+
+      setFormData({
+        name: "",
+        email: "",
+        role: "",
+        username: "",
+      });
+    } catch (err) {
+      setError(
+        err?.response?.data?.message ?? err?.message ?? "Invalid request",
+      );
+    } finally {
+      setLoading(false);
+    }
   };
+
+  /* ---------------- Placeholder ---------------- */
+
+  const PlaceholderView = ({ title }) => (
+    <div className="h-96 flex items-center justify-center border-2 border-dashed text-zinc-400">
+      <h2 className="text-xl font-black uppercase">{title} Configuration</h2>
+    </div>
+  );
+
+  /* ---------------- Render ---------------- */
 
   return (
-    <div className="space-y-6">
-      {/* Page Header */}
-      <div>
-        <h1 className="text-2xl font-semibold text-gray-800">
-          User Management
-        </h1>
-        <p className="text-sm text-gray-500">Create, update and manage users</p>
-      </div>
+    <div className="flex min-h-screen bg-zinc-50">
+      <AdminSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
 
-      {/* Create User Card */}
-      <div className="bg-white rounded-xl shadow-md p-6">
-        <h2 className="text-lg font-medium text-gray-800 mb-4">Create User</h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <input
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            placeholder="Full Name"
-            className="border rounded-md px-3 py-2"
-          />
-
-          <input
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            placeholder="Email"
-            className="border rounded-md px-3 py-2"
-          />
-
-          <input
-            name="department"
-            value={formData.department}
-            onChange={handleChange}
-            placeholder="Department"
-            className="border rounded-md px-3 py-2"
-          />
-
-          <select
-            name="role"
-            value={formData.role}
-            onChange={handleChange}
-            className="border rounded-md px-3 py-2"
-          >
-            <option value="">Select Role</option>
-            <option>Employee</option>
-            <option>Manager</option>
-            <option>HR</option>
-            <option>Admin</option>
-          </select>
+      <div className="flex-1">
+        <div className="bg-white border-b px-8 py-6">
+          <h1 className="text-2xl font-bold">
+            System <span className="text-indigo-600">Admin</span>
+          </h1>
         </div>
 
-        <button
-          onClick={handleAddUser}
-          className="mt-4 bg-blue-600 text-white px-5 py-2 rounded-md hover:bg-blue-700"
-        >
-          Add User
-        </button>
-      </div>
+        <div className="p-8">
+          {activeTab === "users" && (
+            <UserRegistryView
+              users={users}
+              formData={formData}
+              loading={loading}
+              error={error}
+              onChange={handleChange}
+              onSubmit={handleAddUser}
+            />
+          )}
 
-      {/* Users List */}
-      <div className="bg-white rounded-xl shadow-md p-6">
-        <h2 className="text-lg font-medium text-gray-800 mb-4">All Users</h2>
-
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="text-left text-gray-500 border-b">
-                <th className="py-2">Name</th>
-                <th>Email</th>
-                <th>Department</th>
-                <th>Role</th>
-                <th className="text-right">Actions</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {users.map((user) => (
-                <tr key={user.id} className="border-b hover:bg-gray-50">
-                  <td className="py-3">{user.name}</td>
-                  <td>{user.email}</td>
-                  <td>{user.department}</td>
-                  <td>
-                    <span className="px-2 py-1 rounded-full bg-blue-100 text-blue-700 text-xs">
-                      {user.role}
-                    </span>
-                  </td>
-                  <td className="text-right space-x-2">
-                    <button className="text-blue-600 hover:underline">
-                      Edit
-                    </button>
-                    <button className="text-red-600 hover:underline">
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          {activeTab === "departments" && (
+            <PlaceholderView title="Department" />
+          )}
+          {activeTab === "workflows" && <PlaceholderView title="Workflow" />}
+          {activeTab === "employees" && <PlaceholderView title="Employee" />}
+          {activeTab === "security" && <PlaceholderView title="Security" />}
         </div>
       </div>
     </div>
   );
 }
-
-export default AdminPage;

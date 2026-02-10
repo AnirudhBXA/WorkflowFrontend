@@ -1,17 +1,8 @@
-
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import axiosInstance from "../utils/axiosInstance";
-import {
-  Mail,
-  Lock,
-  User,
-  Chrome,
-  Github,
-  LayoutGrid,
-  ArrowRight,
-} from "lucide-react";
+import { Mail, Lock, Chrome, Github, ArrowRight } from "lucide-react";
 
 function LoginComponent() {
   const [form, setForm] = useState({
@@ -25,7 +16,6 @@ function LoginComponent() {
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  // Basic Email Validation Helper
   const isValidEmail = (email) => /\S+@\S+\.\S+/.test(email);
 
   function handleChange(e) {
@@ -85,13 +75,9 @@ function LoginComponent() {
 
   return (
     <div className="h-screen flex bg-white">
-      {/* LEFT SIDE: Branding/Content (Hidden on Mobile) */}
       <div className="hidden lg:flex w-3/5 bg-[#F5F3FF] flex-col justify-between p-12 relative overflow-hidden">
         <div className="flex items-center gap-2 text-indigo-600 font-bold text-xl relative z-10">
-          <div className="bg-indigo-600 p-1.5 rounded-lg">
-            <LayoutGrid className="text-white w-6 h-6" />
-          </div>
-          <span>DarwinFlow</span>
+          <span className="admin-logo font-bold">darwinflow</span>
         </div>
 
         <div className="relative z-10">

@@ -29,6 +29,7 @@ export default function UserProfile() {
       try {
         const res = await axiosInstance.get("/profile/me");
         const { profile, leaves, certifications, leaveSummary } = res.data;
+        console.log("Fetched Profile Data:", res.data);
         setProfile(profile);
         setLeaves(leaves || []);
         setCertifications(certifications || []);

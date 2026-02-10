@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import ValuesDisplayCard from "../components/ValuesDisplayCard";
 import CertificationApprovalComponent from "../components/Certifications/CertificationApproval";
 import CertificationBriefCard from "../components/Certifications/CertificationBriefCard"; // Import the modal
-import { Award, Wallet, History, Plus } from "lucide-react";
+import { History, Plus } from "lucide-react";
 
 export default function CertificationsComponent() {
   const [role] = useState("HR");

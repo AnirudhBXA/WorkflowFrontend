@@ -1,4 +1,6 @@
 import { X, Calendar, MessageCircle } from "lucide-react";
+import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
 
 export default function LeaveBriefCard({
   leave,
@@ -11,6 +13,8 @@ export default function LeaveBriefCard({
     PENDING: "bg-amber-50 text-amber-700 border-amber-100",
     REJECTED: "bg-rose-50 text-rose-700 border-rose-100",
   };
+
+  const { user } = useContext(AuthContext);
 
   return (
     <div className="fixed inset-0 bg-gray-900/60 backdrop-blur-md flex items-center justify-center z-100 p-4">
@@ -65,7 +69,8 @@ export default function LeaveBriefCard({
           </div>
 
           {/* Action Buttons */}
-          <div className="flex gap-4 pt-4">
+          { user?.role === "MANAGER" && (
+            <div className="flex gap-4 pt-4">
             {leave.status === "PENDING" && (
               <>
                 <button
@@ -82,7 +87,8 @@ export default function LeaveBriefCard({
                 </button>
               </>
             )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

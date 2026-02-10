@@ -17,6 +17,7 @@ import {
 export default function InterviewsComponent() {
   const [loading, setLoading] = useState(true);
   const [interviews, setInterviews] = useState([]);
+  const [employeeInterviews, setEmployeeInterviews] = useState([])
   const { user } = useContext(AuthContext);
   const [showReschedule, setShowReschedule] = useState(false);
   const [rescheduleData, setRescheduleData] = useState({
@@ -37,7 +38,19 @@ export default function InterviewsComponent() {
       }
     }
     fetchInterviews();
+    fetchEmployeeInterviews();
   }, []);
+
+  async function fetchEmployeeInterviews(){
+    try{
+      const res = await axiosInstance.get("/interview/employees");
+      setEmployeeInterviews(res.data || []);
+    } catch(error) {
+      console.log("Error fetching Employees interviews", error);
+    } finally{
+      setLoading(false);
+    }
+  }
 
   async function handleStatusUpdate(newStatus, taskId) {
     try {
@@ -223,7 +236,7 @@ export default function InterviewsComponent() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50">
-                {interviews.map((item) => (
+                {employeeInterviews.map((item) => (
                   <tr
                     key={item.id}
                     className="hover:bg-indigo-50/30 transition-colors"

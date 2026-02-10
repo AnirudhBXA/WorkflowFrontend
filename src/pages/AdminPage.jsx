@@ -2,13 +2,19 @@ import { useEffect, useState } from "react";
 import axiosInstance from "../utils/axiosInstance";
 import AdminSidebar from "../components/Admin/AdminSidebar";
 import UserRegistryView from "../components/Admin/UserRegistery";
+import DepartmentRegistryView from "../components/Admin/DepartmentRegistry";
+import EmployeeDataView from "../components/Admin/EmployeeData";
 
 export default function AdminPage() {
   const [activeTab, setActiveTab] = useState("users");
-  const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  const [users, setUsers] = useState([]);
+  const [departments, setDepartments] = useState([]);
+  const [employees, setEmployees] = useState([]);
+
+  const [departmentName, setDepartmentName] = useState("");
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -16,122 +22,191 @@ export default function AdminPage() {
     username: "",
   });
 
-  /* ---------------- Utils ---------------- */
-
-  const isValidEmail = (email) => /\S+@\S+\.\S+/.test(email);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  /* ---------------- Fetch Users ---------------- */
-
   useEffect(() => {
-    axiosInstance
-      .get("/admin/users")
-      .then((res) => setUsers(res.data ?? []))
-      .catch(() => setError("Failed to load users"));
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const [usersRes, deptRes, empRes] = await Promise.all([
+          axiosInstance.get("/admin/user/all"),
+          axiosInstance.get("/departments"),
+          axiosInstance.get("/employees"),
+        ]);
+        setUsers(usersRes.data ?? []);
+        setDepartments(deptRes.data ?? []);
+        setEmployees(empRes.data ?? []);
+      } catch (err) {
+        setError("Failed to synchronize system data.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
   }, []);
 
-  /* ---------------- Add User ---------------- */
-
+  // --- USER HANDLERS ---
   const handleAddUser = async (e) => {
     e.preventDefault();
-    setError("");
-
-    if (
-      !formData.name ||
-      !formData.email ||
-      !formData.role ||
-      !formData.username
-    ) {
-      setError("Please fill in all fields.");
-      return;
-    }
-
-    if (!isValidEmail(formData.email)) {
-      setError("Please enter a valid email address.");
-      return;
-    }
-
     const tempPassword = Math.random().toString(36).slice(-8);
-
-    const payload = {
-      ...formData,
-      password: tempPassword,
-    };
-
     try {
       setLoading(true);
-      const res = await axiosInstance.post("/admin/user/create", payload);
-
+      const res = await axiosInstance.post("/admin/user/create", {
+        ...formData,
+        password: tempPassword,
+      });
       setUsers((prev) => [
         ...prev,
-        {
-          ...payload,
-          id: res.data?.id ?? Date.now(),
-          status: "Active",
-        },
+        { ...formData, id: res.data?.id ?? Date.now(), status: "Active" },
       ]);
-
-      alert("User created successfully. Password sent securely.");
-
-      setFormData({
-        name: "",
-        email: "",
-        role: "",
-        username: "",
-      });
+      setFormData({ name: "", email: "", role: "", username: "" });
     } catch (err) {
-      setError(
-        err?.response?.data?.message ?? err?.message ?? "Invalid request",
-      );
+      setError("User creation failed");
     } finally {
       setLoading(false);
     }
   };
 
-  /* ---------------- Placeholder ---------------- */
+  const handleEditSubmit = async (updatedUser) => {
+    try {
+      await axiosInstance.put(`/admin/user/update`, {
+        id: updatedUser.id,
+        role: updatedUser.role,
+      });
+      setUsers((prev) =>
+        prev.map((u) =>
+          u.id === updatedUser.id ? { ...u, ...updatedUser } : u,
+        ),
+      );
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
-  const PlaceholderView = ({ title }) => (
-    <div className="h-96 flex items-center justify-center border-2 border-dashed text-zinc-400">
-      <h2 className="text-xl font-black uppercase">{title} Configuration</h2>
-    </div>
-  );
+  const handleDeleteConfirm = async (userId) => {
+    try {
+      await axiosInstance.delete(`/admin/user/${userId}`);
+      setUsers((prev) => prev.filter((u) => u.id !== userId));
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
-  /* ---------------- Render ---------------- */
+  // --- DEPT HANDLERS ---
+  const handleAddDepartment = async (e) => {
+    e.preventDefault();
+    try {
+      setLoading(true);
+      const res = await axiosInstance.post("/departments", { departmentName });
+      setDepartments((prev) => [...prev, res.data]);
+      setDepartmentName("");
+    } catch (err) {
+      setError("Dept creation failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleEditDept = async (updatedDept) => {
+    try {
+      await axiosInstance.put(`/departments/${updatedDept.departmentId}`, {
+        departmentName: updatedDept.departmentName,
+      });
+      setDepartments((prev) =>
+        prev.map((d) =>
+          d.departmentId === updatedDept.departmentId ? updatedDept : d,
+        ),
+      );
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleDeleteDept = async (id) => {
+    try {
+      await axiosInstance.delete(`/departments/${id}`);
+      setDepartments((prev) => prev.filter((d) => d.departmentId !== id));
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // --- EMPLOYEE HANDLERS ---
+  const handleEditEmployee = async (updatedEmp) => {
+    try {
+      await axiosInstance.put(`/employees/${updatedEmp.id}`, updatedEmp);
+      setEmployees((prev) =>
+        prev.map((emp) =>
+          emp.id === updatedEmp.id ? { ...emp, ...updatedEmp } : emp,
+        ),
+      );
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleDeleteEmployee = async (id) => {
+    try {
+      await axiosInstance.delete(`/employees/${id}`);
+      setEmployees((prev) => prev.filter((emp) => emp.id !== id));
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   return (
-    <div className="flex min-h-screen bg-zinc-50">
+    <div className="flex min-h-screen bg-zinc-50 antialiased text-zinc-900">
       <AdminSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
-
-      <div className="flex-1">
-        <div className="bg-white border-b px-8 py-6">
+      <div className="flex-1 flex flex-col">
+        <header className="bg-white border-b px-8 py-6">
           <h1 className="text-2xl font-bold">
-            System <span className="text-indigo-600">Admin</span>
+            System <span className="text-indigo-600">Admin {`>`} </span>{" "}
+            <span className="capitalize">{activeTab}</span>
           </h1>
-        </div>
-
-        <div className="p-8">
+        </header>
+        <main className="p-8">
           {activeTab === "users" && (
             <UserRegistryView
               users={users}
               formData={formData}
               loading={loading}
               error={error}
-              onChange={handleChange}
+              onChange={(e) =>
+                setFormData({ ...formData, [e.target.name]: e.target.value })
+              }
               onSubmit={handleAddUser}
+              onEditSubmit={handleEditSubmit}
+              onDeleteConfirm={handleDeleteConfirm}
             />
           )}
 
           {activeTab === "departments" && (
-            <PlaceholderView title="Department" />
+            <DepartmentRegistryView
+              departments={departments}
+              departmentName={departmentName}
+              loading={loading}
+              error={error}
+              onChange={(e) => setDepartmentName(e.target.value)}
+              onSubmit={handleAddDepartment}
+              onEditSubmit={handleEditDept}
+              onDeleteConfirm={handleDeleteDept}
+            />
           )}
-          {activeTab === "workflows" && <PlaceholderView title="Workflow" />}
-          {activeTab === "employees" && <PlaceholderView title="Employee" />}
-          {activeTab === "security" && <PlaceholderView title="Security" />}
-        </div>
+
+          {activeTab === "employees" && (
+            <EmployeeDataView
+              employees={employees}
+              onEditSubmit={handleEditEmployee}
+              onDeleteConfirm={handleDeleteEmployee}
+            />
+          )}
+
+          {["workflows", "security"].includes(activeTab) && (
+            <div className="h-96 flex items-center justify-center border-2 border-dashed text-zinc-400">
+              <h2 className="text-xl font-black uppercase">
+                {activeTab} Configuration
+              </h2>
+            </div>
+          )}
+        </main>
       </div>
     </div>
   );

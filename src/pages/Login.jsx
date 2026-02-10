@@ -76,6 +76,13 @@ function LoginComponent() {
     }
   }
 
+  const avatars = [
+    "https://i.pravatar.cc/150?img=32",
+    "https://i.pravatar.cc/150?img=47",
+    "https://i.pravatar.cc/150?img=12",
+    "https://i.pravatar.cc/150?img=68",
+  ];
+
   return (
     <div className="h-screen flex bg-white">
       {/* LEFT SIDE: Branding/Content (Hidden on Mobile) */}
@@ -89,26 +96,33 @@ function LoginComponent() {
 
         <div className="relative z-10">
           <h2 className="text-4xl font-bold text-gray-900 leading-tight">
-            Manage your projects <br />
-            <span className="text-indigo-600">with ease and precision.</span>
+           Complex processes, <br />
+            <span className="text-indigo-600">Easy delivery.</span>
           </h2>
           <p className="mt-4 text-gray-600 max-w-md text-lg">
-            The all-in-one workspace for your team to collaborate, plan, and
-            execute flawlessly.
+           Seamless routing of operational tasks to the right decision-makers for effortless management.
           </p>
         </div>
 
-        <div className="relative z-10 flex gap-4 items-center text-sm text-gray-500">
-          <div className="flex -space-x-2">
-            {[1, 2, 3].map((i) => (
-              <div
-                key={i}
-                className="w-8 h-8 rounded-full bg-indigo-200 border-2 border-white"
-              />
-            ))}
-          </div>
-          <span>Join 10k+ teams managing work today.</span>
+
+        <div className="relative z-10 mb-8">
+           <div className="flex items-center -space-x-4 rtl:space-x-reverse mb-3">
+             {avatars.map((url, index) => (
+                <img 
+                  key={index}
+                  className="w-12 h-12 border-4 border-white rounded-full object-cover" 
+                  src={url} 
+                  alt={`User avatar ${index + 1}`} 
+                />
+             ))}
+             <div className="flex items-center justify-center w-12 h-12 text-xs font-bold text-indigo-600 bg-indigo-100 border-4 border-white rounded-full">
+              +2k
+             </div>
+           </div>
+           <p className="text-sm text-gray-600 font-medium ml-2">Join 10k+ teams managing work today.</p>
         </div>
+
+        
 
         {/* Decorative Background Circles */}
         <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-indigo-100 rounded-full blur-3xl opacity-50"></div>

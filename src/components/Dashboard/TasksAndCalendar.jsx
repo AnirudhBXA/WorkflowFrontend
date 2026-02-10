@@ -26,7 +26,7 @@ export default function TasksAndCalendar() {
   };
 
   const getPriorityBadge = (priority) => {
-    switch (priority?.toLowerCase()) {
+    switch (priority) {
       case "high":
         return "bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-200";
       case "medium":

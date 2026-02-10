@@ -75,16 +75,16 @@ function ResetPasswordPage() {
           <div className="bg-indigo-600 p-2 rounded-xl shadow-lg shadow-indigo-200">
             <LayoutGrid className="text-white w-6 h-6" />
           </div>
-          <span className="tracking-tight text-gray-900">
-            Workflow<span className="text-indigo-600">Pro</span>
+          <span className="tracking-tight text-indigo-600">
+            Darwin<span className="text-indigo-600">Flow</span>
           </span>
         </div>
 
         {/* Content */}
         <div className="relative z-10 max-w-2xl">
-          <div className="w-16 h-16 bg-white rounded-2xl shadow-sm flex items-center justify-center mb-8 border border-indigo-50">
+          {/* <div className="w-16 h-16 bg-white rounded-2xl shadow-sm flex items-center justify-center mb-8 border border-indigo-50">
             <KeyRound className="w-8 h-8 text-indigo-600" />
-          </div>
+          </div> */}
           <h2 className="text-5xl font-black text-gray-900 leading-[1.1] tracking-tight">
             Secure your <br />
             <span className="bg-clip-text text-transparent bg-linear-to-r from-indigo-600 to-purple-600">
@@ -183,7 +183,7 @@ function ResetPasswordPage() {
             <button
               type="submit"
               disabled={loading || !token || !!success}
-              className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-4 rounded-xl font-bold transition-all flex items-center justify-center gap-2 shadow-xl shadow-indigo-100 hover:shadow-indigo-200 disabled:opacity-70 active:scale-[0.98]"
+              className="w-full  bg-[#9F5EA5] hover:bg-[#8a4e8f] text-white py-4 rounded-xl font-bold transition-all flex items-center justify-center gap-2 shadow-xl shadow-indigo-100 hover:shadow-indigo-200 disabled:opacity-70 active:scale-[0.98]"
             >
               {loading ? "Updating..." : "Update Password"}
               {!loading && <CheckCircle2 className="w-4 h-4" />}

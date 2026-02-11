@@ -28,9 +28,7 @@ export default function EmployeeDataView({
   const [actionError, setActionError] = useState("");
 
   const startEdit = (emp) => {
-    // We use emp.id to ensure only ONE row matches this state
-    setEditingId(emp.id);
-    // Ensure all fields are mapped correctly so inputs aren't empty
+    setEditingId(emp.employeeId);
     setEditData({
       ...emp,
       salary: emp.salary || 0,
@@ -148,17 +146,17 @@ export default function EmployeeDataView({
           <tbody className="divide-y divide-zinc-200">
             {currentRows.map((emp) => (
               <tr
-                key={emp.id}
+                key={emp.employeeId}
                 className={
-                  editingId === emp.id ? "bg-zinc-50" : "hover:bg-zinc-50/50"
+                  editingId === emp.employeeId
+                    ? "bg-zinc-50"
+                    : "hover:bg-zinc-50/50"
                 }
               >
-                <td className="px-4 py-4 text-xs">
-                  {emp.employeeId || "N/A"}
-                </td>
+                <td className="px-4 py-4 text-xs">{emp.employeeId || "N/A"}</td>
 
                 {/* STRICT ID CHECK: Only current row enters edit mode */}
-                {editingId === emp.id ? (
+                {editingId === emp.employeeId ? (
                   <>
                     <td className="px-4 py-2">
                       <input
@@ -226,7 +224,7 @@ export default function EmployeeDataView({
                           <Edit3 size={16} />
                         </button>
                         <button
-                          onClick={() => setDeleteConfirm(emp.id)}
+                          onClick={() => setDeleteConfirm(emp.employeeId)}
                           className="hover:text-red-600"
                         >
                           <Trash2 size={16} />

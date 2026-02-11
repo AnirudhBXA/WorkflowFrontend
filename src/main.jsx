@@ -3,7 +3,7 @@ import { ChakraProvider } from "@chakra-ui/react";
 import "./index.css";
 import App from "./App.jsx";
 import { system } from "./utils/theme.js";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Dashboard from "./pages/Dashboard.jsx";
 import Timesheets from "./pages/Timesheets.jsx";
 import Leaves from "./pages/Leaves.jsx";
@@ -60,6 +60,7 @@ createRoot(document.getElementById("root")).render(
               </PrivateRoute>
             }
           >
+            <Route index element={<Navigate to="/dashboard" replace />} />
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="timesheet" element={<Timesheets />} />
             <Route path="leave" element={<Leaves />} />

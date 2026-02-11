@@ -34,6 +34,7 @@ export default function AdminPage() {
         setUsers(usersRes.data ?? []);
         setDepartments(deptRes.data ?? []);
         setEmployees(empRes.data ?? []);
+        console.log(deptRes.data);
       } catch (err) {
         setError("Failed to synchronize system data.");
       } finally {
@@ -132,21 +133,33 @@ export default function AdminPage() {
   // --- EMPLOYEE HANDLERS ---
   const handleEditEmployee = async (updatedEmp) => {
     try {
-      await axiosInstance.put(`/employees/${updatedEmp.id}`, updatedEmp);
+      // 1. Double check we have the ID
+      const empId = updatedEmp.employeeId;
+      if (!empId) {
+        console.error("No Employee ID found in payload", updatedEmp);
+        return;
+      }
+
+      // 2. Send request
+      await axiosInstance.put(`/employees/${empId}`, updatedEmp);
+
+      // 3. Update local state
       setEmployees((prev) =>
         prev.map((emp) =>
-          emp.id === updatedEmp.id ? { ...emp, ...updatedEmp } : emp,
+          emp.employeeId === empId ? { ...emp, ...updatedEmp } : emp,
         ),
       );
     } catch (err) {
-      console.error(err);
+      console.error("Backend Error:", err.response?.data || err.message);
+      // Throwing allows the .catch() in saveEdit to show "Failed to update employee"
+      throw err;
     }
   };
 
   const handleDeleteEmployee = async (id) => {
     try {
       await axiosInstance.delete(`/employees/${id}`);
-      setEmployees((prev) => prev.filter((emp) => emp.id !== id));
+      setEmployees((prev) => prev.filter((emp) => emp.employeeId !== id));
     } catch (err) {
       console.error(err);
     }

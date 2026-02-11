@@ -29,7 +29,6 @@ export default function UserProfile() {
       try {
         const res = await axiosInstance.get("/profile/me");
         const { profile, leaves, certifications, leaveSummary } = res.data;
-        console.log("Fetched Profile Data:", res.data);
         setProfile(profile);
         setLeaves(leaves || []);
         setCertifications(certifications || []);
@@ -72,9 +71,6 @@ export default function UserProfile() {
               <h1 className="text-3xl font-extrabold text-gray-900">
                 {getSafeValue(profile.name)}
               </h1>
-              {/* <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-indigo-50 text-indigo-700 uppercase tracking-wider">
-                Full-Time
-              </span> */}
             </div>
             <p className="text-lg text-gray-500 mt-1 font-medium">
               Senior Software Engineer —{" "}
@@ -114,8 +110,7 @@ export default function UserProfile() {
         </div>
       </div>
 
-      <div className="grid lg:grid-cols-3 gap-8">
-        {/* LEFT COL: LEAVE MANAGEMENT (Span 2) */}
+      <div className="grid lg:grid-cols-1 gap-8">
         <div className="lg:col-span-2 space-y-8">
           <div className="bg-white rounded-3xl shadow-sm border border-indigo-50 p-8">
             <div className="flex items-center justify-between mb-8">
@@ -143,7 +138,6 @@ export default function UserProfile() {
               />
             </div>
 
-            {/* Modern Tabs */}
             <div className="flex gap-2 p-1.5 bg-gray-50 rounded-xl mb-6 w-fit">
               {["approved", "pending", "rejected"].map((tab) => (
                 <button
@@ -209,18 +203,17 @@ export default function UserProfile() {
           </div>
         </div>
 
-        {/* RIGHT COL: CERTIFICATIONS */}
         <div className="space-y-8">
           <div className="bg-white rounded-3xl shadow-sm border border-indigo-50 p-8 h-full">
             <h2 className="text-xl font-bold text-gray-900 mb-8 flex items-center gap-2">
               <Award className="w-5 h-5 text-indigo-600" />
               Certifications
             </h2>
-            <div className="space-y-4">
+            <div className="space-y-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
               {certifications.map((cert) => (
                 <div
                   key={cert.id}
-                  className="group p-4 rounded-2xl border border-gray-100 hover:border-indigo-200 hover:bg-indigo-50/20 transition-all cursor-default"
+                  className="group p-4 rounded-2xl border-2 border-gray-100 hover:border-indigo-200 hover:bg-indigo-50/20 transition-all cursor-default"
                 >
                   <div className="flex justify-between items-start">
                     <div>

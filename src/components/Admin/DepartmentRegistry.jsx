@@ -220,7 +220,7 @@ export default function DepartmentRegistryView({
                         />
                       </td>
                       <td className="px-4 py-4 text-zinc-400 italic">
-                        HR linked to ID: {dept.hr?.employeeId || "N/A"}
+                        HR linked to ID: {dept.hrId || "N/A"}
                       </td>
                       <td className="px-4 py-2 text-right">
                         <div className="flex justify-end gap-2">
@@ -242,7 +242,7 @@ export default function DepartmentRegistryView({
                         {dept.departmentName}
                       </td>
                       <td className="px-4 py-4 text-zinc-600">
-                        {dept.hr?.employeeName || dept.hrName || "Unassigned"}
+                        {dept.hrId || "Unassigned"}
                       </td>
                       <td className="px-4 py-4 text-right">
                         <div className="flex justify-end gap-3 text-zinc-300">

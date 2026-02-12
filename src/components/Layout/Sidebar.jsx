@@ -24,7 +24,7 @@ export default function NavigationSidebar() {
   const { user } = useContext(AuthContext);
 
   return (
-    <aside className="h-screen w-64 bg-[#FDFDFF] border-r border-indigo-50 flex flex-col shrink-0">
+    <aside className="h-screen w-64 bg-[#FDFDFF] border-r-2 border-blue-950 flex flex-col shrink-0">
       {/* Branding Section */}
       <div className="p-8 flex items-center gap-3">
         <div className="bg-indigo-600 p-2 rounded-xl shadow-lg shadow-indigo-100">

@@ -4,6 +4,7 @@ import AdminSidebar from "../components/Admin/AdminSidebar";
 import UserRegistryView from "../components/Admin/UserRegistery";
 import DepartmentRegistryView from "../components/Admin/DepartmentRegistry";
 import EmployeeDataView from "../components/Admin/EmployeeData";
+import Loader from "../components/Layout/Loader";
 
 export default function AdminPage() {
   const [activeTab, setActiveTab] = useState("users");
@@ -59,15 +60,18 @@ export default function AdminPage() {
         { ...formData, id: res.data?.id ?? Date.now(), status: "Active" },
       ]);
       setFormData({ name: "", email: "", role: "", username: "" });
+      alert(`User created successfully!`);
     } catch (err) {
-      setError("User creation failed");
+      setError(err.response?.data?.message || "User creation failed");
     } finally {
       setLoading(false);
+      setError("");
     }
   };
 
   const handleEditSubmit = async (updatedUser) => {
     try {
+      setLoading(true);
       await axiosInstance.put(`/admin/user/update`, {
         id: updatedUser.id,
         role: updatedUser.role,
@@ -79,15 +83,20 @@ export default function AdminPage() {
       );
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleDeleteConfirm = async (userId) => {
     try {
+      setLoading(true);
       await axiosInstance.delete(`/admin/user/${userId}`);
       setUsers((prev) => prev.filter((u) => u.id !== userId));
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -108,6 +117,7 @@ export default function AdminPage() {
 
   const handleEditDept = async (updatedDept) => {
     try {
+      setLoading(true);
       await axiosInstance.put(`/departments/${updatedDept.departmentId}`, {
         departmentName: updatedDept.departmentName,
       });
@@ -118,15 +128,20 @@ export default function AdminPage() {
       );
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleDeleteDept = async (id) => {
     try {
+      setLoading(true);
       await axiosInstance.delete(`/departments/${id}`);
       setDepartments((prev) => prev.filter((d) => d.departmentId !== id));
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -134,6 +149,7 @@ export default function AdminPage() {
   const handleEditEmployee = async (updatedEmp) => {
     try {
       // 1. Double check we have the ID
+      setLoading(true);
       const empId = updatedEmp.employeeId;
       if (!empId) {
         console.error("No Employee ID found in payload", updatedEmp);
@@ -153,17 +169,26 @@ export default function AdminPage() {
       console.error("Backend Error:", err.response?.data || err.message);
       // Throwing allows the .catch() in saveEdit to show "Failed to update employee"
       throw err;
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleDeleteEmployee = async (id) => {
     try {
+      setLoading(true);
       await axiosInstance.delete(`/employees/${id}`);
       setEmployees((prev) => prev.filter((emp) => emp.employeeId !== id));
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
+
+  if (loading) {
+    return <Loader label="Fetching employees..." />;
+  }
 
   return (
     <div className="flex min-h-screen bg-zinc-50 antialiased text-zinc-900">

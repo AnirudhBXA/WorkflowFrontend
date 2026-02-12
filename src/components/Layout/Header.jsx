@@ -44,17 +44,7 @@ function HeaderComponent() {
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full h-20 bg-white/80 backdrop-blur-md border-b flex items-center justify-between px-10">
-      {/* Left: Search Bar (New) */}
-      <div className="hidden md:flex items-center relative w-72">
-        <Search className="absolute left-3 w-4 h-4 text-gray-400" />
-        <input
-          type="text"
-          placeholder="Quick search..."
-          className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-100 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/10 transition-all"
-        />
-      </div>
-
+    <header className="sticky top-0 z-50 w-full h-20 bg-white/80 backdrop-blur-md flex items-center justify-end px-10">
       {/* Right Side */}
       <div className="flex items-center gap-4">
         {/* 🔔 Notifications */}

@@ -27,12 +27,10 @@ export default function UserRegistryView({
   const [actionLoading, setActionLoading] = useState(false);
   const [actionError, setActionError] = useState("");
 
-  // --- Search & Pagination State ---
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 10;
 
-  // 1. Filter users based on search term
   const filteredUsers = useMemo(() => {
     return users.filter((user) =>
       Object.values(user).some((val) =>
@@ -41,7 +39,6 @@ export default function UserRegistryView({
     );
   }, [users, searchTerm]);
 
-  // 2. Calculate Pagination
   const totalPages = Math.ceil(filteredUsers.length / rowsPerPage);
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
@@ -49,10 +46,9 @@ export default function UserRegistryView({
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
-    setCurrentPage(1); // Reset to page 1 on search
+    setCurrentPage(1);
   };
 
-  // --- Existing Logic ---
   const startEdit = (user) => {
     setEditingId(user.id);
     setEditData(user);
@@ -86,7 +82,6 @@ export default function UserRegistryView({
         </div>
       )}
 
-      {/* --- Delete Confirmation Dialog --- */}
       {deleteConfirm && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-60">
           <div className="bg-white p-6 max-w-sm w-full shadow-xl border border-zinc-200">
@@ -117,7 +112,6 @@ export default function UserRegistryView({
         </div>
       )}
 
-      {/* --- Create User Form --- */}
       <div className="bg-white border border-zinc-200 shadow-sm">
         <div className="bg-zinc-50 px-6 py-3 border-b">
           <h2 className="text-xs font-black uppercase tracking-widest text-zinc-500">
@@ -169,7 +163,6 @@ export default function UserRegistryView({
         </form>
       </div>
 
-      {/* --- Search Bar --- */}
       <div className="flex items-center gap-2 bg-white border border-zinc-200 px-4 py-2">
         <Search size={18} className="text-zinc-400" />
         <input
@@ -181,7 +174,6 @@ export default function UserRegistryView({
         />
       </div>
 
-      {/* --- Users Table --- */}
       <div className="bg-white border border-zinc-200 shadow-sm overflow-hidden relative">
         {actionLoading && !deleteConfirm && (
           <div className="absolute inset-0 bg-white/50 z-10 flex items-center justify-center">
@@ -277,7 +269,6 @@ export default function UserRegistryView({
           </tbody>
         </table>
 
-        {/* --- Pagination Controls --- */}
         <div className="bg-zinc-50 px-4 py-3 border-t flex items-center justify-between">
           <p className="text-xs text-zinc-500">
             Showing <span className="font-bold">{indexOfFirstRow + 1}</span> to{" "}

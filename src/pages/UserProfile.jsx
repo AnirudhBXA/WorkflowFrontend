@@ -51,9 +51,9 @@ export default function UserProfile() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto space-y-8 p-8">
+    <div className="max-w-6xl mx-auto space-y-8">
       {/* HEADER / PROFILE SECTION */}
-      <div className="bg-white rounded-3xl shadow-sm border border-indigo-50 p-8">
+      <div className="bg-white rounded-3xl shadow-sm border-2 border-blue-950 p-8">
         <div className="flex flex-col md:flex-row items-center md:items-start gap-8">
           {/* Avatar with Ring */}
           <div className="relative">
@@ -72,18 +72,15 @@ export default function UserProfile() {
                 {getSafeValue(profile.name)}
               </h1>
             </div>
-            <p className="text-lg text-gray-500 mt-1 font-medium">
-              Senior Software Engineer —{" "}
-              <span className="text-indigo-600">
-                {getSafeValue(profile.department)}
-              </span>
+            <p className="text-md text-gray-500 mt-1 font-medium">
+              {profile.email}
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-4 gap-x-12 mt-8 pt-8 border-t border-gray-100">
               <ProfileItem
                 icon={<Mail className="w-4 h-4" />}
-                label="Email"
-                value={profile.email}
+                label="Username"
+                value={profile.username}
               />
               <ProfileItem
                 icon={<Users className="w-4 h-4" />}
@@ -103,7 +100,7 @@ export default function UserProfile() {
               <ProfileItem
                 icon={<ShieldCheck className="w-4 h-4" />}
                 label="Role"
-                value="Technical Lead"
+                value={profile.role}
               />
             </div>
           </div>
@@ -112,7 +109,7 @@ export default function UserProfile() {
 
       <div className="grid lg:grid-cols-1 gap-8">
         <div className="lg:col-span-2 space-y-8">
-          <div className="bg-white rounded-3xl shadow-sm border border-indigo-50 p-8">
+          <div className="bg-white rounded-3xl shadow-sm border-2 border-blue-950 p-8">
             <div className="flex items-center justify-between mb-8">
               <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
                 <Calendar className="w-5 h-5 text-indigo-600" />
@@ -204,7 +201,7 @@ export default function UserProfile() {
         </div>
 
         <div className="space-y-8">
-          <div className="bg-white rounded-3xl shadow-sm border border-indigo-50 p-8 h-full">
+          <div className="bg-white rounded-3xl shadow-sm border-2 border-blue-950 p-8 h-full">
             <h2 className="text-xl font-bold text-gray-900 mb-8 flex items-center gap-2">
               <Award className="w-5 h-5 text-indigo-600" />
               Certifications

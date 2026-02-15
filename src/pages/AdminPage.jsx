@@ -35,7 +35,6 @@ export default function AdminPage() {
         setUsers(usersRes.data ?? []);
         setDepartments(deptRes.data ?? []);
         setEmployees(empRes.data ?? []);
-        console.log(deptRes.data);
       } catch (err) {
         setError("Failed to synchronize system data.");
       } finally {
@@ -45,7 +44,13 @@ export default function AdminPage() {
     fetchData();
   }, []);
 
-  // --- USER HANDLERS ---
+  useEffect(() => {
+    if (error) {
+      const timeout = setTimeout(() => setError(""), 5000);
+      return () => clearTimeout(timeout);
+    }
+  }, [error]);
+
   const handleAddUser = async (e) => {
     e.preventDefault();
     const tempPassword = Math.random().toString(36).slice(-8);
@@ -65,7 +70,6 @@ export default function AdminPage() {
       setError(err.response?.data?.message || "User creation failed");
     } finally {
       setLoading(false);
-      setError("");
     }
   };
 

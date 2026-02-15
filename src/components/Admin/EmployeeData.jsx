@@ -9,28 +9,42 @@ import {
   ChevronRight,
   AlertCircle,
 } from "lucide-react";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react"; // 1. Import useEffect
 
 export default function EmployeeDataView({
   employees = [],
   onEditSubmit,
   onDeleteConfirm,
 }) {
+  // 2. Create local state to manage immediate updates
+  const [localEmployees, setLocalEmployees] = useState(employees);
+
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 10;
 
-  // Track which specific ID is being edited
   const [editingId, setEditingId] = useState(null);
   const [editData, setEditData] = useState({});
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [actionLoading, setActionLoading] = useState(false);
   const [actionError, setActionError] = useState("");
 
+  // 3. Sync local state if the parent prop changes (e.g. initial load or refetch)
+  useEffect(() => {
+    setLocalEmployees(employees);
+  }, [employees]);
+
   const startEdit = (emp) => {
     setEditingId(emp.employeeId);
+    
+    // Safely extract IDs for the input fields
+    const currentManagerId = emp.manager?.employeeId || emp.managerId || "";
+    const currentDeptId = emp.department?.departmentId || emp.departmentId || "";
+
     setEditData({
       ...emp,
+      departmentId: currentDeptId,
+      managerId: currentManagerId,
       salary: emp.salary || 0,
       leaveBalance: emp.leaveBalance || 0,
     });
@@ -45,30 +59,48 @@ export default function EmployeeDataView({
   const saveEdit = async () => {
     try {
       setActionLoading(true);
-      const payload = { ...editData };
 
-      await onEditSubmit(payload);
+      const payload = {
+        ...editData,
+        managerId: editData.managerId ? Number(editData.managerId) : null,
+        departmentId: editData.departmentId ? Number(editData.departmentId) : null,
+      };
+
+      // 4. CAPTURE the updated object returned from the backend
+      // Note: Ensure your parent component returns the axios response.data here!
+      const updatedEmployee = await onEditSubmit(payload);
+
+      // 5. UPDATE UI INSTANTLY
+      if (updatedEmployee) {
+        setLocalEmployees((prevList) =>
+          prevList.map((emp) =>
+            emp.employeeId === updatedEmployee.employeeId ? updatedEmployee : emp
+          )
+        );
+      }
+
       setEditingId(null);
     } catch (err) {
+      console.error(err);
       setActionError("Failed to update employee.");
     } finally {
       setActionLoading(false);
     }
   };
 
-  // --- Search & Pagination logic ---
+  // 6. Use localEmployees instead of employees prop for filtering
   const filteredData = useMemo(() => {
-    return employees.filter((emp) =>
+    return localEmployees.filter((emp) =>
       Object.values(emp).some((val) =>
-        String(val).toLowerCase().includes(searchTerm.toLowerCase()),
-      ),
+        String(val).toLowerCase().includes(searchTerm.toLowerCase())
+      )
     );
-  }, [employees, searchTerm]);
+  }, [localEmployees, searchTerm]);
 
   const totalPages = Math.ceil(filteredData.length / rowsPerPage);
   const currentRows = filteredData.slice(
     (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage,
+    currentPage * rowsPerPage
   );
 
   return (
@@ -100,6 +132,8 @@ export default function EmployeeDataView({
                   try {
                     setActionLoading(true);
                     await onDeleteConfirm(deleteConfirm);
+                    // Remove deleted item from local state immediately
+                    setLocalEmployees(prev => prev.filter(e => e.employeeId !== deleteConfirm));
                     setDeleteConfirm(null);
                   } finally {
                     setActionLoading(false);
@@ -140,6 +174,8 @@ export default function EmployeeDataView({
               <th className="px-4 py-4 text-left">Email</th>
               <th className="px-4 py-4 text-left">Leaves</th>
               <th className="px-4 py-4 text-left">Salary</th>
+              <th className="px-4 py-4 text-left">Manager ID</th>
+              <th className="px-4 py-4 text-left">Dept ID</th>
               <th className="px-4 py-4 text-right">Actions</th>
             </tr>
           </thead>
@@ -155,7 +191,6 @@ export default function EmployeeDataView({
               >
                 <td className="px-4 py-4 text-xs">{emp.employeeId || "N/A"}</td>
 
-                {/* STRICT ID CHECK: Only current row enters edit mode */}
                 {editingId === emp.employeeId ? (
                   <>
                     <td className="px-4 py-2">
@@ -187,6 +222,26 @@ export default function EmployeeDataView({
                         className="border p-1 w-full rounded text-sm"
                       />
                     </td>
+                    <td className="px-4 py-2">
+                      <input
+                        name="managerId"
+                        type="number"
+                        value={editData.managerId || ""}
+                        onChange={handleEditChange}
+                        placeholder="Mgr ID"
+                        className="border p-1 w-full rounded text-sm"
+                      />
+                    </td>
+                    <td className="px-4 py-2">
+                      <input
+                        name="departmentId"
+                        type="number"
+                        value={editData.departmentId || ""}
+                        onChange={handleEditChange}
+                        placeholder="Dept ID"
+                        className="border p-1 w-full rounded text-sm"
+                      />
+                    </td>
                     <td className="px-4 py-2 text-right">
                       <div className="flex justify-end gap-2">
                         <button
@@ -215,6 +270,19 @@ export default function EmployeeDataView({
                     <td className="px-4 py-4">
                       ${emp.salary?.toLocaleString() ?? "0"}
                     </td>
+
+                    <td className="px-4 py-4 text-zinc-600">
+                      {/* Handle both Object and direct ID */}
+                      {emp.manager?.employeeId || emp.managerId || "-"}
+                    </td>
+
+                    <td className="px-4 py-4">
+                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700">
+                         {/* Handle both Object and direct ID */}
+                         {emp.department?.departmentId || emp.departmentId || "-"}
+                      </span>
+                    </td>
+
                     <td className="px-4 py-4 text-right">
                       <div className="flex justify-end gap-3 text-zinc-300">
                         <button

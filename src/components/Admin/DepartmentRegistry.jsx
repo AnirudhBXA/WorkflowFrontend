@@ -38,7 +38,11 @@ export default function DepartmentRegistryView({
 
   const startEdit = (dept) => {
     setEditingId(dept.departmentId);
-    setEditData({ ...dept });
+    setEditData({
+      ...dept,
+      // Ensure hrId is initialized (handle nulls for the input field)
+      hrId: dept.hrId || "",
+    });
     setActionError("");
   };
 
@@ -50,10 +54,21 @@ export default function DepartmentRegistryView({
   const saveEdit = async () => {
     try {
       setActionLoading(true);
-      await onEditSubmit(editData);
+
+      // Prepare payload: Ensure hrId is sent as a Number or null (not empty string)
+      const payload = {
+        ...editData,
+        hrId: editData.hrId ? Number(editData.hrId) : null,
+      };
+
+      await onEditSubmit(payload);
       setEditingId(null);
     } catch (err) {
-      setActionError("Failed to update department.");
+      console.error(err);
+      // If the backend sends a specific message (like "Assignation Failed"), display it
+      const errorMsg =
+        err.response?.data?.message || "Failed to update department.";
+      setActionError(errorMsg);
     } finally {
       setActionLoading(false);
     }
@@ -76,15 +91,15 @@ export default function DepartmentRegistryView({
   const filteredData = useMemo(() => {
     return departments.filter((dept) =>
       Object.values(dept).some((val) =>
-        String(val).toLowerCase().includes(searchTerm.toLowerCase()),
-      ),
+        String(val).toLowerCase().includes(searchTerm.toLowerCase())
+      )
     );
   }, [departments, searchTerm]);
 
   const totalPages = Math.ceil(filteredData.length / rowsPerPage);
   const currentRows = filteredData.slice(
     (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage,
+    currentPage * rowsPerPage
   );
 
   return (
@@ -129,7 +144,7 @@ export default function DepartmentRegistryView({
         </div>
       )}
 
-      {/* --- Create Department Form (Simplified for brevity) --- */}
+      {/* --- Create Department Form --- */}
       <div className="bg-white border border-zinc-200 shadow-sm">
         <div className="bg-zinc-50 px-6 py-3 border-b">
           <h2 className="text-xs font-black uppercase tracking-widest text-zinc-500">
@@ -137,7 +152,7 @@ export default function DepartmentRegistryView({
           </h2>
         </div>
         <form
-          onSubmit={onSubmit} // ADD THIS: crucial for form submission
+          onSubmit={onSubmit}
           className="p-6 grid grid-cols-1 md:grid-cols-3 gap-6"
         >
           <div className="md:col-span-2">
@@ -147,7 +162,7 @@ export default function DepartmentRegistryView({
             <input
               name="departmentName"
               value={departmentName}
-              onChange={onChange} // This now correctly calls setDepartmentName in the parent
+              onChange={onChange}
               className="w-full px-3 py-2 border text-sm outline-none focus:ring-1 focus:ring-zinc-900"
               placeholder="e.g. Engineering"
               required
@@ -155,7 +170,7 @@ export default function DepartmentRegistryView({
           </div>
           <div className="flex items-end">
             <button
-              type="submit" // Ensure type is submit
+              type="submit"
               disabled={loading}
               className="w-full bg-zinc-900 text-white px-8 py-2 text-xs uppercase font-bold h-9.5 disabled:opacity-50"
             >
@@ -192,7 +207,7 @@ export default function DepartmentRegistryView({
             <tr>
               <th className="px-4 py-4 text-left">Dept ID</th>
               <th className="px-4 py-4 text-left">Name</th>
-              <th className="px-4 py-4 text-left">HR Lead</th>
+              <th className="px-4 py-4 text-left">HR Lead (ID)</th>
               <th className="px-4 py-4 text-right">Actions</th>
             </tr>
           </thead>
@@ -205,22 +220,30 @@ export default function DepartmentRegistryView({
                     editingId === dept.departmentId ? "bg-zinc-50" : ""
                   }
                 >
-                  <td className="px-4 py-4 text-xs">
-                    {dept.departmentId}
-                  </td>
+                  <td className="px-4 py-4 text-xs">{dept.departmentId}</td>
 
                   {editingId === dept.departmentId ? (
                     <>
+                      {/* --- EDIT MODE --- */}
                       <td className="px-4 py-2">
                         <input
                           name="departmentName"
                           value={editData.departmentName}
                           onChange={handleEditChange}
                           className="border border-zinc-300 p-1 w-full bg-white text-sm"
+                          placeholder="Dept Name"
                         />
                       </td>
-                      <td className="px-4 py-4 text-zinc-400 italic">
-                        HR linked to ID: {dept.hrId || "N/A"}
+                      <td className="px-4 py-2">
+                        {/* ADDED INPUT FOR HR ID */}
+                        <input
+                          name="hrId"
+                          type="number"
+                          value={editData.hrId}
+                          onChange={handleEditChange}
+                          className="border border-zinc-300 p-1 w-full bg-white text-sm"
+                          placeholder="HR Emp ID"
+                        />
                       </td>
                       <td className="px-4 py-2 text-right">
                         <div className="flex justify-end gap-2">
@@ -238,11 +261,20 @@ export default function DepartmentRegistryView({
                     </>
                   ) : (
                     <>
+                      {/* --- VIEW MODE --- */}
                       <td className="px-4 py-4 font-bold">
                         {dept.departmentName}
                       </td>
                       <td className="px-4 py-4 text-zinc-600">
-                        {dept.hrId || "Unassigned"}
+                        {dept.hrId ? (
+                          <span className="bg-blue-50 text-blue-700 px-2 py-1 rounded-full text-xs font-medium">
+                            ID: {dept.hrId}
+                          </span>
+                        ) : (
+                          <span className="text-zinc-400 italic">
+                            Unassigned
+                          </span>
+                        )}
                       </td>
                       <td className="px-4 py-4 text-right">
                         <div className="flex justify-end gap-3 text-zinc-300">

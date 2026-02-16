@@ -1,38 +1,87 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axiosInstance from "../utils/axiosInstance";
 import WeeklyHoursChart from "../components/Timesheets/WeeklyHoursChart";
 import MonthlyTimesheetTable from "../components/Timesheets/MonthlyTimesheetTable";
 import ManagerTimesheetApprovalTable from "../components/Timesheets/ManagerTimesheetApprovalTable";
 import { Clock, BarChart3, ListChecks } from "lucide-react";
+import { AuthContext } from "../context/AuthContext";
 
 export default function TimesheetsComponent() {
-  const [role] = useState("manager");
+  const { user } = useContext(AuthContext);
   const [loading, setLoading] = useState(true);
+  const [ myTimesheets, setMyTimesheets ] = useState([]);
   const [weeklyData, setWeeklyData] = useState([]);
   const [monthlyData, setMonthlyData] = useState([]);
   const [teamTimesheets, setTeamTimesheets] = useState([]);
 
   useEffect(() => {
-    setTimeout(() => {
-      setWeeklyData([
-        { day: "Mon", hours: 8 },
-        { day: "Tue", hours: 7 },
-        { day: "Wed", hours: 6 },
-        { day: "Thu", hours: 8 },
-        { day: "Fri", hours: 5 },
-      ]);
-      setMonthlyData([
-        { week: "Week 1", hours: 38, status: "Approved" },
-        { week: "Week 2", hours: 40, status: "Approved" },
-        { week: "Week 3", hours: 36, status: "Pending" },
-      ]);
-      setTeamTimesheets([
-        { id: 1, employee: "John Doe", week: "Week 3", hours: 35 },
-        { id: 2, employee: "Jane Smith", week: "Week 3", hours: 40 },
-      ]);
-      setLoading(false);
-    }, 1000);
+
+    fetchMyTimesheets();
+    fetchMyMonthReport();
+
+    if(user.role === "MANAGER"){
+      fetchTeamTimesheets();
+    }
+
+    // setTimeout(() => {
+    //   setWeeklyData([
+    //     { day: "Mon", hours: 8 },
+    //     { day: "Tue", hours: 7 },
+    //     { day: "Wed", hours: 6 },
+    //     { day: "Thu", hours: 8 },
+    //     { day: "Fri", hours: 5 },
+    //   ]);
+    //   setMonthlyData([
+    //     { week: "Week 1", hours: 38, status: "Approved" },
+    //     { week: "Week 2", hours: 40, status: "Approved" },
+    //     { week: "Week 3", hours: 36, status: "Pending" },
+    //   ]);
+    //   setTeamTimesheets([
+    //     { id: 1, employee: "John Doe", week: "Week 3", hours: 35 },
+    //     { id: 2, employee: "Jane Smith", week: "Week 3", hours: 40 },
+    //   ]);
+    //   setLoading(false);
+    // }, 1000);
   }, []);
+
+  async function fetchMyTimesheets(){
+    try{
+      const response = await axiosInstance.get("/timesheets/me");
+      setMyTimesheets(response.data);
+    }
+    catch(e){
+      alert("failed to fetch the data");
+    }
+    finally{
+      setLoading(false);
+    }
+  }
+  
+  async function fetchMyMonthReport(){
+    try{
+      const response = await axiosInstance.get("/timesheets/this-month");
+      setMonthlyData(response.data);
+    }
+    catch(e){
+      alert("failed to fetch the data");
+    }
+    finally{
+      setLoading(false);
+    }
+  }
+  
+  async function fetchTeamTimesheets(){
+    try{
+      const response = await axiosInstance.get("/timesheets/team");
+      setTeamTimesheets(response.data);
+    }
+    catch(e){
+      alert("failed to fetch the data");
+    }
+    finally{
+      setLoading(false);
+    }
+  }
 
   if (loading)
     return (
@@ -82,7 +131,8 @@ export default function TimesheetsComponent() {
       {/* Tables Section */}
       <div className="grid lg:grid-cols-2 gap-8 items-start">
         <MonthlyTimesheetTable data={monthlyData} />
-        {role === "manager" && (
+
+        {user.role === "MANAGER" && (
           <ManagerTimesheetApprovalTable data={teamTimesheets} />
         )}
       </div>

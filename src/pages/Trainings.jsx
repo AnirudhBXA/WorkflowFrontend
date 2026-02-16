@@ -1,52 +1,55 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import TrainingCard from "../components/Trainings/TrainingCard";
 import { BookOpen, Users, ArrowUpRight } from "lucide-react";
+import { AuthContext } from "../context/AuthContext";
+import axiosInstance from "../utils/axiosInstance";
 
 export default function TrainingsComponent() {
-  const [role] = useState("manager");
+  // const [role] = useState("manager");
+  const { user } = useContext(AuthContext);
   const [loading, setLoading] = useState(true);
   const [myTrainings, setMyTrainings] = useState([]);
   const [teamTrainings, setTeamTrainings] = useState([]);
 
   useEffect(() => {
-    setTimeout(() => {
-      setMyTrainings([
-        {
-          trainingName: "Advanced Java",
-          trainerName: "Anirudh",
-          startDate: "2026-02-03",
-          endDate: "2026-02-06",
-          status: "ONGOING",
-        },
-        {
-          trainingName: "Business Communication",
-          trainerName: "Krishna",
-          startDate: "2026-03-10",
-          endDate: "2026-03-15",
-          status: "PLANNED",
-        },
-      ]);
-      setTeamTrainings([
-        {
-          employeeName: "Murli",
-          trainingTitle: "Python",
-          trainerName: "Krishna",
-          startDate: "2026-02-03",
-          endDate: "2026-02-06",
-          status: "ONGOING",
-        },
-        {
-          employeeName: "Sneha",
-          trainingTitle: "English",
-          trainerName: "Anirudh",
-          startDate: "2026-01-10",
-          endDate: "2026-01-15",
-          status: "COMPLETED",
-        },
-      ]);
-      setLoading(false);
-    }, 1000);
+
+    // console.log(user)
+    
+    fetchMyTrainings();
+
+    if(user.role === "MANAGER"){
+      fetchTeamTrainings();
+    }
+      
   }, []);
+
+  async function fetchMyTrainings(){
+    try{
+      const response = await axiosInstance.get("/trainings/me");
+      setMyTrainings(response.data);
+      console.log(myTrainings);
+    }
+    catch(e){
+      alert("failed to fetch the data");
+    }
+    finally{
+      setLoading(false);
+    }
+  }
+
+  async function fetchTeamTrainings(){
+    try{
+      const response = await axiosInstance.get("/trainings/teamTrainings");
+      setTeamTrainings(response.data);
+      console.log(teamTrainings);
+    }
+    catch(e){
+      alert("failed to fetch the data");
+    }
+    finally{
+      setLoading(false);
+    }
+  }
 
   const statusBadge = (status) => {
     const map = {
@@ -104,7 +107,9 @@ export default function TrainingsComponent() {
       </section>
 
       {/* Team Progress Section */}
-      {role === "manager" && (
+      {user.role === "MANAGER" && (
+
+
         <section className="space-y-6 pt-6">
           <div className="flex items-center gap-2 px-2">
             <Users className="w-5 h-5 text-indigo-600" />
@@ -121,7 +126,7 @@ export default function TrainingsComponent() {
                     <th className="px-8 py-5 text-left">Employee</th>
                     <th className="px-8 py-5 text-left">Training Module</th>
                     <th className="px-8 py-5 text-left">Mentor</th>
-                    <th className="px-8 py-5 text-left">Timeline</th>
+                    <th className="px-8 py-5 text-left">Due Date</th>
                     <th className="px-8 py-5 text-left">Status</th>
                   </tr>
                 </thead>
@@ -134,23 +139,24 @@ export default function TrainingsComponent() {
                       <td className="px-8 py-6">
                         <div className="flex items-center gap-3">
                           <div className="w-8 h-8 rounded-lg bg-indigo-100 flex items-center justify-center text-[10px] font-black text-indigo-700">
-                            {item.employeeName.charAt(0)}
+                            {item.employee.name.charAt(0)}
                           </div>
                           <span className="font-bold text-gray-900">
-                            {item.employeeName}
+                            {item.employee.name}
                           </span>
                         </div>
                       </td>
                       <td className="px-8 py-6 font-bold text-gray-700">
-                        {item.trainingTitle}
+                        {item.trainingName}
                       </td>
                       <td className="px-8 py-6 text-gray-500 font-medium">
                         {item.trainerName}
                       </td>
                       <td className="px-8 py-6">
                         <p className="text-[11px] font-bold text-gray-400 uppercase">
-                          {item.startDate} <span className="mx-1">→</span>{" "}
-                          {item.endDate}
+                          {/* {item.startDate} <span className="mx-1">→</span>{" "}
+                          {item.endDate} */}
+                          {item.dueDate}
                         </p>
                       </td>
                       <td className="px-8 py-6">{statusBadge(item.status)}</td>

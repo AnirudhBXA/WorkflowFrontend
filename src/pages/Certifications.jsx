@@ -1,57 +1,86 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import ValuesDisplayCard from "../components/ValuesDisplayCard";
 import CertificationApprovalComponent from "../components/Certifications/CertificationApproval";
 import CertificationBriefCard from "../components/Certifications/CertificationBriefCard"; // Import the modal
 import { History, Plus } from "lucide-react";
+import { AuthContext } from "../context/AuthContext";
+import axiosInstance from "../utils/axiosInstance";
 
 export default function CertificationsComponent() {
-  const [role] = useState("HR");
+  const { user } = useContext(AuthContext);
   const [loading, setLoading] = useState(true);
   const [myCerts, setMyCerts] = useState([]);
-  const [summary] = useState({ left: 20000, used: 30000 });
+  const [summary, setSummary] = useState({ left: 0, used: 0 });
 
   // States for Approval Workflow
   const [pendingItems, setPendingItems] = useState([]);
   const [selected, setSelected] = useState(null);
 
   useEffect(() => {
-    // Mocking API Data
-    setTimeout(() => {
-      setMyCerts([
-        {
-          id: 1,
-          title: "AWS Architect",
-          provider: "Amazon",
-          date: "2026-02-01",
-          status: "APPROVED",
-        },
-        {
-          id: 2,
-          title: "Azure Fundamentals",
-          provider: "Microsoft",
-          date: "2026-03-01",
-          status: "SUBMITTED",
-        },
-      ]);
+    
+    fetchMyCertificates();
 
-      setPendingItems([
-        {
-          id: 101,
-          name: "AWS Cloud Practitioner",
-          employeeName: "Anirudh",
-          date: "2026-02-05",
-        },
-        {
-          id: 102,
-          name: "Google Data Engineer",
-          employeeName: "Sneha",
-          date: "2026-02-04",
-        },
-      ]);
+    fetchMySummary();
 
-      setLoading(false);
-    }, 1000);
+    if(user.role === "MANAGER"){
+      fetchTeamCertificates();
+    }
+
   }, []);
+
+  async function fetchMyCertificates(){
+    try{
+      const response = await axiosInstance.get("/certifications/me");
+      setMyCerts(response.data);
+    }
+    catch(e){
+      alert("failed to fetch the data");
+    }
+    finally{
+      setLoading(false);
+    }
+  }
+
+  async function fetchMySummary(){
+    try{
+      const response = await axiosInstance.get("/certifications/mySummary");
+      setSummary(response.data);
+    }
+    catch(e){
+      alert("failed to fetch the data");
+    }
+    finally{
+      setLoading(false);
+    }
+  }
+
+  async function fetchTeamCertificates(){
+    try{
+      const response = await axiosInstance.get("/certifications/team");
+      setPendingItems(response.data);
+    }
+    catch(e){
+      alert("failed to fetch the data");
+    }
+    finally{
+      setLoading(false);
+    }
+  }
+
+  async function handleCertificationApproval(decision){
+
+    try{
+      const response = await axiosInstance.post(
+        `/certifications/manager-action/${selected.taskId}?approved=${decision}`
+      )
+      
+      setPendingItems((prev) => prev.filter((i) => i.id !== selected.id));
+      setSelected(null);
+    } catch(e){
+      alert("status update failed")
+      console.log(e);
+    }
+  }
 
   const badge = (status) => {
     const map = {
@@ -83,13 +112,10 @@ export default function CertificationsComponent() {
           item={selected}
           onClose={() => setSelected(null)}
           onApprove={() => {
-            // Logic to remove from pending and add to history would go here
-            setPendingItems((prev) => prev.filter((i) => i.id !== selected.id));
-            setSelected(null);
+            handleCertificationApproval(true);
           }}
           onReject={() => {
-            setPendingItems((prev) => prev.filter((i) => i.id !== selected.id));
-            setSelected(null);
+            handleCertificationApproval(false);
           }}
         />
       )}
@@ -134,7 +160,7 @@ export default function CertificationsComponent() {
             <thead>
               <tr className="bg-gray-50/50 text-[10px] font-black uppercase tracking-widest text-gray-400">
                 <th className="px-8 py-4 text-left">Certification Name</th>
-                <th className="px-8 py-4 text-left">Provider</th>
+                <th className="px-8 py-4 text-left">Reimbursement Amount</th>
                 <th className="px-8 py-4 text-left">Status</th>
               </tr>
             </thead>
@@ -145,10 +171,10 @@ export default function CertificationsComponent() {
                   className="hover:bg-indigo-50/30 transition-colors"
                 >
                   <td className="px-8 py-5 font-bold text-gray-800">
-                    {c.title}
+                    {c.certificationName}
                   </td>
                   <td className="px-8 py-5 text-gray-500 font-medium">
-                    {c.provider}
+                    {c.reimbursementAmount}
                   </td>
                   <td className="px-8 py-5">{badge(c.status)}</td>
                 </tr>
@@ -159,7 +185,7 @@ export default function CertificationsComponent() {
       </div>
 
       {/* 5. HR Section - Passing Props Correctly */}
-      {role === "HR" && (
+      {user.role === "MANAGER" && (
         <CertificationApprovalComponent
           items={pendingItems}
           setSelected={setSelected}

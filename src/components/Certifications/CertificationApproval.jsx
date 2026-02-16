@@ -32,23 +32,23 @@ export default function CertificationApprovalComponent({ items, setSelected }) {
               </tr>
             ) : (
               items.map((item) => (
-                <tr
-                  key={item.id}
+                <tr 
+                  key={item.certId}
                   className="group hover:bg-indigo-50/30 transition-colors cursor-pointer"
                   onClick={() => setSelected(item)} // This updates parent state
                 >
                   <td className="px-8 py-6">
                     <div className="flex items-center gap-3">
                       <div className="w-9 h-9 bg-indigo-100 rounded-xl flex items-center justify-center text-indigo-700 font-black text-xs">
-                        {item.employeeName.charAt(0)}
+                        {item.employee.name.charAt(0)}
                       </div>
                       <span className="font-bold text-gray-900">
-                        {item.employeeName}
+                        {item.employee.name}
                       </span>
                     </div>
                   </td>
                   <td className="px-8 py-6 font-bold text-gray-700">
-                    {item.name}
+                    {item.certificationName}
                   </td>
                   <td className="px-8 py-6 text-center">
                     <div className="inline-flex items-center gap-2 text-indigo-600 font-bold text-xs uppercase group-hover:gap-4 transition-all">

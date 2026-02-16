@@ -21,11 +21,11 @@ export default function MonthlyTimesheetTable({ data }) {
           <tbody className="divide-y divide-gray-50">
             {data.map((row, idx) => (
               <tr key={idx} className="hover:bg-indigo-50/30 transition-colors">
-                <td className="px-8 py-5 text-sm font-bold text-gray-700">
-                  {row.week}
+                <td className="text-[11px] px-8 py-5 text-sm font-bold text-gray-700">
+                  {row.weekStart} <br></br> - {row.weekEnd}
                 </td>
                 <td className="px-8 py-5 text-sm font-black text-gray-900">
-                  {row.hours}{" "}
+                  {row.hoursWorked}{" "}
                   <span className="text-[10px] text-gray-400 font-bold uppercase">
                     hrs
                   </span>

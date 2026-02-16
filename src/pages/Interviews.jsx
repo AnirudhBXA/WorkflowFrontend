@@ -38,7 +38,9 @@ export default function InterviewsComponent() {
       }
     }
     fetchInterviews();
-    fetchEmployeeInterviews();
+    if(user.role === "HR"){
+      fetchEmployeeInterviews();
+    }
   }, []);
 
   async function fetchEmployeeInterviews(){

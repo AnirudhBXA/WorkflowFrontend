@@ -1,6 +1,24 @@
 import { Check, X, User } from "lucide-react";
+import axiosInstance from "../../utils/axiosInstance";
 
 export default function ManagerTimesheetApprovalTable({ data }) {
+
+  async function handleApprovalTask(taskId, decision){
+    try{
+      const response = await axiosInstance.post(
+        `/timesheets/tasks/${taskId}/complete`,
+        {
+          managerDecision: decision
+        }
+      )
+    } catch(e){
+      alert("failed to update the status");
+      console.log(e);
+    }
+  }
+
+
+
   return (
     <div className="bg-white rounded-4xl shadow-sm border border-indigo-50 overflow-hidden">
       <div className="px-8 py-5 border-b border-gray-50 flex items-center justify-between bg-gray-50/30">
@@ -24,7 +42,7 @@ export default function ManagerTimesheetApprovalTable({ data }) {
           <tbody className="divide-y divide-gray-50">
             {data.map((row) => (
               <tr
-                key={row.id}
+                key={row.timesheetId}
                 className="group hover:bg-indigo-50/30 transition-colors"
               >
                 <td className="px-8 py-5">
@@ -34,25 +52,31 @@ export default function ManagerTimesheetApprovalTable({ data }) {
                     </div>
                     <div>
                       <p className="text-sm font-bold text-gray-800">
-                        {row.employee}
+                        {row.employee.name}
                       </p>
-                      <p className="text-[10px] font-bold text-gray-400">
-                        {row.week}
+                      <p className="text-[8px] font-bold text-gray-400">
+                        {row.weekStart} - {row.weekEnd}
                       </p>
                     </div>
                   </div>
                 </td>
                 <td className="px-8 py-5">
                   <p className="text-sm font-black text-indigo-600">
-                    {row.hours}h
+                    {row.hoursWorked}h
                   </p>
                 </td>
                 <td className="px-8 py-5">
                   <div className="flex items-center justify-center gap-2">
-                    <button className="p-2 bg-emerald-50 text-emerald-600 rounded-xl hover:bg-emerald-600 hover:text-white transition-all">
+                    <button 
+                      className="p-2 bg-emerald-50 text-emerald-600 rounded-xl hover:bg-emerald-600 hover:text-white transition-all"
+                      onClick={(e) => {handleApprovalTask(row.taskId, "APPROVED")}}
+                      >
                       <Check size={16} />
                     </button>
-                    <button className="p-2 bg-rose-50 text-rose-600 rounded-xl hover:bg-rose-600 hover:text-white transition-all">
+                    <button 
+                      className="p-2 bg-rose-50 text-rose-600 rounded-xl hover:bg-rose-600 hover:text-white transition-all"
+                      onClick={(e)=> {handleApprovalTask(row.taskId, "REJECTED")}}
+                      >
                       <X size={16} />
                     </button>
                   </div>

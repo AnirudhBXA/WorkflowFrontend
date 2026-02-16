@@ -34,15 +34,9 @@ export default function TrainingCard({ data }) {
         <div className="flex items-center gap-3">
           <Calendar size={14} className="text-gray-400" />
           <p className="text-xs font-bold text-gray-500 uppercase tracking-tight">
-            {new Date(data.startDate).toLocaleDateString("en-US", {
+            Due date : {new Date(data.dueDate).toLocaleDateString("en-US", {
               month: "short",
               day: "numeric",
-            })}
-            <span className="mx-2 text-gray-300">→</span>
-            {new Date(data.endDate).toLocaleDateString("en-US", {
-              month: "short",
-              day: "numeric",
-              year: "numeric",
             })}
           </p>
         </div>

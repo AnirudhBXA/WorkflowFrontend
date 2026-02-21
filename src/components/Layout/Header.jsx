@@ -1,4 +1,166 @@
-import { Bell, Search, Settings, LogOut, User as UserIcon } from "lucide-react";
+// import { Bell, Search, Settings, LogOut, User as UserIcon } from "lucide-react";
+// import { useEffect, useState, useContext } from "react";
+// import { Menu, Portal } from "@chakra-ui/react";
+// import { Link } from "react-router-dom";
+// import { AuthContext } from "../../context/AuthContext";
+// import axiosInstance from "../../utils/axiosInstance";
+
+// function HeaderComponent() {
+//   const [notifications, setNotifications] = useState([]);
+//   const { logout, user } = useContext(AuthContext);
+
+//   useEffect(() => {
+//     setNotifications([
+//       {
+//         id: 1,
+//         title: "Flexi declaration open 📢",
+//         description: "Declaration for 2025-2026 is now live",
+//         time: "2h ago",
+//         unread: true,
+//       },
+//       {
+//         id: 2,
+//         title: "Timesheet Approved ✅",
+//         description: "Your manager approved last week's entries",
+//         time: "5h ago",
+//         unread: false,
+//       },
+//     ]);
+//   }, []);
+
+//   function handleLogout() {
+//     axiosInstance.post("/auth/logout");
+//     logout();
+//   }
+
+//   function getProfileIcon() {
+//     return (
+//       user?.name
+//         ?.split(" ")
+//         .map((word) => word[0])
+//         .join("")
+//         .toUpperCase() || ""
+//     );
+//   }
+
+//   return (
+//     <header className="sticky top-0 z-50 w-full h-20 bg-white/80 backdrop-blur-md flex items-center justify-end px-10">
+//       {/* Right Side */}
+//       <div className="flex items-center gap-4">
+//         {/* 🔔 Notifications */}
+//         <Menu.Root>
+//           <Menu.Trigger asChild>
+//             <button className="relative p-2.5 rounded-xl hover:bg-indigo-50 text-gray-500 hover:text-indigo-600 transition-all">
+//               <Bell size={22} strokeWidth={2} />
+//               {notifications.some((n) => n.unread) && (
+//                 <span className="absolute top-2.5 right-2.5 w-2.5 h-2.5 bg-indigo-600 border-2 border-white rounded-full"></span>
+//               )}
+//             </button>
+//           </Menu.Trigger>
+
+//           <Portal>
+//             <Menu.Positioner>
+//               <Menu.Content className="outline-none z-60">
+//                 <div className="w-80 bg-white rounded-2xl shadow-2xl border border-indigo-50 overflow-hidden mt-2">
+//                   <div className="px-6 py-4 border-b border-gray-50 flex justify-between items-center bg-gray-50/50">
+//                     <h3 className="text-sm font-bold text-gray-900">
+//                       Activity
+//                     </h3>
+//                     <button className="text-[10px] font-black uppercase tracking-widest text-indigo-600 hover:text-indigo-700">
+//                       Mark Read
+//                     </button>
+//                   </div>
+
+//                   <div className="max-h-80 overflow-y-auto">
+//                     {notifications.map((n) => (
+//                       <div
+//                         key={n.id}
+//                         className="p-5 hover:bg-indigo-50/30 transition-colors cursor-pointer border-b border-gray-50 last:border-0 flex gap-4"
+//                       >
+//                         <div
+//                           className={`w-2 h-2 mt-2 rounded-full shrink-0 ${n.unread ? "bg-indigo-600" : "bg-transparent"}`}
+//                         />
+//                         <div>
+//                           <p className="text-sm font-bold text-gray-800 leading-tight">
+//                             {n.title}
+//                           </p>
+//                           <p className="text-xs text-gray-500 mt-1">
+//                             {n.description}
+//                           </p>
+//                           <p className="text-[10px] font-medium text-gray-400 mt-2">
+//                             {n.time}
+//                           </p>
+//                         </div>
+//                       </div>
+//                     ))}
+//                   </div>
+//                 </div>
+//               </Menu.Content>
+//             </Menu.Positioner>
+//           </Portal>
+//         </Menu.Root>
+
+//         {/* Divider */}
+//         <div className="h-8 w-px bg-gray-100 mx-2" />
+
+//         {/* 👤 Profile Menu */}
+//         <Menu.Root>
+//           <Menu.Trigger asChild>
+//             <div className="flex items-center gap-3 pl-2 cursor-pointer group">
+//               {/* User Info */}
+//               <div className="flex flex-col items-end">
+//                 <p className="text-sm font-bold text-gray-900 leading-none">
+//                   {user?.name || "John Doe"}
+//                 </p>
+//                 {/* <p className="text-[10px] font-bold text-indigo-500 uppercase tracking-tight mt-1">
+//                   {user?.department || "Engineering"}
+//                 </p> */}
+//                 <p className="text-[10px] font-bold text-gray-500 uppercase tracking-tight mt-1">
+//                   {user?.role || "USER"}
+//                 </p>
+//               </div>
+
+//               {/* Profile Icon */}
+//               <div className="w-10 h-10 rounded-xl bg-linear-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-xs font-black shadow-lg shadow-indigo-100 group-hover:scale-105 transition-transform">
+//                 {getProfileIcon()}
+//               </div>
+//             </div>
+//           </Menu.Trigger>
+
+//           <Portal>
+//             <Menu.Positioner>
+//               <Menu.Content className="outline-none">
+//                 <div className="w-56 bg-white rounded-2xl shadow-2xl border border-indigo-50 p-2 mt-2">
+//                   <Link to="/profile">
+//                     <div className="flex items-center gap-3 px-4 py-3 text-sm font-bold text-gray-700 hover:bg-indigo-50 rounded-xl transition-colors">
+//                       <UserIcon size={18} className="text-gray-400" /> Profile
+//                     </div>
+//                   </Link>
+//                   <Link to="/settings">
+//                     <div className="flex items-center gap-3 px-4 py-3 text-sm font-bold text-gray-700 hover:bg-indigo-50 rounded-xl transition-colors">
+//                       <Settings size={18} className="text-gray-400" /> Settings
+//                     </div>
+//                   </Link>
+//                   <div className="h-px bg-gray-50 my-2" />
+//                   <div
+//                     onClick={handleLogout}
+//                     className="flex items-center gap-3 px-4 py-3 text-sm font-bold text-red-600 hover:bg-red-50 rounded-xl transition-colors cursor-pointer"
+//                   >
+//                     <LogOut size={18} /> Logout
+//                   </div>
+//                 </div>
+//               </Menu.Content>
+//             </Menu.Positioner>
+//           </Portal>
+//         </Menu.Root>
+//       </div>
+//     </header>
+//   );
+// }
+
+// export default HeaderComponent;
+
+import { Bell, Settings, LogOut, User as UserIcon } from "lucide-react";
 import { useEffect, useState, useContext } from "react";
 import { Menu, Portal } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
@@ -13,14 +175,14 @@ function HeaderComponent() {
     setNotifications([
       {
         id: 1,
-        title: "Flexi declaration open 📢",
+        title: "Flexi declaration open",
         description: "Declaration for 2025-2026 is now live",
         time: "2h ago",
         unread: true,
       },
       {
         id: 2,
-        title: "Timesheet Approved ✅",
+        title: "Timesheet Approved",
         description: "Your manager approved last week's entries",
         time: "5h ago",
         unread: false,
@@ -37,91 +199,70 @@ function HeaderComponent() {
     return (
       user?.name
         ?.split(" ")
-        .map((word) => word[0])
+        .map((w) => w[0])
         .join("")
         .toUpperCase() || ""
     );
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full h-20 bg-white/80 backdrop-blur-md flex items-center justify-end px-10">
-      {/* Right Side */}
-      <div className="flex items-center gap-4">
-        {/* 🔔 Notifications */}
+    <header className="sticky top-0 z-40 h-16 bg-[#0F172A] border-b border-slate-800 flex items-center justify-end px-8">
+      <div className="flex items-center gap-5">
         <Menu.Root>
           <Menu.Trigger asChild>
-            <button className="relative p-2.5 rounded-xl hover:bg-indigo-50 text-gray-500 hover:text-indigo-600 transition-all">
-              <Bell size={22} strokeWidth={2} />
+            <button className="relative p-2 rounded-xl hover:bg-[#111827] text-slate-400 hover:text-white">
+              <Bell size={20} />
               {notifications.some((n) => n.unread) && (
-                <span className="absolute top-2.5 right-2.5 w-2.5 h-2.5 bg-indigo-600 border-2 border-white rounded-full"></span>
+                <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-indigo-500 rounded-full"></span>
               )}
             </button>
           </Menu.Trigger>
 
           <Portal>
             <Menu.Positioner>
-              <Menu.Content className="outline-none z-60">
-                <div className="w-80 bg-white rounded-2xl shadow-2xl border border-indigo-50 overflow-hidden mt-2">
-                  <div className="px-6 py-4 border-b border-gray-50 flex justify-between items-center bg-gray-50/50">
-                    <h3 className="text-sm font-bold text-gray-900">
-                      Activity
+              <Menu.Content className="outline-none">
+                <div className="w-80 bg-[#111827] rounded-2xl border border-slate-700 overflow-hidden mt-2">
+                  <div className="px-5 py-4 border-b border-slate-700">
+                    <h3 className="text-sm font-bold text-white">
+                      Notifications
                     </h3>
-                    <button className="text-[10px] font-black uppercase tracking-widest text-indigo-600 hover:text-indigo-700">
-                      Mark Read
-                    </button>
                   </div>
 
-                  <div className="max-h-80 overflow-y-auto">
-                    {notifications.map((n) => (
-                      <div
-                        key={n.id}
-                        className="p-5 hover:bg-indigo-50/30 transition-colors cursor-pointer border-b border-gray-50 last:border-0 flex gap-4"
-                      >
-                        <div
-                          className={`w-2 h-2 mt-2 rounded-full shrink-0 ${n.unread ? "bg-indigo-600" : "bg-transparent"}`}
-                        />
-                        <div>
-                          <p className="text-sm font-bold text-gray-800 leading-tight">
-                            {n.title}
-                          </p>
-                          <p className="text-xs text-gray-500 mt-1">
-                            {n.description}
-                          </p>
-                          <p className="text-[10px] font-medium text-gray-400 mt-2">
-                            {n.time}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                  {notifications.map((n) => (
+                    <div
+                      key={n.id}
+                      className="px-5 py-4 hover:bg-[#0B1220] transition"
+                    >
+                      <p className="text-sm font-semibold text-slate-200">
+                        {n.title}
+                      </p>
+                      <p className="text-xs text-slate-400 mt-1">
+                        {n.description}
+                      </p>
+                      <p className="text-[10px] text-slate-500 mt-2">
+                        {n.time}
+                      </p>
+                    </div>
+                  ))}
                 </div>
               </Menu.Content>
             </Menu.Positioner>
           </Portal>
         </Menu.Root>
 
-        {/* Divider */}
-        <div className="h-8 w-px bg-gray-100 mx-2" />
-
-        {/* 👤 Profile Menu */}
         <Menu.Root>
           <Menu.Trigger asChild>
-            <div className="flex items-center gap-3 pl-2 cursor-pointer group">
-              {/* User Info */}
-              <div className="flex flex-col items-end">
-                <p className="text-sm font-bold text-gray-900 leading-none">
+            <div className="flex items-center gap-3 cursor-pointer">
+              <div className="text-right">
+                <p className="text-sm font-semibold text-white">
                   {user?.name || "John Doe"}
                 </p>
-                {/* <p className="text-[10px] font-bold text-indigo-500 uppercase tracking-tight mt-1">
-                  {user?.department || "Engineering"}
-                </p> */}
-                <p className="text-[10px] font-bold text-gray-500 uppercase tracking-tight mt-1">
+                <p className="text-[10px] text-slate-400 uppercase">
                   {user?.role || "USER"}
                 </p>
               </div>
 
-              {/* Profile Icon */}
-              <div className="w-10 h-10 rounded-xl bg-linear-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-xs font-black shadow-lg shadow-indigo-100 group-hover:scale-105 transition-transform">
+              <div className="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center text-xs font-bold text-white">
                 {getProfileIcon()}
               </div>
             </div>
@@ -130,23 +271,26 @@ function HeaderComponent() {
           <Portal>
             <Menu.Positioner>
               <Menu.Content className="outline-none">
-                <div className="w-56 bg-white rounded-2xl shadow-2xl border border-indigo-50 p-2 mt-2">
+                <div className="w-56 bg-[#111827] border border-slate-700 rounded-2xl p-2 mt-2">
                   <Link to="/profile">
-                    <div className="flex items-center gap-3 px-4 py-3 text-sm font-bold text-gray-700 hover:bg-indigo-50 rounded-xl transition-colors">
-                      <UserIcon size={18} className="text-gray-400" /> Profile
+                    <div className="flex items-center gap-3 px-4 py-3 text-sm font-semibold text-slate-300 hover:bg-[#0B1220] rounded-xl">
+                      <UserIcon size={16} /> Profile
                     </div>
                   </Link>
+
                   <Link to="/settings">
-                    <div className="flex items-center gap-3 px-4 py-3 text-sm font-bold text-gray-700 hover:bg-indigo-50 rounded-xl transition-colors">
-                      <Settings size={18} className="text-gray-400" /> Settings
+                    <div className="flex items-center gap-3 px-4 py-3 text-sm font-semibold text-slate-300 hover:bg-[#0B1220] rounded-xl">
+                      <Settings size={16} /> Settings
                     </div>
                   </Link>
-                  <div className="h-px bg-gray-50 my-2" />
+
+                  <div className="h-px bg-slate-700 my-2" />
+
                   <div
                     onClick={handleLogout}
-                    className="flex items-center gap-3 px-4 py-3 text-sm font-bold text-red-600 hover:bg-red-50 rounded-xl transition-colors cursor-pointer"
+                    className="flex items-center gap-3 px-4 py-3 text-sm font-semibold text-red-400 hover:bg-red-500/10 rounded-xl cursor-pointer"
                   >
-                    <LogOut size={18} /> Logout
+                    <LogOut size={16} /> Logout
                   </div>
                 </div>
               </Menu.Content>

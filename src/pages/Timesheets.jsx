@@ -18,31 +18,23 @@ export default function TimesheetsComponent() {
 
     fetchMyTimesheets();
     fetchMyMonthReport();
+    fetchWeeklySummary();
+    
 
     if(user.role === "MANAGER"){
       fetchTeamTimesheets();
     }
 
-    // setTimeout(() => {
-    //   setWeeklyData([
-    //     { day: "Mon", hours: 8 },
-    //     { day: "Tue", hours: 7 },
-    //     { day: "Wed", hours: 6 },
-    //     { day: "Thu", hours: 8 },
-    //     { day: "Fri", hours: 5 },
-    //   ]);
-    //   setMonthlyData([
-    //     { week: "Week 1", hours: 38, status: "Approved" },
-    //     { week: "Week 2", hours: 40, status: "Approved" },
-    //     { week: "Week 3", hours: 36, status: "Pending" },
-    //   ]);
-    //   setTeamTimesheets([
-    //     { id: 1, employee: "John Doe", week: "Week 3", hours: 35 },
-    //     { id: 2, employee: "Jane Smith", week: "Week 3", hours: 40 },
-    //   ]);
-    //   setLoading(false);
-    // }, 1000);
   }, []);
+
+  const fetchWeeklySummary = async () => {
+    try {
+      const res = await axiosInstance.get("/data/timesheets/summary");
+      setWeeklyData(res.data.weekly || []);
+    } catch (err) {
+      console.error("Failed to fetch weekly timesheet summary:", err);
+    }
+  };
 
   async function fetchMyTimesheets(){
     try{
@@ -103,7 +95,7 @@ export default function TimesheetsComponent() {
           </p>
         </div>
         <div className="flex gap-3">
-          <div className="bg-indigo-50 px-4 py-2 rounded-xl flex items-center gap-3">
+          {/* <div className="bg-indigo-50 px-4 py-2 rounded-xl flex items-center gap-3">
             <Clock className="text-indigo-600 w-5 h-5" />
             <div>
               <p className="text-[10px] font-black text-indigo-400 uppercase leading-none">
@@ -113,7 +105,7 @@ export default function TimesheetsComponent() {
                 34.0 hrs
               </p>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
 

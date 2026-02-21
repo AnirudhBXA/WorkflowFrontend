@@ -94,8 +94,9 @@ export default function LeaveApprovalComponent() {
         />
       )}
 
-      <div className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
-        <table className="w-full text-sm">
+    <div className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+      <div className="overflow-x-auto">
+        <table className="min-w-full text-xs">
           <thead className="bg-gray-50 dark:bg-gray-900 text-gray-600 dark:text-gray-400">
             <tr>
               <th className="px-6 py-3 text-left">Employee</th>
@@ -137,6 +138,7 @@ export default function LeaveApprovalComponent() {
             ))}
           </tbody>
         </table>
+        </div>
       </div>
     </>
   );

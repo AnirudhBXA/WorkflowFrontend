@@ -19,7 +19,7 @@ export default function WeeklyHoursChart({ data }) {
             stroke="#F1F5F9"
           />
           <XAxis
-            dataKey="day"
+            dataKey="week"
             axisLine={false}
             tickLine={false}
             tick={{ fontSize: 12, fontWeight: 700, fill: "#94A3B8" }}
@@ -40,7 +40,7 @@ export default function WeeklyHoursChart({ data }) {
             }}
           />
           <Bar
-            dataKey="hours"
+            dataKey="actual"
             fill="#6366F1"
             radius={[8, 8, 8, 8]}
             barSize={40}

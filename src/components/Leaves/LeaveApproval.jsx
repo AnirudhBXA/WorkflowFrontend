@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axiosInstance from "../../utils/axiosInstance";
 import LeaveBriefCard from "./LeaveBriefCard";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 
 function formatDateToDDMMYYYY(dateString) {
   const date = new Date(dateString);
@@ -96,7 +96,11 @@ export default function LeaveApprovalComponent() {
 
             <tbody className="divide-y divide-slate-800">
               {paginatedLeaves.map((item) => (
-                <tr key={item.id} className="hover:bg-[#0B1220] transition">
+                <tr
+                  key={item.id}
+                  className="hover:bg-[#0B1220] transition"
+                  onClick={() => setSelectedLeave(item)}
+                >
                   <td className="px-6 py-4 text-slate-200 whitespace-nowrap">
                     {item.empEmail}
                   </td>
@@ -112,14 +116,10 @@ export default function LeaveApprovalComponent() {
                   <td className="px-6 py-4 whitespace-nowrap">
                     {badge(item.status)}
                   </td>
-
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <button
-                      onClick={() => setSelectedLeave(item)}
-                      className="px-3 py-1 text-xs font-semibold rounded-lg bg-indigo-600/10 text-indigo-400 hover:bg-indigo-600/20"
-                    >
-                      Review
-                    </button>
+                  <td className="px-4 py-6 text-center">
+                    <div className="inline-flex items-center gap-2 text-indigo-400 font-semibold text-xs uppercase">
+                      Review <ArrowRight size={14} />
+                    </div>
                   </td>
                 </tr>
               ))}

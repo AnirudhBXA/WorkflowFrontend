@@ -33,8 +33,6 @@ export function AuthProvider({ children }) {
     window.location.href = "/login";
   }
 
-  const isAuthenticated = !!user;
-
   return (
     <AuthContext.Provider
       value={{ user, isAuthenticated: !!user, loading, login, logout }}

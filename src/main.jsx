@@ -27,7 +27,6 @@ createRoot(document.getElementById("root")).render(
     <AuthProvider>
       <ChakraProvider value={system}>
         <Routes>
-          {/* Public Routes */}
           <Route
             path="/login"
             element={

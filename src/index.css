@@ -1,22 +1,20 @@
 @import "tailwindcss";
 
 :root {
-  /* Define a variable for easy updates */
   --main-font:
     "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 body {
   margin: 0;
-  background-color: #f9fafb; /* Light neutral grey common in dashboards */
-  color: #111827; /* Near black for high contrast */
+  background-color: #f9fafb;
+  color: #111827;
   font-family: "Nunito", sans-serif;
   font-optical-sizing: auto;
   font-weight: 500;
   font-style: normal;
 }
 
-/* Ensure buttons and inputs inherit the font */
 button,
 input,
 select,

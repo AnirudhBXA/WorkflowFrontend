@@ -1,11 +1,17 @@
-import { Bell, Settings, LogOut, User as UserIcon } from "lucide-react";
+import {
+  Bell,
+  Settings,
+  LogOut,
+  User as UserIcon,
+  Menu as MenuIcon,
+} from "lucide-react";
 import { useEffect, useState, useContext } from "react";
 import { Menu, Portal } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import axiosInstance from "../../utils/axiosInstance";
 
-function HeaderComponent() {
+function HeaderComponent({ onMenuClick }) {
   const [notifications, setNotifications] = useState([]);
   const { logout, user } = useContext(AuthContext);
 
@@ -44,8 +50,17 @@ function HeaderComponent() {
   }
 
   return (
-    <header className="sticky top-0 z-40 h-16 bg-[#0F172A] border-b border-slate-800 flex items-center justify-end px-8">
-      <div className="flex items-center gap-5">
+    <header className="sticky top-0 z-40 h-16 bg-[#0F172A] border-b border-slate-800 flex items-center justify-between px-4 md:px-8">
+      {/* Hamburger for mobile */}
+      <button
+        className="md:hidden p-2 rounded-md hover:bg-[#111827] text-slate-400 hover:text-white"
+        onClick={onMenuClick}
+      >
+        <MenuIcon size={22} />
+      </button>
+
+      <div className="flex items-center gap-5 ml-auto">
+        {/* Notifications */}
         <Menu.Root unstyled>
           <Menu.Trigger asChild>
             <button className="relative p-2 rounded-xl hover:bg-[#111827] text-slate-400 hover:text-white">
@@ -55,7 +70,6 @@ function HeaderComponent() {
               )}
             </button>
           </Menu.Trigger>
-
           <Portal>
             <Menu.Positioner>
               <Menu.Content className="outline-none">
@@ -65,7 +79,6 @@ function HeaderComponent() {
                       Notifications
                     </h3>
                   </div>
-
                   {notifications.map((n) => (
                     <div
                       key={n.id}
@@ -88,10 +101,11 @@ function HeaderComponent() {
           </Portal>
         </Menu.Root>
 
+        {/* Profile dropdown */}
         <Menu.Root unstyled>
           <Menu.Trigger asChild>
             <div className="flex items-center gap-3 cursor-pointer">
-              <div className="text-right">
+              <div className="text-right hidden sm:block">
                 <p className="text-sm font-semibold text-white">
                   {user?.name || "John Doe"}
                 </p>
@@ -99,13 +113,11 @@ function HeaderComponent() {
                   {user?.role || "USER"}
                 </p>
               </div>
-
               <div className="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center text-xs font-bold text-white">
                 {getProfileIcon()}
               </div>
             </div>
           </Menu.Trigger>
-
           <Portal>
             <Menu.Positioner>
               <Menu.Content className="outline-none bg-transparent shadow-none">
@@ -115,15 +127,12 @@ function HeaderComponent() {
                       <UserIcon size={16} /> Profile
                     </div>
                   </Link>
-
                   <Link to="/settings">
                     <div className="flex items-center gap-3 px-4 py-3 text-sm font-semibold text-slate-300 hover:bg-[#0B1220] rounded-xl">
                       <Settings size={16} /> Settings
                     </div>
                   </Link>
-
                   <div className="h-px bg-slate-700 my-2" />
-
                   <div
                     onClick={handleLogout}
                     className="flex items-center gap-3 px-4 py-3 text-sm font-semibold text-red-400 hover:bg-red-500/10 rounded-xl cursor-pointer"

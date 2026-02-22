@@ -247,16 +247,22 @@ export default function CertificationsComponent() {
   }
 
   async function handleCertificationApproval(decision) {
-    try {
-      await axiosInstance.post(
-        `/certifications/manager-action/${selected.taskId}?approved=${decision}`,
-      );
-      setPendingItems((prev) => prev.filter((i) => i.id !== selected.id));
-      setSelected(null);
-    } catch {
-      alert("status update failed");
+  try {
+    await axiosInstance.post(
+      `/certifications/manager-action/${selected.taskId}?approved=${decision}`
+    );
+
+    setPendingItems((prev) => prev.filter((i) => i.id !== selected.id));
+    setSelected(null);
+  } catch (error) {
+    if (error.response && error.response.data && error.response.data.message) {
+      alert(error.response.data.message); // show backend message
+    } else {
+      alert("Status update failed. Please try again.");
     }
   }
+}
+
 
   const badge = (status) => {
     const map = {

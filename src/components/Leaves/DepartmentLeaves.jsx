@@ -11,6 +11,12 @@ export default function DepartmentLeaves() {
   const [leavesList, setLeavesList] = useState([]);
   const [selectedLeave, setSelectedLeave] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+
+  const PAGE_SIZE = 7;
+  const totalPages = Math.ceil(leavesList.length / PAGE_SIZE);
+  const startIndex = (page - 1) * PAGE_SIZE;
+  const paginatedLeaves = leavesList.slice(startIndex, startIndex + PAGE_SIZE);
 
   useEffect(() => {
     axiosInstance.get("/leaves/dept-leaves").then((res) => {
@@ -18,6 +24,10 @@ export default function DepartmentLeaves() {
       setLoading(false);
     });
   }, []);
+
+  useEffect(() => {
+    setPage(1);
+  }, [leavesList]);
 
   const badge = (status) => {
     const map = {
@@ -65,7 +75,7 @@ export default function DepartmentLeaves() {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-800">
-            {leavesList.map((item) => (
+            {paginatedLeaves.map((item) => (
               <tr key={item.id} className="hover:bg-[#0B1220]">
                 <td className="px-6 py-4 text-slate-200">{item.name}</td>
                 <td className="px-6 py-4 text-slate-300">{item.leaveType}</td>
@@ -89,6 +99,31 @@ export default function DepartmentLeaves() {
             ))}
           </tbody>
         </table>
+        {totalPages > 1 && (
+          <div className="flex items-center justify-between px-6 py-4 border-t border-slate-800 bg-[#0B1220]">
+            <span className="text-xs text-slate-500">
+              Page {page} of {totalPages}
+            </span>
+
+            <div className="flex items-center gap-2">
+              <button
+                disabled={page === 1}
+                onClick={() => setPage((p) => p - 1)}
+                className="py-2 px-4 rounded-lg border border-slate-700 text-slate-400 hover:bg-slate-800 disabled:opacity-40"
+              >
+                ‹
+              </button>
+
+              <button
+                disabled={page === totalPages}
+                onClick={() => setPage((p) => p + 1)}
+                className="py-2 px-4 rounded-lg border border-slate-700 text-slate-400 hover:bg-slate-800 disabled:opacity-40"
+              >
+                ›
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </>
   );

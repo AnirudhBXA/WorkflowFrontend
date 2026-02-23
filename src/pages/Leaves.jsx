@@ -11,7 +11,12 @@ export default function LeavesComponent() {
   const [loading, setLoading] = useState(true);
   const [summary, setSummary] = useState({ available: 0, used: 0 });
   const [leavesList, setLeavesList] = useState([]);
+  const [page, setPage] = useState(1);
 
+  const PAGE_SIZE = 6;
+  const totalPages = Math.ceil(leavesList.length / PAGE_SIZE);
+  const startIndex = (page - 1) * PAGE_SIZE;
+  const paginatedLeaves = leavesList.slice(startIndex, startIndex + PAGE_SIZE);
   useEffect(() => {
     async function fetchLeaves() {
       try {
@@ -109,7 +114,7 @@ export default function LeavesComponent() {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-800">
-            {leavesList.map((item) => (
+            {paginatedLeaves.map((item) => (
               <tr key={item.id} className="hover:bg-[#0B1220] transition">
                 <td className="px-6 py-5 font-semibold text-slate-200">
                   {item.leaveType}
@@ -126,6 +131,29 @@ export default function LeavesComponent() {
             ))}
           </tbody>
         </table>
+          <div className="flex items-center justify-between px-6 py-4 border-t border-slate-800 bg-[#0B1220]">
+            <span className="text-xs text-slate-500">
+              Page {page} of {totalPages}
+            </span>
+
+            <div className="flex items-center gap-2">
+              <button
+                disabled={page === 1}
+                onClick={() => setPage((p) => p - 1)}
+                className="py-2 px-4 rounded-lg border border-slate-700 text-slate-400 hover:bg-slate-800 disabled:opacity-40"
+              >
+                ‹
+              </button>
+
+              <button
+                disabled={page === totalPages}
+                onClick={() => setPage((p) => p + 1)}
+                className="px-4 py-2 rounded-lg border border-slate-700 text-slate-400 hover:bg-slate-800 disabled:opacity-40"
+              >
+                ›
+              </button>
+            </div>
+          </div>
       </div>
 
       {user?.role === "MANAGER" && (

@@ -1,11 +1,13 @@
 // import { User, Calendar, GraduationCap } from "lucide-react";
 
-// export default function TrainingCard({ data, onComplete }) {
+// export default function TrainingCard({ data, onComplete, completingTaskId }) {
 //   const statusStyles = {
 //     ASSIGNED: "bg-indigo-500/10 text-indigo-400",
 //     COMPLETED: "bg-emerald-500/10 text-emerald-400",
 //     GRACE_PERIOD: "bg-rose-500/10 text-rose-400",
 //   };
+
+//   const isCompleting = completingTaskId === data.taskId;
 
 //   return (
 //     <div className="group bg-[#111827] border border-slate-800 rounded-2xl p-6 hover:border-indigo-600/50 transition-all hover:-translate-y-1">
@@ -48,19 +50,24 @@
 //           </span>
 //         </div>
 
-//         {/* ✅ Show Mark Complete button only if training is ASSIGNED or GRACE_PERIOD */}
 //         {(data.status === "ASSIGNED" || data.status === "GRACE_PERIOD") && (
 //           <button
 //             onClick={() => onComplete(data.taskId)}
-//             className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-semibold hover:bg-indigo-500 transition"
+//             disabled={isCompleting}
+//             className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-semibold hover:bg-indigo-500 transition flex items-center justify-center"
 //           >
-//             Mark Complete
+//             {isCompleting ? (
+//               <div className="h-4 w-4 border-t-2 border-white rounded-full animate-spin" />
+//             ) : (
+//               "Mark Complete"
+//             )}
 //           </button>
 //         )}
 //       </div>
 //     </div>
 //   );
 // }
+
 import { User, Calendar, GraduationCap } from "lucide-react";
 
 export default function TrainingCard({ data, onComplete, completingTaskId }) {
@@ -70,7 +77,12 @@ export default function TrainingCard({ data, onComplete, completingTaskId }) {
     GRACE_PERIOD: "bg-rose-500/10 text-rose-400",
   };
 
-  const isCompleting = completingTaskId === data.taskId;
+  const isCompleting =
+    completingTaskId !== -1 && completingTaskId === data.taskId;
+
+  const canComplete =
+    data.taskId &&
+    (data.status === "ASSIGNED" || data.status === "GRACE_PERIOD");
 
   return (
     <div className="group bg-[#111827] border border-slate-800 rounded-2xl p-6 hover:border-indigo-600/50 transition-all hover:-translate-y-1">
@@ -79,7 +91,9 @@ export default function TrainingCard({ data, onComplete, completingTaskId }) {
           <GraduationCap size={22} />
         </div>
         <span
-          className={`px-3 py-1 rounded-lg text-[10px] font-bold uppercase ${statusStyles[data.status]}`}
+          className={`px-3 py-1 rounded-lg text-[10px] font-bold uppercase ${
+            statusStyles[data.status]
+          }`}
         >
           {data.status}
         </span>
@@ -113,7 +127,7 @@ export default function TrainingCard({ data, onComplete, completingTaskId }) {
           </span>
         </div>
 
-        {(data.status === "ASSIGNED" || data.status === "GRACE_PERIOD") && (
+        {canComplete && (
           <button
             onClick={() => onComplete(data.taskId)}
             disabled={isCompleting}

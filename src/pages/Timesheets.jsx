@@ -13,6 +13,15 @@ export default function TimesheetsComponent() {
   const [monthlyData, setMonthlyData] = useState([]);
   const [teamTimesheets, setTeamTimesheets] = useState([]);
 
+  const fetchAll = async () => {
+    setLoading(true);
+    await Promise.all([
+      fetchWeeklySummary(),
+      fetchMyMonthReport(),
+      user.role === "MANAGER" ? fetchTeamTimesheets() : null,
+    ]);
+  };
+
   useEffect(() => {
     fetchWeeklySummary();
     fetchMyMonthReport();
@@ -70,9 +79,7 @@ export default function TimesheetsComponent() {
       <div className="bg-[#111827] border border-slate-800 rounded-2xl p-8">
         <div className="flex items-center gap-2 mb-6">
           <BarChart3 className="text-indigo-400 w-5 h-5" />
-          <h2 className="text-lg font-bold text-white">
-            Weekly Time Spent
-          </h2>
+          <h2 className="text-lg font-bold text-white">Weekly Time Spent</h2>
         </div>
         <WeeklyHoursChart data={weeklyData} />
       </div>
@@ -81,7 +88,10 @@ export default function TimesheetsComponent() {
         <MonthlyTimesheetTable data={monthlyData} />
 
         {user.role === "MANAGER" && (
-          <ManagerTimesheetApprovalTable data={teamTimesheets} />
+          <ManagerTimesheetApprovalTable
+            data={teamTimesheets}
+            onActionComplete={fetchAll}
+          />
         )}
       </div>
     </div>

@@ -2,66 +2,67 @@ import { useContext, useEffect, useState } from "react";
 import ValuesDisplayCard from "../components/ValuesDisplayCard";
 import CertificationApprovalComponent from "../components/Certifications/CertificationApproval";
 import CertificationBriefCard from "../components/Certifications/CertificationBriefCard";
-import { History } from "lucide-react";
+import { History, Users } from "lucide-react";
 import { AuthContext } from "../context/AuthContext";
 import axiosInstance from "../utils/axiosInstance";
 
 export default function CertificationsComponent() {
   const { user } = useContext(AuthContext);
+
   const [loading, setLoading] = useState(true);
   const [myCerts, setMyCerts] = useState([]);
-  const [summary, setSummary] = useState({ left: 0, used: 0 });
+  const [teamCerts, setTeamCerts] = useState([]);
   const [pendingItems, setPendingItems] = useState([]);
+  const [summary, setSummary] = useState({ left: 0, used: 0 });
   const [selected, setSelected] = useState(null);
 
   useEffect(() => {
-    fetchMyCertificates();
-    fetchMySummary();
-    if (user.role === "MANAGER") {
-      fetchTeamCertificates();
+    if (user) {
+      refreshAll();
     }
-  }, []);
+  }, [user]);
 
-  async function fetchMyCertificates() {
+  async function refreshAll() {
+    setLoading(true);
     try {
-      const response = await axiosInstance.get("/certifications/me");
-      setMyCerts(response.data);
+      await Promise.all([
+        fetchMyCertificates(),
+        fetchMySummary(),
+        user.role === "MANAGER" ? fetchTeamCertificates() : Promise.resolve(),
+      ]);
     } finally {
       setLoading(false);
     }
+  }
+
+  async function fetchMyCertificates() {
+    const res = await axiosInstance.get("/certifications/me");
+    setMyCerts(res.data || []);
   }
 
   async function fetchMySummary() {
-    try {
-      const response = await axiosInstance.get("/certifications/mySummary");
-      setSummary(response.data);
-    } finally {
-      setLoading(false);
-    }
+    const res = await axiosInstance.get("/certifications/mySummary");
+    setSummary(res.data);
   }
 
   async function fetchTeamCertificates() {
-    try {
-      const response = await axiosInstance.get("/certifications/team");
-      setPendingItems(response.data);
-    } finally {
-      setLoading(false);
-    }
+    const res = await axiosInstance.get("/certifications/team");
+    setTeamCerts(res.data || []);
+    setPendingItems((res.data || []).filter((c) => c.taskId));
   }
 
   async function handleCertificationApproval(decision) {
-  try {
-    await axiosInstance.post(
-      `/certifications/manager-action/${selected.taskId}?approved=${decision}`
-    );
-
-    setPendingItems((prev) => prev.filter((i) => i.id !== selected.id));
-    setSelected(null);
-  } catch (error) {
-    if (error.response && error.response.data && error.response.data.message) {
-      alert(error.response.data.message); // show backend message
-    } else {
-      alert("Status update failed. Please try again.");
+    try {
+      await axiosInstance.post(
+        `/certifications/manager-action/${selected.taskId}?approved=${decision}`,
+      );
+      setSelected(null);
+      await refreshAll();
+    } catch (error) {
+      alert(
+        error?.response?.data?.message ||
+          "Status update failed. Please try again.",
+      );
     }
   }
 }
@@ -102,15 +103,13 @@ export default function CertificationsComponent() {
         />
       )}
 
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-extrabold text-white tracking-tight">
-            Professional Certifications
-          </h1>
-          <p className="text-slate-400 mt-1">
-            Manage your credentials and reimbursements
-          </p>
-        </div>
+      <div>
+        <h1 className="text-3xl font-extrabold text-white">
+          Professional Certifications
+        </h1>
+        <p className="text-slate-400 mt-1">
+          Manage your credentials and reimbursements
+        </p>
       </div>
 
       <div className="grid sm:grid-cols-2 gap-8">
@@ -130,6 +129,7 @@ export default function CertificationsComponent() {
         />
       </div>
 
+      {/* MY CERTIFICATIONS */}
       <div className="bg-[#111827] border border-slate-800 rounded-2xl overflow-hidden">
         <div className="px-6 py-4 border-b border-slate-800 flex items-center gap-2">
           <History className="w-5 h-5 text-indigo-400" />
@@ -138,23 +138,64 @@ export default function CertificationsComponent() {
           </h2>
         </div>
 
-        <div className="overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead className="bg-[#0B1220] text-xs uppercase text-slate-500">
+            <tr>
+              <th className="px-6 py-4 text-left">Certification</th>
+              <th className="px-6 py-4 text-left">Amount</th>
+              <th className="px-6 py-4 text-left">Status</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-800">
+            {myCerts.map((c) => (
+              <tr
+                key={c.certId}
+                onClick={() => setSelected(c)}
+                className="hover:bg-[#0B1220] cursor-pointer"
+              >
+                <td className="px-6 py-5 font-semibold text-slate-200">
+                  {c.certificationName}
+                </td>
+                <td className="px-6 py-5 text-slate-400">
+                  ₹ {c.reimbursementAmount}
+                </td>
+                <td className="px-6 py-5">{badge(c.status)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* TEAM CERTIFICATIONS */}
+      {user.role === "MANAGER" && (
+        <div className="bg-[#111827] border border-slate-800 rounded-2xl overflow-hidden">
+          <div className="px-6 py-4 border-b border-slate-800 flex items-center gap-2">
+            <Users className="w-5 h-5 text-indigo-400" />
+            <h2 className="text-sm font-bold uppercase text-slate-300">
+              Team Certifications
+            </h2>
+          </div>
+
           <table className="w-full text-sm">
             <thead className="bg-[#0B1220] text-xs uppercase text-slate-500">
               <tr>
+                <th className="px-6 py-4 text-left">Employee</th>
                 <th className="px-6 py-4 text-left">Certification</th>
-                <th className="px-6 py-4 text-left">Amount</th>
                 <th className="px-6 py-4 text-left">Status</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800">
-              {myCerts.map((c) => (
-                <tr key={c.id} className="hover:bg-[#0B1220] transition">
-                  <td className="px-6 py-5 font-semibold text-slate-200">
-                    {c.certificationName}
+              {teamCerts.map((c) => (
+                <tr
+                  key={c.certId}
+                  onClick={() => setSelected(c)}
+                  className="hover:bg-[#0B1220] cursor-pointer"
+                >
+                  <td className="px-6 py-5 text-slate-200">
+                    {c.employee?.name || "—"}
                   </td>
                   <td className="px-6 py-5 text-slate-400">
-                    ₹ {c.reimbursementAmount}
+                    {c.certificationName}
                   </td>
                   <td className="px-6 py-5">{badge(c.status)}</td>
                 </tr>
@@ -162,7 +203,7 @@ export default function CertificationsComponent() {
             </tbody>
           </table>
         </div>
-      </div>
+      )}
 
       {user.role === "MANAGER" && (
         <CertificationApprovalComponent

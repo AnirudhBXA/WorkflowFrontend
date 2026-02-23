@@ -5,6 +5,7 @@ import CertificationBriefCard from "../components/Certifications/CertificationBr
 import { History, Users } from "lucide-react";
 import { AuthContext } from "../context/AuthContext";
 import axiosInstance from "../utils/axiosInstance";
+import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 
 export default function CertificationsComponent() {
   const { user } = useContext(AuthContext);
@@ -16,6 +17,25 @@ export default function CertificationsComponent() {
   const [pendingItems, setPendingItems] = useState([]);
   const [summary, setSummary] = useState({ left: 0, used: 0 });
   const [selected, setSelected] = useState(null);
+
+  const [ myPage, setMyPage ] = useState(1)
+  const [ teamPage, setTeamPage ] = useState(1)
+  const [ deptPage, setDeptPage ] = useState(1)
+
+  const PAGE_SIZE = 5;
+
+  
+  const totalTeamPages = Math.ceil(teamCerts.length / PAGE_SIZE);
+  const startIndexTeam = (teamPage - 1) * PAGE_SIZE;
+  const paginatedTeamCerts = teamCerts.slice(startIndexTeam, startIndexTeam + PAGE_SIZE);
+
+  const totalMyPages = Math.ceil(myCerts.length / PAGE_SIZE);
+  const startIndexMy = (myPage - 1) * PAGE_SIZE;
+  const paginatedMyCerts = myCerts.slice(startIndexMy, startIndexMy + PAGE_SIZE);
+
+  const totalDeptPages = Math.ceil(deptCerts.length / PAGE_SIZE);
+  const startIndexDept = (deptPage - 1) * PAGE_SIZE;
+  const paginatedDeptCerts = deptCerts.slice(startIndexDept, startIndexDept + PAGE_SIZE);
 
   useEffect(() => {
     if (user) {
@@ -192,7 +212,7 @@ export default function CertificationsComponent() {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-800">
-            {myCerts.map((c) => (
+            {paginatedMyCerts.map((c) => (
               <tr
                 key={c.certId}
                 onClick={() => setSelected(c)}
@@ -218,6 +238,32 @@ export default function CertificationsComponent() {
             ))}
           </tbody>
         </table>
+
+        {totalMyPages > 1 && (
+            <div className="flex items-center justify-between px-6 py-4 border-t border-slate-800 bg-[#0B1220]">
+              <span className="text-xs text-slate-500">
+                Page {myPage} of {totalMyPages}
+              </span>
+
+              <div className="flex items-center gap-2">
+                <button
+                  disabled={myPage === 1}
+                  onClick={() => setMyPage((p) => p - 1)}
+                  className="p-2 rounded-lg border border-slate-700 text-slate-400 hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  <ChevronLeft size={14} />
+                </button>
+
+                <button
+                  disabled={myPage === totalMyPages}
+                  onClick={() => setMyPage((p) => p + 1)}
+                  className="p-2 rounded-lg border border-slate-700 text-slate-400 hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  <ChevronRight size={14} />
+                </button>
+              </div>
+            </div>
+          )}
       </div>
 
       { user.role === "HR" && (
@@ -240,7 +286,7 @@ export default function CertificationsComponent() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800">
-              {deptCerts.map((c) => (
+              {paginatedDeptCerts.map((c) => (
                 <tr
                   key={c.certId}
                   onClick={() => setSelected(c)}
@@ -268,6 +314,32 @@ export default function CertificationsComponent() {
               ))}
             </tbody>
           </table>
+
+          {totalDeptPages > 1 && (
+            <div className="flex items-center justify-between px-6 py-4 border-t border-slate-800 bg-[#0B1220]">
+              <span className="text-xs text-slate-500">
+                Page {deptPage} of {totalDeptPages}
+              </span>
+
+              <div className="flex items-center gap-2">
+                <button
+                  disabled={deptPage === 1}
+                  onClick={() => setDeptPage((p) => p - 1)}
+                  className="p-2 rounded-lg border border-slate-700 text-slate-400 hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  <ChevronLeft size={14} />
+                </button>
+
+                <button
+                  disabled={deptPage === totalDeptPages}
+                  onClick={() => setDeptPage((p) => p + 1)}
+                  className="p-2 rounded-lg border border-slate-700 text-slate-400 hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  <ChevronRight size={14} />
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
@@ -284,18 +356,22 @@ export default function CertificationsComponent() {
           <table className="w-full text-sm">
             <thead className="bg-[#0B1220] text-xs uppercase text-slate-500">
               <tr>
+                <th className="px-6 py-4 text-left">Cert Id</th>
                 <th className="px-6 py-4 text-left">Employee</th>
                 <th className="px-6 py-4 text-left">Certification</th>
                 <th className="px-6 py-4 text-left">Status</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800">
-              {teamCerts.map((c) => (
+              {paginatedTeamCerts.map((c) => (
                 <tr
                   key={c.certId}
                   onClick={() => setSelected(c)}
                   className="hover:bg-[#0B1220] cursor-pointer"
                 >
+                  <td className="px-6 py-5 text-slate-200">
+                    {c.certId}
+                  </td>
                   <td className="px-6 py-5 text-slate-200">
                     {c.employee?.name || "—"}
                   </td>
@@ -307,6 +383,33 @@ export default function CertificationsComponent() {
               ))}
             </tbody>
           </table>
+
+
+          {totalTeamPages > 1 && (
+            <div className="flex items-center justify-between px-6 py-4 border-t border-slate-800 bg-[#0B1220]">
+              <span className="text-xs text-slate-500">
+                Page {teamPage} of {totalTeamPages}
+              </span>
+
+              <div className="flex items-center gap-2">
+                <button
+                  disabled={teamPage === 1}
+                  onClick={() => setTeamPage((p) => p - 1)}
+                  className="p-2 rounded-lg border border-slate-700 text-slate-400 hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  <ChevronLeft size={14} />
+                </button>
+
+                <button
+                  disabled={teamPage === totalTeamPages}
+                  onClick={() => setTeamPage((p) => p + 1)}
+                  className="p-2 rounded-lg border border-slate-700 text-slate-400 hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  <ChevronRight size={14} />
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       )}
 

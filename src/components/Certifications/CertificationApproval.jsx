@@ -50,7 +50,7 @@ export default function CertificationApprovalComponent({ items, setSelected }) {
                   className="hover:bg-[#0B1220] transition cursor-pointer"
                 >
 
-                  <td>
+                  <td className="px-6 py-6">
                     <span className="font-semibold text-slate-200">
                         {item.certId}
                     </span>

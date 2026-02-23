@@ -67,97 +67,134 @@ export default function CertificationsComponent() {
   }
 }
 
-
-  const badge = (status) => {
-    const map = {
-      SUBMITTED: "bg-indigo-500/10 text-indigo-400",
-      APPROVED: "bg-emerald-500/10 text-emerald-400",
-      REJECTED: "bg-rose-500/10 text-rose-400",
-      ASSIGNED: "bg-yellow-500/10 text-yellow-400",
-    };
-    return (
-      <span
-        className={`px-3 py-1 rounded-lg text-[10px] font-bold uppercase ${map[status]}`}
-      >
-        {status}
-      </span>
-    );
+const badge = (status) => {
+  const map = {
+    SUBMITTED: "bg-indigo-500/10 text-indigo-400",
+    APPROVED: "bg-emerald-500/10 text-emerald-400",
+    REJECTED: "bg-rose-500/10 text-rose-400",
+    ASSIGNED: "bg-yellow-500/10 text-yellow-400",
   };
-
-  if (loading) {
-    return (
-      <div className="h-96 flex items-center justify-center">
-        <div className="h-8 w-8 border-t-4 border-indigo-500 rounded-full animate-spin" />
-      </div>
-    );
-  }
-
   return (
-    <div className="max-w-7xl mx-auto space-y-10">
-      {selected && (
-        <CertificationBriefCard
-          item={selected}
-          onClose={() => setSelected(null)}
-          onApprove={() => handleCertificationApproval(true)}
-          onReject={() => handleCertificationApproval(false)}
-        />
-      )}
+    <span
+      className={`px-3 py-1 rounded-lg text-[10px] font-bold uppercase ${map[status]}`}
+    >
+      {status}
+    </span>
+  );
+};
 
-      <div>
-        <h1 className="text-3xl font-extrabold text-white">
-          Professional Certifications
-        </h1>
-        <p className="text-slate-400 mt-1">
-          Manage your credentials and reimbursements
-        </p>
+if (loading) {
+  return (
+    <div className="h-96 flex items-center justify-center">
+      <div className="h-8 w-8 border-t-4 border-indigo-500 rounded-full animate-spin" />
+    </div>
+  );
+}
+
+return (
+  <div className="max-w-7xl mx-auto space-y-10">
+    {selected && (
+      <CertificationBriefCard
+        item={selected}
+        onClose={() => setSelected(null)}
+        onApprove={() => handleCertificationApproval(true)}
+        onReject={() => handleCertificationApproval(false)}
+      />
+    )}
+
+    <div>
+      <h1 className="text-3xl font-extrabold text-white">
+        Professional Certifications
+      </h1>
+      <p className="text-slate-400 mt-1">
+        Manage your credentials and reimbursements
+      </p>
+    </div>
+
+    <div className="grid sm:grid-cols-2 gap-8">
+      <ValuesDisplayCard
+        data={{
+          context: "Available Reimbursement",
+          value: summary.left,
+          units: "₹",
+        }}
+      />
+      <ValuesDisplayCard
+        data={{
+          context: "Total Claimed",
+          value: summary.used,
+          units: "₹",
+        }}
+      />
+    </div>
+
+    {/* MY CERTIFICATIONS */}
+    <div className="bg-[#111827] border border-slate-800 rounded-2xl overflow-hidden">
+      <div className="px-6 py-4 border-b border-slate-800 flex items-center gap-2">
+        <History className="w-5 h-5 text-indigo-400" />
+        <h2 className="text-sm font-bold uppercase text-slate-300">
+          My Certifications
+        </h2>
       </div>
 
-      <div className="grid sm:grid-cols-2 gap-8">
-        <ValuesDisplayCard
-          data={{
-            context: "Available Reimbursement",
-            value: summary.left,
-            units: "₹",
-          }}
-        />
-        <ValuesDisplayCard
-          data={{
-            context: "Total Claimed",
-            value: summary.used,
-            units: "₹",
-          }}
-        />
-      </div>
+      <table className="w-full text-sm">
+        <thead className="bg-[#0B1220] text-xs uppercase text-slate-500">
+          <tr>
+            <th className="px-6 py-4 text-left">Certification</th>
+            <th className="px-6 py-4 text-left">Amount</th>
+            <th className="px-6 py-4 text-left">Status</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-slate-800">
+          {myCerts.map((c) => (
+            <tr
+              key={c.certId}
+              onClick={() => setSelected(c)}
+              className="hover:bg-[#0B1220] cursor-pointer"
+            >
+              <td className="px-6 py-5 font-semibold text-slate-200">
+                {c.certificationName}
+              </td>
+              <td className="px-6 py-5 text-slate-400">
+                ₹ {c.reimbursementAmount}
+              </td>
+              <td className="px-6 py-5">{badge(c.status)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
 
-      {/* MY CERTIFICATIONS */}
+    {/* TEAM CERTIFICATIONS */}
+    {user.role === "MANAGER" && (
       <div className="bg-[#111827] border border-slate-800 rounded-2xl overflow-hidden">
         <div className="px-6 py-4 border-b border-slate-800 flex items-center gap-2">
-          <History className="w-5 h-5 text-indigo-400" />
+          <Users className="w-5 h-5 text-indigo-400" />
           <h2 className="text-sm font-bold uppercase text-slate-300">
-            My Certifications
+            Team Certifications
           </h2>
         </div>
 
         <table className="w-full text-sm">
           <thead className="bg-[#0B1220] text-xs uppercase text-slate-500">
             <tr>
+              <th className="px-6 py-4 text-left">Employee</th>
               <th className="px-6 py-4 text-left">Certification</th>
-              <th className="px-6 py-4 text-left">Amount</th>
               <th className="px-6 py-4 text-left">Status</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-800">
-            {myCerts.map((c) => (
+            {teamCerts.map((c) => (
               <tr
                 key={c.certId}
                 onClick={() => setSelected(c)}
                 className="hover:bg-[#0B1220] cursor-pointer"
               >
-                <td className="px-6 py-5 font-semibold text-slate-200">
-                  {c.certificationName}
+                <td className="px-6 py-5 text-slate-200">
+                  {c.employee?.name || "—"}
                 </td>
                 <td className="px-6 py-5 text-slate-400">
-                  ₹ {c.reimbursementAmount}
+                  {c.certificationName}
                 </td>
                 <td className="px-6 py-5">{badge(c.status)}</td>
               </tr>
@@ -165,52 +202,13 @@ export default function CertificationsComponent() {
           </tbody>
         </table>
       </div>
+    )}
 
-      {/* TEAM CERTIFICATIONS */}
-      {user.role === "MANAGER" && (
-        <div className="bg-[#111827] border border-slate-800 rounded-2xl overflow-hidden">
-          <div className="px-6 py-4 border-b border-slate-800 flex items-center gap-2">
-            <Users className="w-5 h-5 text-indigo-400" />
-            <h2 className="text-sm font-bold uppercase text-slate-300">
-              Team Certifications
-            </h2>
-          </div>
-
-          <table className="w-full text-sm">
-            <thead className="bg-[#0B1220] text-xs uppercase text-slate-500">
-              <tr>
-                <th className="px-6 py-4 text-left">Employee</th>
-                <th className="px-6 py-4 text-left">Certification</th>
-                <th className="px-6 py-4 text-left">Status</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-800">
-              {teamCerts.map((c) => (
-                <tr
-                  key={c.certId}
-                  onClick={() => setSelected(c)}
-                  className="hover:bg-[#0B1220] cursor-pointer"
-                >
-                  <td className="px-6 py-5 text-slate-200">
-                    {c.employee?.name || "—"}
-                  </td>
-                  <td className="px-6 py-5 text-slate-400">
-                    {c.certificationName}
-                  </td>
-                  <td className="px-6 py-5">{badge(c.status)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-
-      {user.role === "MANAGER" && (
-        <CertificationApprovalComponent
-          items={pendingItems}
-          setSelected={setSelected}
-        />
-      )}
-    </div>
-  );
-}
+    {user.role === "MANAGER" && (
+      <CertificationApprovalComponent
+        items={pendingItems}
+        setSelected={setSelected}
+      />
+    )}
+  </div>
+);

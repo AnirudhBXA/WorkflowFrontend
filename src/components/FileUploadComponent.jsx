@@ -115,9 +115,9 @@ function FileUploadComponent() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
           {/* Configuration */}
-          <div className="bg-[#111827] border border-slate-800 rounded-2xl p-8">
+          <div className="bg-[#111827] lg:col-span-2 border border-slate-800 rounded-2xl p-8">
             <div className="flex items-center gap-3 mb-6">
               <div className="p-2 bg-indigo-600/10 rounded-xl text-indigo-400">
                 <Settings2 size={20} />

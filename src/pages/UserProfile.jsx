@@ -198,7 +198,8 @@ export default function UserProfile() {
                 <div>
                   <h3 className="text-sm font-bold text-white">{cert.title}</h3>
                   <p className="text-xs text-slate-400 uppercase mt-1">
-                    {cert.provider}
+                    <span>Cost: </span>
+                    {cert.amount}
                   </p>
                 </div>
                 <ChevronRight className="text-slate-500" size={16} />
@@ -206,7 +207,7 @@ export default function UserProfile() {
 
               <div className="mt-4 flex justify-between text-xs uppercase text-slate-500 font-semibold">
                 <span>Issued</span>
-                <span className="text-slate-300">{cert.date}</span>
+                <span className="text-slate-300">{cert.assignedDate}</span>
               </div>
             </div>
           ))}

@@ -8,7 +8,7 @@ export default function CertificationBriefCard({
   onReject,
 }) {
   const [loading, setLoading] = useState(null);
-  const isActionable = item.status === "ASSIGNED"; // manager pending approval
+  const isActionable = item.status === "ASSIGNED";
 
   return (
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">

@@ -2,7 +2,7 @@ import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import axiosInstance from "../utils/axiosInstance";
-import { Mail, Lock, Chrome, Github, ArrowRight } from "lucide-react";
+import { Mail, Lock, Chrome, Github, ArrowRight, LayoutGrid } from "lucide-react";
 
 function LoginComponent() {
   const [form, setForm] = useState({
@@ -30,7 +30,6 @@ function LoginComponent() {
     e.preventDefault();
     setError("");
 
-    // Front-end Validations
     if (!form.username || !form.password) {
       setError("Please fill in all fields.");
       return;
@@ -77,38 +76,41 @@ function LoginComponent() {
     <div className="h-screen flex bg-white">
       <div className="hidden lg:flex w-3/5 bg-[#F5F3FF] flex-col justify-between p-12 relative overflow-hidden">
         <div className="flex items-center gap-2 text-indigo-600 font-bold text-xl relative z-10">
-          <span className="admin-logo font-bold">darwinflow</span>
+          <div className="bg-indigo-600 p-2 rounded-xl">
+            <LayoutGrid className="text-white w-5 h-5" />
+          </div>
+          <span className="admin-logo font-bold">DarwinFlow</span>
         </div>
 
         <div className="relative z-10">
           <h2 className="text-4xl font-bold text-gray-900 leading-tight">
-           Complex processes, <br />
+            Complex processes, <br />
             <span className="text-indigo-600">Easy delivery.</span>
           </h2>
           <p className="mt-4 text-gray-600 max-w-md text-lg">
-           Seamless routing of operational tasks to the right decision-makers for effortless management.
+            Seamless routing of operational tasks to the right decision-makers
+            for effortless management.
           </p>
         </div>
 
-
         <div className="relative z-10 mb-8">
-           <div className="flex items-center -space-x-4 rtl:space-x-reverse mb-3">
-             {avatars.map((url, index) => (
-                <img 
-                  key={index}
-                  className="w-12 h-12 border-4 border-white rounded-full object-cover" 
-                  src={url} 
-                  alt={`User avatar ${index + 1}`} 
-                />
-             ))}
-             <div className="flex items-center justify-center w-12 h-12 text-xs font-bold text-indigo-600 bg-indigo-100 border-4 border-white rounded-full">
+          <div className="flex items-center -space-x-4 rtl:space-x-reverse mb-3">
+            {avatars.map((url, index) => (
+              <img
+                key={index}
+                className="w-12 h-12 border-4 border-white rounded-full object-cover"
+                src={url}
+                alt={`User avatar ${index + 1}`}
+              />
+            ))}
+            <div className="flex items-center justify-center w-12 h-12 text-xs font-bold text-indigo-600 bg-indigo-100 border-4 border-white rounded-full">
               +2k
-             </div>
-           </div>
-           <p className="text-sm text-gray-600 font-medium ml-2">Join 10k+ teams managing work today.</p>
+            </div>
+          </div>
+          <p className="text-sm text-gray-600 font-medium ml-2">
+            Join 10k+ teams managing work today.
+          </p>
         </div>
-
-        
 
         {/* Decorative Background Circles */}
         <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-indigo-100 rounded-full blur-3xl opacity-50"></div>

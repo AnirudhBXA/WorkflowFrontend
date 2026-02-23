@@ -24,18 +24,17 @@ export default function LeavesComponent() {
         const leaves = res.data || [];
         setLeavesList(leaves);
 
-        // ✅ Only count approved leaves
         const totalDaysUsed = leaves.reduce((sum, leave) => {
           if (leave.status === "APPROVED") {
             const start = new Date(leave.startDate);
             const end = new Date(leave.endDate);
-            const days = Math.floor((end - start) / (1000 * 60 * 60 * 24)) + 1; // inclusive
+            const days = Math.floor((end - start) / (1000 * 60 * 60 * 24)) + 1;
             return sum + days;
           }
           return sum;
         }, 0);
 
-        const totalAllowance = 30; // fixed annual allowance
+        const totalAllowance = 30; 
         setSummary({
           available: Math.max(totalAllowance - totalDaysUsed, 0),
           used: totalDaysUsed,

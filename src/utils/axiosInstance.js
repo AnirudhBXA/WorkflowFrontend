@@ -1,4 +1,3 @@
-// src/api/axiosInstance.js
 import axios from "axios";
 
 const axiosInstance = axios.create({
@@ -6,7 +5,6 @@ const axiosInstance = axios.create({
   withCredentials: true,
 });
 
-// Attach access token from storage
 axiosInstance.interceptors.request.use((config) => {
   const token =
     localStorage.getItem("accessToken") ||
@@ -19,7 +17,6 @@ axiosInstance.interceptors.request.use((config) => {
   return config;
 });
 
-// Refresh logic
 axiosInstance.interceptors.response.use(
   (res) => res,
   async (error) => {

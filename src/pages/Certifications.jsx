@@ -96,7 +96,6 @@ export default function CertificationsComponent() {
 
 
   async function handleCompleteCertification(event, item){
-    // console.log(item)
     event.stopPropagation()
     try{
       const response = await axiosInstance.post(
@@ -113,7 +112,6 @@ export default function CertificationsComponent() {
 
 
   async function handleHRVerifyCertification(event, item){
-    // console.log(item)
     event.stopPropagation()
     try{
       const response = await axiosInstance.post(

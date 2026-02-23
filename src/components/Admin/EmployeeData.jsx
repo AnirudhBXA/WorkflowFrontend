@@ -9,14 +9,13 @@ import {
   ChevronRight,
   AlertCircle,
 } from "lucide-react";
-import { useState, useMemo, useEffect } from "react"; // 1. Import useEffect
+import { useState, useMemo, useEffect } from "react";
 
 export default function EmployeeDataView({
   employees = [],
   onEditSubmit,
   onDeleteConfirm,
 }) {
-  // 2. Create local state to manage immediate updates
   const [localEmployees, setLocalEmployees] = useState(employees);
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -29,17 +28,15 @@ export default function EmployeeDataView({
   const [actionLoading, setActionLoading] = useState(false);
   const [actionError, setActionError] = useState("");
 
-  // 3. Sync local state if the parent prop changes (e.g. initial load or refetch)
   useEffect(() => {
     setLocalEmployees(employees);
   }, [employees]);
 
   const startEdit = (emp) => {
     setEditingId(emp.employeeId);
-    
-    // Safely extract IDs for the input fields
-    const currentManagerId = emp.manager?.employeeId || emp.managerId || "";
-    const currentDeptId = emp.department?.departmentId || emp.departmentId || "";
+
+    const currentManagerId = emp.manager?.employeeId || "";
+    const currentDeptId = emp.department?.departmentId || "";
 
     setEditData({
       ...emp,
@@ -63,19 +60,20 @@ export default function EmployeeDataView({
       const payload = {
         ...editData,
         managerId: editData.managerId ? Number(editData.managerId) : null,
-        departmentId: editData.departmentId ? Number(editData.departmentId) : null,
+        departmentId: editData.departmentId
+          ? Number(editData.departmentId)
+          : null,
       };
 
-      // 4. CAPTURE the updated object returned from the backend
-      // Note: Ensure your parent component returns the axios response.data here!
       const updatedEmployee = await onEditSubmit(payload);
 
-      // 5. UPDATE UI INSTANTLY
       if (updatedEmployee) {
         setLocalEmployees((prevList) =>
           prevList.map((emp) =>
-            emp.employeeId === updatedEmployee.employeeId ? updatedEmployee : emp
-          )
+            emp.employeeId === updatedEmployee.employeeId
+              ? updatedEmployee
+              : emp,
+          ),
         );
       }
 
@@ -88,19 +86,18 @@ export default function EmployeeDataView({
     }
   };
 
-  // 6. Use localEmployees instead of employees prop for filtering
   const filteredData = useMemo(() => {
     return localEmployees.filter((emp) =>
       Object.values(emp).some((val) =>
-        String(val).toLowerCase().includes(searchTerm.toLowerCase())
-      )
+        String(val).toLowerCase().includes(searchTerm.toLowerCase()),
+      ),
     );
   }, [localEmployees, searchTerm]);
 
   const totalPages = Math.ceil(filteredData.length / rowsPerPage);
   const currentRows = filteredData.slice(
     (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage
+    currentPage * rowsPerPage,
   );
 
   return (
@@ -132,8 +129,9 @@ export default function EmployeeDataView({
                   try {
                     setActionLoading(true);
                     await onDeleteConfirm(deleteConfirm);
-                    // Remove deleted item from local state immediately
-                    setLocalEmployees(prev => prev.filter(e => e.employeeId !== deleteConfirm));
+                    setLocalEmployees((prev) =>
+                      prev.filter((e) => e.employeeId !== deleteConfirm),
+                    );
                     setDeleteConfirm(null);
                   } finally {
                     setActionLoading(false);
@@ -278,8 +276,9 @@ export default function EmployeeDataView({
 
                     <td className="px-4 py-4">
                       <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700">
-                         {/* Handle both Object and direct ID */}
-                         {emp.department?.departmentId || emp.departmentId || "-"}
+                        {emp.department?.departmentId ||
+                          emp.departmentId ||
+                          "-"}
                       </span>
                     </td>
 

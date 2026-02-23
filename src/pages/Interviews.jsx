@@ -155,7 +155,6 @@ export default function InterviewsComponent() {
     },
   ];
 
-  // Helper to check if fields should be disabled
   const isFormDisabled =
     selectedInterview?.status !== "SCHEDULED" && user?.role !== "HR";
 

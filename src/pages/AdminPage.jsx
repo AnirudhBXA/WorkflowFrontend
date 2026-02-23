@@ -104,7 +104,6 @@ export default function AdminPage() {
     }
   };
 
-  // --- DEPT HANDLERS ---
   const handleAddDepartment = async (e) => {
     e.preventDefault();
     try {
@@ -122,16 +121,31 @@ export default function AdminPage() {
   const handleEditDept = async (updatedDept) => {
     try {
       setLoading(true);
-      await axiosInstance.put(`/departments/${updatedDept.departmentId}`, {
+      const payload = {
         departmentName: updatedDept.departmentName,
-      });
+        hrId: updatedDept.hrId ? Number(updatedDept.hrId) : null,
+      };
+
+      const res = await axiosInstance.put(
+        `/departments/${updatedDept.departmentId}`,
+        payload,
+      );
+
+      const savedDept = res.data;
+
       setDepartments((prev) =>
         prev.map((d) =>
-          d.departmentId === updatedDept.departmentId ? updatedDept : d,
+          d.departmentId === updatedDept.departmentId
+            ? {
+                ...savedDept,
+                hrId: savedDept.hr?.employeeId || savedDept.hrId,
+              }
+            : d,
         ),
       );
     } catch (err) {
-      console.error(err);
+      setError(err.response?.data?.message || "Update failed");
+      throw err;
     } finally {
       setLoading(false);
     }
@@ -149,29 +163,22 @@ export default function AdminPage() {
     }
   };
 
-  // --- EMPLOYEE HANDLERS ---
   const handleEditEmployee = async (updatedEmp) => {
     try {
-      // 1. Double check we have the ID
       setLoading(true);
       const empId = updatedEmp.employeeId;
-      if (!empId) {
-        console.error("No Employee ID found in payload", updatedEmp);
-        return;
-      }
+      if (!empId) return;
 
-      // 2. Send request
-      await axiosInstance.put(`/employees/${empId}`, updatedEmp);
+      const res = await axiosInstance.put(`/employees/${empId}`, updatedEmp);
+      const finalData = res.data || updatedEmp;
 
-      // 3. Update local state
       setEmployees((prev) =>
-        prev.map((emp) =>
-          emp.employeeId === empId ? { ...emp, ...updatedEmp } : emp,
-        ),
+        prev.map((emp) => (emp.employeeId === empId ? finalData : emp)),
       );
+
+      return finalData;
     } catch (err) {
       console.error("Backend Error:", err.response?.data || err.message);
-      // Throwing allows the .catch() in saveEdit to show "Failed to update employee"
       throw err;
     } finally {
       setLoading(false);
@@ -191,7 +198,7 @@ export default function AdminPage() {
   };
 
   if (loading) {
-    return <Loader label="Fetching employees..." />;
+    return <Loader label="Fetching data..." />;
   }
 
   return (

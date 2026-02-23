@@ -41,7 +41,7 @@ export default function UserProfile() {
     const start = new Date(from);
     const end = new Date(to);
     const diffTime = end.getTime() - start.getTime();
-    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1; // inclusive
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
     return diffDays;
   }
 

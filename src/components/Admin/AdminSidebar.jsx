@@ -1,4 +1,4 @@
-import { Building2, Users, ChevronRight, Briefcase } from "lucide-react";
+import { Building2, Users, ChevronRight, Briefcase, LayoutGrid } from "lucide-react";
 
 export default function AdminSidebar({ activeTab, setActiveTab }) {
   const menuItems = [
@@ -9,9 +9,12 @@ export default function AdminSidebar({ activeTab, setActiveTab }) {
 
   return (
     <aside className="w-64 bg-slate-950 text-slate-400 flex flex-col border-r border-slate-800 h-screen sticky top-0">
-      <div className="p-8 flex items-center gap-3 border-b border-slate-900">
-        <span className="font-bold text-lg lowercase tracking-[0.15em] text-white">
-          darwinflow
+      <div className="px-6 py-6 flex items-center gap-3 shrink-0">
+        <div className="bg-indigo-600 p-2 rounded-xl">
+          <LayoutGrid className="text-white w-5 h-5" />
+        </div>
+        <span className="text-lg font-extrabold text-white tracking-tight">
+          DarwinFlow
         </span>
       </div>
 

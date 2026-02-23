@@ -25,23 +25,18 @@ export default function DepartmentRegistryView({
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 10;
 
-  // Inline Edit State
   const [editingId, setEditingId] = useState(null);
   const [editData, setEditData] = useState({});
   const [deleteConfirm, setDeleteConfirm] = useState(null);
 
-  // Loading/Error State for actions
   const [actionLoading, setActionLoading] = useState(false);
   const [actionError, setActionError] = useState("");
-
-  // --- Logic Handlers ---
 
   const startEdit = (dept) => {
     setEditingId(dept.departmentId);
     setEditData({
       ...dept,
-      // Ensure hrId is initialized (handle nulls for the input field)
-      hrId: dept.hrId || "",
+      hrId: dept.hrId || dept.hr?.employeeId || "",
     });
     setActionError("");
   };
@@ -54,8 +49,6 @@ export default function DepartmentRegistryView({
   const saveEdit = async () => {
     try {
       setActionLoading(true);
-
-      // Prepare payload: Ensure hrId is sent as a Number or null (not empty string)
       const payload = {
         ...editData,
         hrId: editData.hrId ? Number(editData.hrId) : null,
@@ -65,7 +58,6 @@ export default function DepartmentRegistryView({
       setEditingId(null);
     } catch (err) {
       console.error(err);
-      // If the backend sends a specific message (like "Assignation Failed"), display it
       const errorMsg =
         err.response?.data?.message || "Failed to update department.";
       setActionError(errorMsg);
@@ -86,25 +78,22 @@ export default function DepartmentRegistryView({
     }
   };
 
-  // --- Search & Pagination ---
-
   const filteredData = useMemo(() => {
     return departments.filter((dept) =>
       Object.values(dept).some((val) =>
-        String(val).toLowerCase().includes(searchTerm.toLowerCase())
-      )
+        String(val).toLowerCase().includes(searchTerm.toLowerCase()),
+      ),
     );
   }, [departments, searchTerm]);
 
   const totalPages = Math.ceil(filteredData.length / rowsPerPage);
   const currentRows = filteredData.slice(
     (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage
+    currentPage * rowsPerPage,
   );
 
   return (
     <div className="space-y-8 relative">
-      {/* Error Banner */}
       {actionError && (
         <div className="flex items-center gap-2 bg-red-50 text-red-700 p-3 border border-red-200 rounded text-sm">
           <AlertCircle size={16} />
@@ -112,7 +101,6 @@ export default function DepartmentRegistryView({
         </div>
       )}
 
-      {/* --- Delete Confirmation Modal --- */}
       {deleteConfirm && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-60">
           <div className="bg-white p-6 max-w-sm w-full shadow-xl border border-zinc-200">
@@ -144,7 +132,6 @@ export default function DepartmentRegistryView({
         </div>
       )}
 
-      {/* --- Create Department Form --- */}
       <div className="bg-white border border-zinc-200 shadow-sm">
         <div className="bg-zinc-50 px-6 py-3 border-b">
           <h2 className="text-xs font-black uppercase tracking-widest text-zinc-500">
@@ -180,7 +167,6 @@ export default function DepartmentRegistryView({
         </form>
       </div>
 
-      {/* --- Table Section --- */}
       <div className="bg-white border border-zinc-200 shadow-sm overflow-hidden relative">
         {actionLoading && !deleteConfirm && (
           <div className="absolute inset-0 bg-white/50 z-10 flex items-center justify-center">
@@ -224,7 +210,6 @@ export default function DepartmentRegistryView({
 
                   {editingId === dept.departmentId ? (
                     <>
-                      {/* --- EDIT MODE --- */}
                       <td className="px-4 py-2">
                         <input
                           name="departmentName"
@@ -235,7 +220,6 @@ export default function DepartmentRegistryView({
                         />
                       </td>
                       <td className="px-4 py-2">
-                        {/* ADDED INPUT FOR HR ID */}
                         <input
                           name="hrId"
                           type="number"
@@ -261,14 +245,17 @@ export default function DepartmentRegistryView({
                     </>
                   ) : (
                     <>
-                      {/* --- VIEW MODE --- */}
                       <td className="px-4 py-4 font-bold">
                         {dept.departmentName}
                       </td>
                       <td className="px-4 py-4 text-zinc-600">
-                        {dept.hrId ? (
+                        {dept.hr?.employeeId ||
+                        dept.hrId ||
+                        (editingId === null &&
+                          editData.departmentId === dept.departmentId &&
+                          editData.hrId) ? (
                           <span className="bg-blue-50 text-blue-700 px-2 py-1 rounded-full text-xs font-medium">
-                            ID: {dept.hrId}
+                            ID: {dept.hr?.employeeId || dept.hrId}
                           </span>
                         ) : (
                           <span className="text-zinc-400 italic">
@@ -309,7 +296,6 @@ export default function DepartmentRegistryView({
           </tbody>
         </table>
 
-        {/* Pagination */}
         <div className="bg-zinc-50 px-4 py-3 border-t flex items-center justify-between">
           <p className="text-xs text-zinc-500">
             Page {currentPage} of {totalPages || 1}
@@ -323,7 +309,7 @@ export default function DepartmentRegistryView({
               <ChevronLeft size={16} />
             </button>
             <button
-              disabled={currentPage === totalPages}
+              disabled={currentPage === totalPages || totalPages === 0}
               onClick={() => setCurrentPage((p) => p + 1)}
               className="p-1 border bg-white disabled:opacity-50"
             >

@@ -71,7 +71,7 @@ export default function TasksAndCalendar() {
   const [error, setError] = useState("");
   const [query, setQuery] = useState("");
   const [priorityFilter, setPriorityFilter] = useState("all");
-  const [actionLoading, setActionLoading] = useState({}); // { [id]: true }
+  const [actionLoading, setActionLoading] = useState({});
 
   useEffect(() => {
     setLoading(true);
@@ -79,7 +79,6 @@ export default function TasksAndCalendar() {
     axiosInstance
       .get("/data/tasks/me")
       .then((res) => {
-        // Expect tasks with fields: id, title, priority, dueDate, requester, approver, status, createdAt, description
         setTaskData(res.data || []);
       })
       .catch((err) => {
@@ -96,7 +95,6 @@ export default function TasksAndCalendar() {
 
   const totalPages = Math.max(1, Math.ceil(taskData.length / PAGE_SIZE));
 
-  // Filtering + search
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     return taskData.filter((t) => {
@@ -120,7 +118,6 @@ export default function TasksAndCalendar() {
     Math.ceil(filtered.length / PAGE_SIZE),
   );
 
-  // Approve / Reject actions (optimistic)
   const performAction = async (id, action) => {
     setActionLoading((s) => ({ ...s, [id]: true }));
     const prev = taskData;
@@ -132,12 +129,10 @@ export default function TasksAndCalendar() {
       ),
     );
     try {
-      await axiosInstance.post(`/data/tasks/${id}/${action}`); // backend endpoints: approve / reject
+      await axiosInstance.post(`/data/tasks/${id}/${action}`);
     } catch (err) {
-      // rollback
       setTaskData(prev);
       console.error(err);
-      // optional: show toast
     } finally {
       setActionLoading((s) => ({ ...s, [id]: false }));
     }

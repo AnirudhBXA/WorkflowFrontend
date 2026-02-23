@@ -15,15 +15,11 @@ export function formatDateTime(dateString) {
   const ampm = hours >= 12 ? "PM" : "AM";
 
   hours = hours % 12;
-  hours = hours ? hours : 12; // the hour '0' should be '12'
+  hours = hours ? hours : 12;
 
   return `${day}/${month}/${year}, ${hours}:${minutes} ${ampm}`;
 }
 
-/**
- * Formats a date string to DD/MM/YYYY
- * Example: 2026-02-06 -> 06/02/2026
- */
 export function formatDateOnly(dateString) {
   if (!dateString) return "N/A";
   const date = new Date(dateString);

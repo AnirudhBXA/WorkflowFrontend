@@ -8,7 +8,7 @@ export default function CertificationBriefCard({
   onReject,
 }) {
   const [loading, setLoading] = useState(null);
-  const isActionable = item.taskId; // manager pending approval
+  const isActionable = item.status === "ASSIGNED"; // manager pending approval
 
   return (
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
@@ -23,21 +23,51 @@ export default function CertificationBriefCard({
         </div>
 
         <div className="p-6 space-y-4">
-          <div className="flex justify-between">
-            <div>
-              <p className="text-xs text-slate-400">Employee</p>
-              <p className="text-slate-200 font-semibold">
-                {item.employee.name || "You"}
-              </p>
-            </div>
-            <div>
-              <p className="text-xs text-slate-400">Certification</p>
-              <p className="text-slate-200 font-semibold">
-                {item.certificationName}
-              </p>
-            </div>
+        <div className="p-6 grid grid-cols-2 gap-y-6">
+  
+          <div>
+            <p className="text-xs text-slate-400">Employee</p>
+            <p className="text-slate-200 font-semibold">
+              {item.employee.name || "You"}
+            </p>
           </div>
 
+          <div className="text-right">
+            <p className="text-xs text-slate-400">Department</p>
+            <p className="text-slate-200 font-semibold">
+              {item.employee.department.departmentName}
+            </p>
+          </div>
+
+          <div>
+            <p className="text-xs text-slate-400">Reimbursement Amount</p>
+            <p className="text-slate-200 font-semibold">
+              {item.reimbursementAmount || "00"}
+            </p>
+          </div>
+
+          <div className="text-right">
+            <p className="text-xs text-slate-400">Certification</p>
+            <p className="text-slate-200 font-semibold">
+              {item.certificationName}
+            </p>
+          </div>
+
+          <div>
+            <p className="text-xs text-slate-400">Assigned Date</p>
+            <p className="text-slate-200 font-semibold">
+              {item.assignedDate || "00"}
+            </p>
+          </div>
+
+          <div className="text-right">
+            <p className="text-xs text-slate-400">Due date</p>
+            <p className="text-slate-200 font-semibold">
+              {item.dueDate}
+            </p>
+          </div>
+
+        </div>
           <div className="bg-[#0B1220] p-4 rounded-xl flex items-center gap-3">
             <FileText className="text-indigo-400" />
             <span className="text-slate-300 text-sm">
@@ -54,10 +84,12 @@ export default function CertificationBriefCard({
                   await onReject();
                 }}
                 disabled={loading}
-                className="flex-1 py-3 bg-rose-500/10 text-rose-400 rounded-xl"
+                className="flex flex-1 items-center justify-center gap-2 py-3 bg-rose-500/10 text-rose-400 rounded-xl"
               >
-                {loading === "reject" && <Loader2 className="animate-spin" />}
                 Reject
+                {loading === "reject" && (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                )}
               </button>
 
               <button
@@ -66,10 +98,12 @@ export default function CertificationBriefCard({
                   await onApprove();
                 }}
                 disabled={loading}
-                className="flex-1 py-3 bg-indigo-600 text-white rounded-xl"
+                className="flex flex-1 items-center justify-center gap-2 py-3 bg-indigo-600 text-white rounded-xl"
               >
-                {loading === "approve" && <Loader2 className="animate-spin" />}
                 Approve
+                {loading === "approve" && (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                )}
               </button>
             </div>
           )}

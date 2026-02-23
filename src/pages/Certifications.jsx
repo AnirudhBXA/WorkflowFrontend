@@ -12,6 +12,7 @@ export default function CertificationsComponent() {
   const [loading, setLoading] = useState(true);
   const [myCerts, setMyCerts] = useState([]);
   const [teamCerts, setTeamCerts] = useState([]);
+  const [deptCerts, setDeptCerts] = useState([]);
   const [pendingItems, setPendingItems] = useState([]);
   const [summary, setSummary] = useState({ left: 0, used: 0 });
   const [selected, setSelected] = useState(null);
@@ -29,6 +30,7 @@ export default function CertificationsComponent() {
         fetchMyCertificates(),
         fetchMySummary(),
         user.role === "MANAGER" ? fetchTeamCertificates() : Promise.resolve(),
+        user.role === "HR" ? fetchDeptartmentCertifications() : Promise.resolve(),
       ]);
     } finally {
       setLoading(false);
@@ -48,8 +50,14 @@ export default function CertificationsComponent() {
   async function fetchTeamCertificates() {
     const res = await axiosInstance.get("/certifications/team");
     setTeamCerts(res.data || []);
-    setPendingItems((res.data || []).filter((c) => c.taskId));
+    setPendingItems((res.data || []).filter((c) => c.status === "ASSIGNED"));
   }
+  
+  async function fetchDeptartmentCertifications(){
+    const response = await axiosInstance.get("/certifications/dept");
+    setDeptCerts(response.data || []);
+  }
+
 
   async function handleCertificationApproval(decision) {
     try {
@@ -66,9 +74,46 @@ export default function CertificationsComponent() {
     }
   }
 
+
+  async function handleCompleteCertification(event, item){
+    // console.log(item)
+    event.stopPropagation()
+    try{
+      const response = await axiosInstance.post(
+        `/certifications/complete/${item.taskId}`,
+      );
+      await refreshAll();
+    } catch(e){
+      alert(
+        e.response.data.message || 
+        "Failed to update the certification status"
+      );
+    }
+  }
+
+
+  async function handleHRVerifyCertification(event, item){
+    // console.log(item)
+    event.stopPropagation()
+    try{
+      const response = await axiosInstance.post(
+        `/certifications/verify/${item.taskId}`,
+      );
+      await refreshAll();
+    } catch(e){
+      alert(
+        e.response.data.message || 
+        "Failed to update the certification status"
+      );
+    }
+  }
+
+
+
   const badge = (status) => {
     const map = {
-      SUBMITTED: "bg-indigo-500/10 text-indigo-400",
+      VERIFIED: "bg-indigo-500/10 text-indigo-400",
+      COMPLETED: "bg-blue-500/10 text-blue-400",
       APPROVED: "bg-emerald-500/10 text-emerald-400",
       REJECTED: "bg-rose-500/10 text-rose-400",
       ASSIGNED: "bg-yellow-500/10 text-yellow-400",
@@ -139,9 +184,11 @@ export default function CertificationsComponent() {
         <table className="w-full text-sm">
           <thead className="bg-[#0B1220] text-xs uppercase text-slate-500">
             <tr>
+              <th className="px-6 py-4 text-left">Cert Id</th>
               <th className="px-6 py-4 text-left">Certification</th>
               <th className="px-6 py-4 text-left">Amount</th>
               <th className="px-6 py-4 text-left">Status</th>
+              <th className="px-6 py-4 text-left">Action</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-800">
@@ -151,6 +198,7 @@ export default function CertificationsComponent() {
                 onClick={() => setSelected(c)}
                 className="hover:bg-[#0B1220] cursor-pointer"
               >
+                <td className="px-6 py-5 font-semibold text-slate-200">{c.certId}</td>
                 <td className="px-6 py-5 font-semibold text-slate-200">
                   {c.certificationName}
                 </td>
@@ -158,11 +206,70 @@ export default function CertificationsComponent() {
                   ₹ {c.reimbursementAmount}
                 </td>
                 <td className="px-6 py-5">{badge(c.status)}</td>
+                <td className="px-6 py-5">
+                    { c.status === "APPROVED" && (
+                  <button 
+                  onClick={ (e) => handleCompleteCertification(e, c)}
+                  className="bg-blue-700 text-white px-4 py-1 rounded-md font-semibold text-sm hover:bg-blue-700 active:scale-95 transition duration-200"
+                  >Complete</button>
+                    )}
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+
+      { user.role === "HR" && (
+        <div className="bg-[#111827] border border-slate-800 rounded-2xl overflow-hidden">
+          <div className="px-6 py-4 border-b border-slate-800 flex items-center gap-2">
+            <History className="w-5 h-5 text-indigo-400" />
+            <h2 className="text-sm font-bold uppercase text-slate-300">
+              Department Certifications
+            </h2>
+          </div>
+
+          <table className="w-full text-sm">
+            <thead className="bg-[#0B1220] text-xs uppercase text-slate-500">
+              <tr>
+                <th className="px-6 py-4 text-left">Cert Id</th>
+                <th className="px-6 py-4 text-left">Certification</th>
+                <th className="px-6 py-4 text-left">Amount</th>
+                <th className="px-6 py-4 text-left">Status</th>
+                <th className="px-6 py-4 text-left">Action</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-800">
+              {deptCerts.map((c) => (
+                <tr
+                  key={c.certId}
+                  onClick={() => setSelected(c)}
+                  className="hover:bg-[#0B1220] cursor-pointer"
+                >
+                  <td className="px-6 py-5 font-semibold text-slate-200">
+                    {c.certId}
+                  </td>
+                  <td className="px-6 py-5 font-semibold text-slate-200">
+                    {c.certificationName}
+                  </td>
+                  <td className="px-6 py-5 text-slate-400">
+                    ₹ {c.reimbursementAmount}
+                  </td>
+                  <td className="px-6 py-5">{badge(c.status)}</td>
+                  <td className="px-6 py-5">
+                    { c.status === "COMPLETED" && (
+                      <button 
+                      onClick={ (e) => handleHRVerifyCertification(e, c)}
+                      className="bg-indigo-700 text-white px-4 py-1 rounded-md font-semibold text-sm hover:bg-indigo-700 active:scale-95 transition duration-200"
+                      >Verify</button>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
 
       {/* TEAM CERTIFICATIONS */}
       {user.role === "MANAGER" && (

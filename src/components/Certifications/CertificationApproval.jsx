@@ -25,6 +25,7 @@ export default function CertificationApprovalComponent({ items, setSelected }) {
         <table className="w-full text-sm">
           <thead className="bg-[#0B1220] text-xs uppercase text-slate-500">
             <tr>
+              <th className="px-6 py-5 text-left">Cert Id</th>
               <th className="px-6 py-5 text-left">Employee</th>
               <th className="px-6 py-5 text-left">Certification</th>
               <th className="px-6 py-5 text-center">Action</th>
@@ -48,6 +49,12 @@ export default function CertificationApprovalComponent({ items, setSelected }) {
                   onClick={() => setSelected(item)}
                   className="hover:bg-[#0B1220] transition cursor-pointer"
                 >
+
+                  <td>
+                    <span className="font-semibold text-slate-200">
+                        {item.certId}
+                    </span>
+                  </td>
                   <td className="px-6 py-6">
                     <div className="flex items-center gap-3">
                       <div className="w-9 h-9 rounded-lg bg-indigo-600/10 text-indigo-400 font-bold flex items-center justify-center text-xs">

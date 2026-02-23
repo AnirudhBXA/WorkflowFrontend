@@ -6,6 +6,7 @@ import {
   Award,
   Users,
   ChevronRight,
+  Shield,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { useContext } from "react";
@@ -70,16 +71,17 @@ export default function NavigationSidebar({ className = "" }) {
           </NavLink>
         ))}
 
-        {(user?.role === "ADMIN" || user?.role === "HR") && (
+        {/* ADMIN SECTION */}
+        {user?.role === "ADMIN" && (
           <div className="pt-6">
             <p className="px-4 text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-4">
               Admin
             </p>
 
             <NavLink
-              to="/workflows"
+              to="/admin"
               className={({ isActive }) =>
-                `flex items-center gap-3 px-4 py-3 rounded-xl transition
+                `group flex items-center justify-between px-4 py-3 rounded-xl transition
                 ${
                   isActive
                     ? "bg-indigo-600 text-white"
@@ -89,12 +91,41 @@ export default function NavigationSidebar({ className = "" }) {
             >
               {({ isActive }) => (
                 <>
-                  <Users className="h-5 w-5" strokeWidth={isActive ? 2.5 : 2} />
-                  <span className="text-sm font-semibold">Team Workflows</span>
+                  <div className="flex items-center gap-3">
+                    <Shield
+                      className="h-5 w-5"
+                      strokeWidth={isActive ? 2.5 : 2}
+                    />
+                    <span className="text-sm font-semibold">
+                      Admin Dashboard
+                    </span>
+                  </div>
+                  <ChevronRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition" />
                 </>
               )}
             </NavLink>
           </div>
+        )}
+
+        {(user?.role === "ADMIN" || user?.role === "HR") && (
+          <NavLink
+            to="/workflows"
+            className={({ isActive }) =>
+              `flex items-center gap-3 px-4 py-3 rounded-xl transition
+                  ${
+                    isActive
+                      ? "bg-indigo-600 text-white"
+                      : "text-slate-400 hover:bg-[#111827] hover:text-white"
+                  }`
+            }
+          >
+            {({ isActive }) => (
+              <>
+                <Users className="h-5 w-5" strokeWidth={isActive ? 2.5 : 2} />
+                <span className="text-sm font-semibold">Team Workflows</span>
+              </>
+            )}
+          </NavLink>
         )}
       </nav>
     </aside>

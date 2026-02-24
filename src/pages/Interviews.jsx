@@ -5,6 +5,7 @@ import { formatDateTime } from "../utils/dateFormatter";
 import RescheduleCard from "../components/Interview/RescheduleCard";
 import { AuthContext } from "../context/AuthContext";
 import { Calendar, CheckCircle, XCircle, Clock, Video } from "lucide-react";
+import { toast } from "sonner";
 
 export default function InterviewsComponent() {
   const { user } = useContext(AuthContext);
@@ -81,8 +82,11 @@ export default function InterviewsComponent() {
 
       closeInterviewModal();
       await refreshAfterAction();
-    } catch (err) {
-      console.error("Failed to update status", err);
+    } catch (error) {
+      toast.error(
+        error?.response?.data?.message ||
+        error?.message ||
+        "Failed to update status");
     } finally {
       setActionLoading(null);
     }
@@ -98,8 +102,11 @@ export default function InterviewsComponent() {
       await refreshAfterAction();
       setShowRescheduleCard(false);
       closeInterviewModal();
-    } catch (err) {
-      console.error("Failed to reschedule", err);
+    } catch (error) {
+      toast.error(
+        error?.response?.data?.message ||
+        error?.message ||
+        "Failed to Reschedule");
     } finally {
       setActionLoading(false);
     }
@@ -111,8 +118,11 @@ export default function InterviewsComponent() {
       await axiosInstance.post(`/interview/close/${taskId}`);
       await refreshAfterAction();
       closeInterviewModal();
-    } catch (err) {
-      console.error("Failed to close interview", err);
+    } catch (error) {
+      toast.error(
+        error?.response?.data?.message ||
+        error?.message ||
+        "Failed to close");
     } finally {
       setActionLoading(false);
     }

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axiosInstance from "../../utils/axiosInstance";
 import LeaveBriefCard from "./LeaveBriefCard";
 import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
+import { toast } from "sonner";
 
 function formatDateToDDMMYYYY(dateString) {
   const date = new Date(dateString);
@@ -29,9 +30,18 @@ export default function LeaveApprovalComponent() {
   }, []);
 
   const handleStatusUpdate = async (decision, taskId) => {
-    await axiosInstance.post(`/leaves/workflow/tasks/${taskId}/complete`, {
-      decision,
-    });
+
+    try{
+      await axiosInstance.post(`/leaves/workflow/tasks/${taskId}/complete`, {
+        decision,
+      });
+
+    } catch(error){
+      toast.error(
+        error?.response?.data?.message ||
+        error?.message ||
+        "Failed to Update status");
+    }
     setLeavesList((prev) =>
       prev.map((leave) =>
         leave.taskId === taskId ? { ...leave, status: decision } : leave,

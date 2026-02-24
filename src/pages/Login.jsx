@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import axiosInstance from "../utils/axiosInstance";
 import { Mail, Lock, Chrome, Github, ArrowRight, LayoutGrid } from "lucide-react";
+import { toast } from "sonner";
 
 function LoginComponent() {
   const [form, setForm] = useState({
@@ -60,6 +61,11 @@ function LoginComponent() {
       setError(
         err.response?.data?.message || "Invalid credentials. Please try again.",
       );
+
+      toast.error(
+        err?.response?.data?.message ||
+        err?.message ||
+        "Failed to Login");
     } finally {
       setLoading(false);
     }

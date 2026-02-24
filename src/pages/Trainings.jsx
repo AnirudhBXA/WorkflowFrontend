@@ -3,6 +3,7 @@ import TrainingCard from "../components/Trainings/TrainingCard";
 import { BookOpen, Users } from "lucide-react";
 import { AuthContext } from "../context/AuthContext";
 import axiosInstance from "../utils/axiosInstance";
+import { toast } from "sonner";
 
 export default function TrainingsComponent() {
   const { user } = useContext(AuthContext);
@@ -29,8 +30,11 @@ export default function TrainingsComponent() {
       const response = await axiosInstance.get("/trainings/me");
       setMyTrainings(response.data);
       console.log("Fetched my trainings:", response.data);
-    } catch {
-      alert("Failed to fetch your trainings");
+    } catch(error) {
+      toast.error(
+        error?.response?.data?.message ||
+        error?.message ||
+        "Failed to fetch your trainings");
     } finally {
       setMyLoading(false);
     }
@@ -41,7 +45,10 @@ export default function TrainingsComponent() {
       const response = await axiosInstance.get("/trainings/teamTrainings");
       setTeamTrainings(response.data);
     } catch {
-      alert("Failed to fetch team trainings");
+      toast.error(
+        error?.response?.data?.message ||
+        error?.message ||
+        "Failed to fetch your trainings");
     } finally {
       setTeamLoading(false);
     }
@@ -54,10 +61,11 @@ export default function TrainingsComponent() {
     try {
       await axiosInstance.post(`/trainings/tasks/${taskId}/complete`);
       await fetchMyTrainings();
-      alert("Training marked as completed!");
+      toast.success("Training marked as completed!");
     } catch (error) {
-      alert(
+      toast.error(
         error?.response?.data?.message ||
+        error?.message ||
           "Failed to mark training as complete. Please try again.",
       );
     } finally {

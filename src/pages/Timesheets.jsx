@@ -5,6 +5,7 @@ import MonthlyTimesheetTable from "../components/Timesheets/MonthlyTimesheetTabl
 import ManagerTimesheetApprovalTable from "../components/Timesheets/ManagerTimesheetApprovalTable";
 import { BarChart3 } from "lucide-react";
 import { AuthContext } from "../context/AuthContext";
+import { toast } from "sonner";
 
 export default function TimesheetsComponent() {
   const { user } = useContext(AuthContext);
@@ -34,7 +35,14 @@ export default function TimesheetsComponent() {
     try {
       const res = await axiosInstance.get("/data/timesheets/summary");
       setWeeklyData(res.data.weekly || []);
-    } finally {
+    }
+    catch (error){
+      toast.error(
+        error?.response?.data?.message ||
+        error?.message ||
+        "Failed to fetch your timesheets");
+    }
+    finally {
       setLoading(false);
     }
   };
@@ -43,7 +51,14 @@ export default function TimesheetsComponent() {
     try {
       const response = await axiosInstance.get("/timesheets/this-month");
       setMonthlyData(response.data);
-    } finally {
+    }
+    catch(error){
+      toast.error(
+        error?.response?.data?.message ||
+        error?.message ||
+        "Failed to fetch your timesheets");
+    }
+    finally {
       setLoading(false);
     }
   }
@@ -52,7 +67,14 @@ export default function TimesheetsComponent() {
     try {
       const response = await axiosInstance.get("/timesheets/team");
       setTeamTimesheets(response.data);
-    } finally {
+    } 
+    catch(error){
+      toast.error(
+        error?.response?.data?.message ||
+        error?.message ||
+        "Failed to fetch your timesheets");
+    }
+    finally {
       setLoading(false);
     }
   }

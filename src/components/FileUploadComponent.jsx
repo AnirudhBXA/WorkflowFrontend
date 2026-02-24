@@ -10,6 +10,8 @@ import {
   ChevronRight,
 } from "lucide-react";
 
+import { toast } from "sonner";
+
 function FileUploadComponent() {
   const inputRef = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -83,7 +85,6 @@ function FileUploadComponent() {
     try {
       setIsUploading(true);
       setUploadResult(null);
-
       const response = await axiosInstance.post(
         selectedWorkflow.relatedApi,
         formData,
@@ -95,9 +96,15 @@ function FileUploadComponent() {
       );
 
       setUploadResult(response.data);
+
+      toast.success("Upload Success. WorkFlows created")
     } catch (error) {
       console.error(error);
-      alert("Upload failed.");
+      toast.error(
+        error?.response?.data?.message ||
+        error?.message ||
+        "Failed to upload"
+      )
     } finally {
       setIsUploading(false);
     }

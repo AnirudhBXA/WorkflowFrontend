@@ -6,6 +6,7 @@ export default function CertificationBriefCard({
   onClose,
   onApprove,
   onReject,
+  showActions,
 }) {
   const [loading, setLoading] = useState(null);
   const isActionable = item.status === "ASSIGNED";
@@ -76,7 +77,7 @@ export default function CertificationBriefCard({
             <Download className="ml-auto text-slate-400" />
           </div>
 
-          {isActionable && (
+          {showActions && isActionable && (
             <div className="flex gap-3 pt-4">
               <button
                 onClick={async () => {

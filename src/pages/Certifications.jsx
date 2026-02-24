@@ -18,24 +18,43 @@ export default function CertificationsComponent() {
   const [summary, setSummary] = useState({ left: 0, used: 0 });
   const [selected, setSelected] = useState(null);
 
-  const [ myPage, setMyPage ] = useState(1)
-  const [ teamPage, setTeamPage ] = useState(1)
-  const [ deptPage, setDeptPage ] = useState(1)
+  const [myPage, setMyPage] = useState(1);
+  const [teamPage, setTeamPage] = useState(1);
+  const [deptPage, setDeptPage] = useState(1);
+  const [isViewingApproval, setIsViewingApproval] = useState(false); // New State
 
+  // Update this to handle clicking from Approval table vs History table
+  const handleSelectForApproval = (item) => {
+    setIsViewingApproval(true);
+    setSelected(item);
+  };
+
+  const handleSelectForView = (item) => {
+    setIsViewingApproval(false);
+    setSelected(item);
+  };
   const PAGE_SIZE = 5;
 
-  
   const totalTeamPages = Math.ceil(teamCerts.length / PAGE_SIZE);
   const startIndexTeam = (teamPage - 1) * PAGE_SIZE;
-  const paginatedTeamCerts = teamCerts.slice(startIndexTeam, startIndexTeam + PAGE_SIZE);
+  const paginatedTeamCerts = teamCerts.slice(
+    startIndexTeam,
+    startIndexTeam + PAGE_SIZE,
+  );
 
   const totalMyPages = Math.ceil(myCerts.length / PAGE_SIZE);
   const startIndexMy = (myPage - 1) * PAGE_SIZE;
-  const paginatedMyCerts = myCerts.slice(startIndexMy, startIndexMy + PAGE_SIZE);
+  const paginatedMyCerts = myCerts.slice(
+    startIndexMy,
+    startIndexMy + PAGE_SIZE,
+  );
 
   const totalDeptPages = Math.ceil(deptCerts.length / PAGE_SIZE);
   const startIndexDept = (deptPage - 1) * PAGE_SIZE;
-  const paginatedDeptCerts = deptCerts.slice(startIndexDept, startIndexDept + PAGE_SIZE);
+  const paginatedDeptCerts = deptCerts.slice(
+    startIndexDept,
+    startIndexDept + PAGE_SIZE,
+  );
 
   useEffect(() => {
     if (user) {
@@ -50,7 +69,9 @@ export default function CertificationsComponent() {
         fetchMyCertificates(),
         fetchMySummary(),
         user.role === "MANAGER" ? fetchTeamCertificates() : Promise.resolve(),
-        user.role === "HR" ? fetchDeptartmentCertifications() : Promise.resolve(),
+        user.role === "HR"
+          ? fetchDeptartmentCertifications()
+          : Promise.resolve(),
       ]);
     } finally {
       setLoading(false);
@@ -72,12 +93,11 @@ export default function CertificationsComponent() {
     setTeamCerts(res.data || []);
     setPendingItems((res.data || []).filter((c) => c.status === "ASSIGNED"));
   }
-  
-  async function fetchDeptartmentCertifications(){
+
+  async function fetchDeptartmentCertifications() {
     const response = await axiosInstance.get("/certifications/dept");
     setDeptCerts(response.data || []);
   }
-
 
   async function handleCertificationApproval(decision) {
     try {
@@ -94,39 +114,33 @@ export default function CertificationsComponent() {
     }
   }
 
-
-  async function handleCompleteCertification(event, item){
-    event.stopPropagation()
-    try{
+  async function handleCompleteCertification(event, item) {
+    event.stopPropagation();
+    try {
       const response = await axiosInstance.post(
         `/certifications/complete/${item.taskId}`,
       );
       await refreshAll();
-    } catch(e){
+    } catch (e) {
       alert(
-        e.response.data.message || 
-        "Failed to update the certification status"
+        e.response.data.message || "Failed to update the certification status",
       );
     }
   }
 
-
-  async function handleHRVerifyCertification(event, item){
-    event.stopPropagation()
-    try{
+  async function handleHRVerifyCertification(event, item) {
+    event.stopPropagation();
+    try {
       const response = await axiosInstance.post(
         `/certifications/verify/${item.taskId}`,
       );
       await refreshAll();
-    } catch(e){
+    } catch (e) {
       alert(
-        e.response.data.message || 
-        "Failed to update the certification status"
+        e.response.data.message || "Failed to update the certification status",
       );
     }
   }
-
-
 
   const badge = (status) => {
     const map = {
@@ -158,9 +172,13 @@ export default function CertificationsComponent() {
       {selected && (
         <CertificationBriefCard
           item={selected}
-          onClose={() => setSelected(null)}
+          onClose={() => {
+            setSelected(null);
+            setIsViewingApproval(false);
+          }}
           onApprove={() => handleCertificationApproval(true)}
           onReject={() => handleCertificationApproval(false)}
+          showActions={isViewingApproval}
         />
       )}
 
@@ -213,10 +231,12 @@ export default function CertificationsComponent() {
             {paginatedMyCerts.map((c) => (
               <tr
                 key={c.certId}
-                onClick={() => setSelected(c)}
+                onClick={() => handleSelectForView(c)}
                 className="hover:bg-[#0B1220] cursor-pointer"
               >
-                <td className="px-6 py-5 font-semibold text-slate-200">{c.certId}</td>
+                <td className="px-6 py-5 font-semibold text-slate-200">
+                  {c.certId}
+                </td>
                 <td className="px-6 py-5 font-semibold text-slate-200">
                   {c.certificationName}
                 </td>
@@ -225,12 +245,14 @@ export default function CertificationsComponent() {
                 </td>
                 <td className="px-6 py-5">{badge(c.status)}</td>
                 <td className="px-6 py-5">
-                    { c.status === "APPROVED" && (
-                  <button 
-                  onClick={ (e) => handleCompleteCertification(e, c)}
-                  className="bg-blue-700 text-white px-4 py-1 rounded-md font-semibold text-sm hover:bg-blue-700 active:scale-95 transition duration-200"
-                  >Complete</button>
-                    )}
+                  {c.status === "APPROVED" && (
+                    <button
+                      onClick={(e) => handleCompleteCertification(e, c)}
+                      className="bg-blue-700 text-white px-4 py-1 rounded-md font-semibold text-sm hover:bg-blue-700 active:scale-95 transition duration-200"
+                    >
+                      Complete
+                    </button>
+                  )}
                 </td>
               </tr>
             ))}
@@ -238,33 +260,33 @@ export default function CertificationsComponent() {
         </table>
 
         {totalMyPages > 1 && (
-            <div className="flex items-center justify-between px-6 py-4 border-t border-slate-800 bg-[#0B1220]">
-              <span className="text-xs text-slate-500">
-                Page {myPage} of {totalMyPages}
-              </span>
+          <div className="flex items-center justify-between px-6 py-4 border-t border-slate-800 bg-[#0B1220]">
+            <span className="text-xs text-slate-500">
+              Page {myPage} of {totalMyPages}
+            </span>
 
-              <div className="flex items-center gap-2">
-                <button
-                  disabled={myPage === 1}
-                  onClick={() => setMyPage((p) => p - 1)}
-                  className="p-2 rounded-lg border border-slate-700 text-slate-400 hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed"
-                >
-                  <ChevronLeft size={14} />
-                </button>
+            <div className="flex items-center gap-2">
+              <button
+                disabled={myPage === 1}
+                onClick={() => setMyPage((p) => p - 1)}
+                className="p-2 rounded-lg border border-slate-700 text-slate-400 hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                <ChevronLeft size={14} />
+              </button>
 
-                <button
-                  disabled={myPage === totalMyPages}
-                  onClick={() => setMyPage((p) => p + 1)}
-                  className="p-2 rounded-lg border border-slate-700 text-slate-400 hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed"
-                >
-                  <ChevronRight size={14} />
-                </button>
-              </div>
+              <button
+                disabled={myPage === totalMyPages}
+                onClick={() => setMyPage((p) => p + 1)}
+                className="p-2 rounded-lg border border-slate-700 text-slate-400 hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                <ChevronRight size={14} />
+              </button>
             </div>
-          )}
+          </div>
+        )}
       </div>
 
-      { user.role === "HR" && (
+      {user.role === "HR" && (
         <div className="bg-[#111827] border border-slate-800 rounded-2xl overflow-hidden">
           <div className="px-6 py-4 border-b border-slate-800 flex items-center gap-2">
             <History className="w-5 h-5 text-indigo-400" />
@@ -301,11 +323,13 @@ export default function CertificationsComponent() {
                   </td>
                   <td className="px-6 py-5">{badge(c.status)}</td>
                   <td className="px-6 py-5">
-                    { c.status === "COMPLETED" && (
-                      <button 
-                      onClick={ (e) => handleHRVerifyCertification(e, c)}
-                      className="bg-indigo-700 text-white px-4 py-1 rounded-md font-semibold text-sm hover:bg-indigo-700 active:scale-95 transition duration-200"
-                      >Verify</button>
+                    {c.status === "COMPLETED" && (
+                      <button
+                        onClick={(e) => handleHRVerifyCertification(e, c)}
+                        className="bg-indigo-700 text-white px-4 py-1 rounded-md font-semibold text-sm hover:bg-indigo-700 active:scale-95 transition duration-200"
+                      >
+                        Verify
+                      </button>
                     )}
                   </td>
                 </tr>
@@ -364,12 +388,10 @@ export default function CertificationsComponent() {
               {paginatedTeamCerts.map((c) => (
                 <tr
                   key={c.certId}
-                  onClick={() => setSelected(c)}
+                  onClick={() => handleSelectForView(c)}
                   className="hover:bg-[#0B1220] cursor-pointer"
                 >
-                  <td className="px-6 py-5 text-slate-200">
-                    {c.certId}
-                  </td>
+                  <td className="px-6 py-5 text-slate-200">{c.certId}</td>
                   <td className="px-6 py-5 text-slate-200">
                     {c.employee?.name || "—"}
                   </td>
@@ -381,7 +403,6 @@ export default function CertificationsComponent() {
               ))}
             </tbody>
           </table>
-
 
           {totalTeamPages > 1 && (
             <div className="flex items-center justify-between px-6 py-4 border-t border-slate-800 bg-[#0B1220]">
@@ -414,7 +435,7 @@ export default function CertificationsComponent() {
       {user.role === "MANAGER" && (
         <CertificationApprovalComponent
           items={pendingItems}
-          setSelected={setSelected}
+          setSelected={handleSelectForApproval}
         />
       )}
     </div>

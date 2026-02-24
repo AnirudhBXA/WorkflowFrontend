@@ -5,12 +5,11 @@ import CertificationBriefCard from "../components/Certifications/CertificationBr
 import { History, Users } from "lucide-react";
 import { AuthContext } from "../context/AuthContext";
 import axiosInstance from "../utils/axiosInstance";
-import { ChevronLeft, ChevronRight, ArrowRight, Loader2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 export default function CertificationsComponent() {
   const { user } = useContext(AuthContext);
-
   const [loading, setLoading] = useState(true);
   const [myCerts, setMyCerts] = useState([]);
   const [teamCerts, setTeamCerts] = useState([]);
@@ -81,53 +80,47 @@ export default function CertificationsComponent() {
   }
 
   async function fetchMyCertificates() {
-    try{
+    try {
       const res = await axiosInstance.get("/certifications/me");
       setMyCerts(res.data || []);
-    } catch (e){
+    } catch (e) {
       toast.error(
-        e?.response?.data?.message ||
-        e?.message ||
-        "Failed to load data ❌");
+        e?.response?.data?.message || e?.message || "Failed to load data ❌",
+      );
     }
   }
 
   async function fetchMySummary() {
-    try{
+    try {
       const res = await axiosInstance.get("/certifications/mySummary");
       setSummary(res.data);
-    } catch (e){
+    } catch (e) {
       toast.error(
-        e?.response?.data?.message ||
-        e?.message ||
-        "Failed to load data ❌");
+        e?.response?.data?.message || e?.message || "Failed to load data ❌",
+      );
     }
   }
 
   async function fetchTeamCertificates() {
-
-    try{
+    try {
       const res = await axiosInstance.get("/certifications/team");
       setTeamCerts(res.data || []);
       setPendingItems((res.data || []).filter((c) => c.status === "ASSIGNED"));
-    } catch(e){
+    } catch (e) {
       toast.error(
-        e?.response?.data?.message ||
-        e?.message ||
-        "Failed to load data ❌");
+        e?.response?.data?.message || e?.message || "Failed to load data ❌",
+      );
     }
   }
 
   async function fetchDeptartmentCertifications() {
-    try{
+    try {
       const response = await axiosInstance.get("/certifications/dept");
       setDeptCerts(response.data || []);
-    }
-    catch(e){
+    } catch (e) {
       toast.error(
-        e?.response?.data?.message ||
-        e?.message ||
-        "Failed to load data ❌");
+        e?.response?.data?.message || e?.message || "Failed to load data ❌",
+      );
     }
   }
 
@@ -138,13 +131,12 @@ export default function CertificationsComponent() {
       );
       setSelected(null);
       await refreshAll();
-      toast.success(decision+" successfully");
+      toast.success(decision + " successfully");
     } catch (e) {
       // console.log(error.message)
       toast.error(
-        e?.response?.data?.message ||
-        e?.message ||
-        "Status update failed ❌");
+        e?.response?.data?.message || e?.message || "Status update failed ❌",
+      );
     }
   }
 
@@ -156,14 +148,12 @@ export default function CertificationsComponent() {
         `/certifications/complete/${item.taskId}`,
       );
       await refreshAll();
-      toast.success("Completed Successfully")
+      toast.success("Completed Successfully");
     } catch (e) {
       toast.error(
-        e?.response?.data?.message ||
-        e?.message ||
-         "Status update failed ❌",
+        e?.response?.data?.message || e?.message || "Status update failed ❌",
       );
-    } finally{
+    } finally {
       setLoadingCertId(null);
     }
   }
@@ -176,14 +166,12 @@ export default function CertificationsComponent() {
         `/certifications/verify/${item.taskId}`,
       );
       await refreshAll();
-      toast.success("Verification completed")
+      toast.success("Verification completed");
     } catch (e) {
       toast.error(
-        e?.response?.data?.message ||
-        e?.message ||
-        "Status update failed ❌"
+        e?.response?.data?.message || e?.message || "Status update failed ❌",
       );
-    } finally{
+    } finally {
       setLoadingCertId(null);
     }
   }
@@ -300,7 +288,6 @@ export default function CertificationsComponent() {
                                 flex items-center gap-2"
                     >
                       Complete
-
                       {loadingCertId === c.certId && (
                         <Loader2 className="w-4 h-4 animate-spin" />
                       )}
@@ -382,9 +369,9 @@ export default function CertificationsComponent() {
                         className="bg-blue-700 text-white px-4 py-1 rounded-md 
                                 font-semibold text-sm hover:bg-blue-700 
                                 active:scale-95 transition duration-200
-                                flex items-center gap-2">
+                                flex items-center gap-2"
+                      >
                         Verify
-
                         {loadingCertId === c.certId && (
                           <Loader2 className="w-4 h-4 animate-spin" />
                         )}

@@ -5,7 +5,7 @@ import CertificationBriefCard from "../components/Certifications/CertificationBr
 import { History, Users } from "lucide-react";
 import { AuthContext } from "../context/AuthContext";
 import axiosInstance from "../utils/axiosInstance";
-import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, ArrowRight, Loader2 } from "lucide-react";
 
 export default function CertificationsComponent() {
   const { user } = useContext(AuthContext);
@@ -17,6 +17,7 @@ export default function CertificationsComponent() {
   const [pendingItems, setPendingItems] = useState([]);
   const [summary, setSummary] = useState({ left: 0, used: 0 });
   const [selected, setSelected] = useState(null);
+  const [loadingCertId, setLoadingCertId] = useState(null);
 
   const [myPage, setMyPage] = useState(1);
   const [teamPage, setTeamPage] = useState(1);
@@ -79,24 +80,50 @@ export default function CertificationsComponent() {
   }
 
   async function fetchMyCertificates() {
-    const res = await axiosInstance.get("/certifications/me");
-    setMyCerts(res.data || []);
+    try{
+      const res = await axiosInstance.get("/certifications/me");
+      setMyCerts(res.data || []);
+    } catch (e){
+      alert(
+        error.message || "Failed to fetch your certifications",
+      );
+    }
   }
 
   async function fetchMySummary() {
-    const res = await axiosInstance.get("/certifications/mySummary");
-    setSummary(res.data);
+    try{
+      const res = await axiosInstance.get("/certifications/mySummary");
+      setSummary(res.data);
+    } catch (e){
+      alert(
+        error.message || "Failed to fetch your certification summary",
+      );
+    }
   }
 
   async function fetchTeamCertificates() {
-    const res = await axiosInstance.get("/certifications/team");
-    setTeamCerts(res.data || []);
-    setPendingItems((res.data || []).filter((c) => c.status === "ASSIGNED"));
+
+    try{
+      const res = await axiosInstance.get("/certifications/team");
+      setTeamCerts(res.data || []);
+      setPendingItems((res.data || []).filter((c) => c.status === "ASSIGNED"));
+    } catch(e){
+      alert(
+        error.message || "Failed to fetch team certifications",
+      );
+    }
   }
 
   async function fetchDeptartmentCertifications() {
-    const response = await axiosInstance.get("/certifications/dept");
-    setDeptCerts(response.data || []);
+    try{
+      const response = await axiosInstance.get("/certifications/dept");
+      setDeptCerts(response.data || []);
+    }
+    catch(e){
+      alert(
+        error.message || "Failed to fetch department certifications",
+      );
+    }
   }
 
   async function handleCertificationApproval(decision) {
@@ -107,8 +134,9 @@ export default function CertificationsComponent() {
       setSelected(null);
       await refreshAll();
     } catch (error) {
+      // console.log(error.message)
       alert(
-        error?.response?.data?.message ||
+        error.message ||
           "Status update failed. Please try again.",
       );
     }
@@ -117,28 +145,34 @@ export default function CertificationsComponent() {
   async function handleCompleteCertification(event, item) {
     event.stopPropagation();
     try {
+      setLoadingCertId(item.certId);
       const response = await axiosInstance.post(
         `/certifications/complete/${item.taskId}`,
       );
       await refreshAll();
     } catch (e) {
       alert(
-        e.response.data.message || "Failed to update the certification status",
+        error.message || "Failed to update the certification status",
       );
+    } finally{
+      setLoadingCertId(null);
     }
   }
 
   async function handleHRVerifyCertification(event, item) {
     event.stopPropagation();
     try {
+      setLoadingCertId(item.certId);
       const response = await axiosInstance.post(
         `/certifications/verify/${item.taskId}`,
       );
       await refreshAll();
     } catch (e) {
       alert(
-        e.response.data.message || "Failed to update the certification status",
+        error.message || "Failed to update the certification status",
       );
+    } finally{
+      setLoadingCertId(null);
     }
   }
 
@@ -248,9 +282,16 @@ export default function CertificationsComponent() {
                   {c.status === "APPROVED" && (
                     <button
                       onClick={(e) => handleCompleteCertification(e, c)}
-                      className="bg-blue-700 text-white px-4 py-1 rounded-md font-semibold text-sm hover:bg-blue-700 active:scale-95 transition duration-200"
+                      className="bg-blue-700 text-white px-4 py-1 rounded-md 
+                                font-semibold text-sm hover:bg-blue-700 
+                                active:scale-95 transition duration-200
+                                flex items-center gap-2"
                     >
                       Complete
+
+                      {loadingCertId === c.certId && (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      )}
                     </button>
                   )}
                 </td>
@@ -326,9 +367,15 @@ export default function CertificationsComponent() {
                     {c.status === "COMPLETED" && (
                       <button
                         onClick={(e) => handleHRVerifyCertification(e, c)}
-                        className="bg-indigo-700 text-white px-4 py-1 rounded-md font-semibold text-sm hover:bg-indigo-700 active:scale-95 transition duration-200"
-                      >
+                        className="bg-blue-700 text-white px-4 py-1 rounded-md 
+                                font-semibold text-sm hover:bg-blue-700 
+                                active:scale-95 transition duration-200
+                                flex items-center gap-2">
                         Verify
+
+                        {loadingCertId === c.certId && (
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                        )}
                       </button>
                     )}
                   </td>

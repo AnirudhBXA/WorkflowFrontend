@@ -6,6 +6,7 @@ import { History, Users } from "lucide-react";
 import { AuthContext } from "../context/AuthContext";
 import axiosInstance from "../utils/axiosInstance";
 import { ChevronLeft, ChevronRight, ArrowRight, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 export default function CertificationsComponent() {
   const { user } = useContext(AuthContext);
@@ -84,9 +85,10 @@ export default function CertificationsComponent() {
       const res = await axiosInstance.get("/certifications/me");
       setMyCerts(res.data || []);
     } catch (e){
-      alert(
-        error.message || "Failed to fetch your certifications",
-      );
+      toast.error(
+        e?.response?.data?.message ||
+        e?.message ||
+        "Failed to load data ❌");
     }
   }
 
@@ -95,9 +97,10 @@ export default function CertificationsComponent() {
       const res = await axiosInstance.get("/certifications/mySummary");
       setSummary(res.data);
     } catch (e){
-      alert(
-        error.message || "Failed to fetch your certification summary",
-      );
+      toast.error(
+        e?.response?.data?.message ||
+        e?.message ||
+        "Failed to load data ❌");
     }
   }
 
@@ -108,9 +111,10 @@ export default function CertificationsComponent() {
       setTeamCerts(res.data || []);
       setPendingItems((res.data || []).filter((c) => c.status === "ASSIGNED"));
     } catch(e){
-      alert(
-        error.message || "Failed to fetch team certifications",
-      );
+      toast.error(
+        e?.response?.data?.message ||
+        e?.message ||
+        "Failed to load data ❌");
     }
   }
 
@@ -120,9 +124,10 @@ export default function CertificationsComponent() {
       setDeptCerts(response.data || []);
     }
     catch(e){
-      alert(
-        error.message || "Failed to fetch department certifications",
-      );
+      toast.error(
+        e?.response?.data?.message ||
+        e?.message ||
+        "Failed to load data ❌");
     }
   }
 
@@ -133,12 +138,13 @@ export default function CertificationsComponent() {
       );
       setSelected(null);
       await refreshAll();
-    } catch (error) {
+      toast.success(decision+" successfully");
+    } catch (e) {
       // console.log(error.message)
-      alert(
-        error.message ||
-          "Status update failed. Please try again.",
-      );
+      toast.error(
+        e?.response?.data?.message ||
+        e?.message ||
+        "Status update failed ❌");
     }
   }
 
@@ -150,9 +156,12 @@ export default function CertificationsComponent() {
         `/certifications/complete/${item.taskId}`,
       );
       await refreshAll();
+      toast.success("Completed Successfully")
     } catch (e) {
-      alert(
-        error.message || "Failed to update the certification status",
+      toast.error(
+        e?.response?.data?.message ||
+        e?.message ||
+         "Status update failed ❌",
       );
     } finally{
       setLoadingCertId(null);
@@ -167,9 +176,12 @@ export default function CertificationsComponent() {
         `/certifications/verify/${item.taskId}`,
       );
       await refreshAll();
+      toast.success("Verification completed")
     } catch (e) {
-      alert(
-        error.message || "Failed to update the certification status",
+      toast.error(
+        e?.response?.data?.message ||
+        e?.message ||
+        "Status update failed ❌"
       );
     } finally{
       setLoadingCertId(null);

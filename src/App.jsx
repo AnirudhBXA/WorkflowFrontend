@@ -2,12 +2,14 @@ import NavigationSidebar from "./components/Layout/Sidebar";
 import HeaderComponent from "./components/Layout/Header";
 import { Outlet } from "react-router-dom";
 import { useState } from "react";
+import { Toaster } from "sonner";
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
     <div className="flex h-screen bg-[#0B1220]">
+      <Toaster position="top-right" richColors/>
       <div className="hidden md:flex md:w-64 md:shrink-0">
         <NavigationSidebar />
       </div>

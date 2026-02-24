@@ -4,7 +4,7 @@ export default function RescheduleCard({ data, setData, onClose, onConfirm }) {
   return (
     <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-[100] p-4">
       <div className="bg-[#0b1220] border border-slate-800 rounded-4xl shadow-2xl w-full max-w-md overflow-hidden animate-in zoom-in duration-200">
-        <div className="bg-amber-500 p-8 text-[#0b1220] relative">
+        <div className="bg-blue-700 p-8 text-[#0b1220] relative">
           <button
             onClick={onClose}
             className="absolute top-6 right-6 p-2 bg-black/10 rounded-xl hover:bg-black/20 transition-colors"

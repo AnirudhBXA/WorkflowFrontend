@@ -205,6 +205,7 @@ export default function InterviewsComponent() {
               <tr>
                 <th className="px-6 py-4 text-left">Candidate</th>
                 <th className="px-6 py-4 text-left">Email</th>
+                <th className="px-6 py-4 text-left">Scheduled at</th>
                 <th className="px-6 py-4 text-left">Status</th>
               </tr>
             </thead>
@@ -220,6 +221,9 @@ export default function InterviewsComponent() {
                   </td>
                   <td className="px-6 py-5 text-slate-400">
                     {item.intervieweeEmail}
+                  </td>
+                  <td className="px-6 py-5 text-slate-400">
+                    {item.scheduledAt.replace("T", " ")}
                   </td>
                   <td className="px-6 py-5">
                     <span
@@ -443,7 +447,7 @@ export default function InterviewsComponent() {
                       }}
                       className="flex-1 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 py-3 rounded-xl font-bold border border-amber-500/20 transition-all"
                     >
-                      Reschedule (HR)
+                      Reschedule
                     </button>
                   )}
 

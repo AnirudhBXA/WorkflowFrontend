@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axiosInstance from "../../utils/axiosInstance";
-import LeaveBriefCard from "./LeaveBriefCard";
+// import LeaveBriefCard from "./LeaveBriefCard";
 
 function formatDateToDDMMYYYY(dateString) {
   const date = new Date(dateString);
@@ -54,12 +54,12 @@ export default function DepartmentLeaves() {
 
   return (
     <>
-      {selectedLeave && (
+      {/* {selectedLeave && (
         <LeaveBriefCard
           leave={selectedLeave}
           onClose={() => setSelectedLeave(null)}
         />
-      )}
+      )} */}
 
       <div className="overflow-hidden rounded-xl border border-slate-800">
         <table className="w-full text-sm">
@@ -71,7 +71,7 @@ export default function DepartmentLeaves() {
               <th className="px-6 py-4 text-left">To</th>
               <th className="px-6 py-4 text-left">Status</th>
               <th className="px-6 py-4 text-left">Reason</th>
-              <th className="px-6 py-4 text-left">Action</th>
+              <th className="px-6 py-4 text-left">Proof</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-800">
@@ -89,7 +89,7 @@ export default function DepartmentLeaves() {
                 <td className="px-6 py-4 text-slate-400">{item.reason}</td>
                 <td className="px-6 py-4">
                   <button
-                    onClick={() => setSelectedLeave(item)}
+                    // onClick={() => setSelectedLeave(item)}
                     className="px-3 py-1 text-xs font-semibold rounded-lg bg-indigo-600/10 text-indigo-400 hover:bg-indigo-600/20"
                   >
                     View

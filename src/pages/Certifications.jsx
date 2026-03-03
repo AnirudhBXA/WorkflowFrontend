@@ -259,44 +259,85 @@ export default function CertificationsComponent() {
       )}
 
 
-  {showUploadModal && (
-    <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
-      <div className="bg-white p-6 rounded-lg w-[400px] shadow-lg">
-        
-        <h2 className="text-lg font-semibold mb-4">
-          Upload Completed Certificate
-        </h2>
+{showUploadModal && (
+  <div className="fixed inset-0 backdrop-blur-md bg-black/30 flex justify-center items-center z-50 transition-all">
+    
+    <div className="bg-[#0F172A] text-white p-6 rounded-2xl w-[420px] shadow-2xl border border-slate-700">
+      
+      {/* Title */}
+      <h2 className="text-xl font-semibold mb-5 text-slate-200">
+        Upload Completed Certificate
+      </h2>
 
-        <input
-          type="file"
-          accept=".pdf,.jpg,.png"
-          onChange={(e) => setSelectedFile(e.target.files[0])}
-          className="mb-4"
-        />
+      {/* File Input */}
+      <label
+  className={`flex flex-col items-center justify-center border-2 border-dashed 
+  border-slate-600 rounded-xl p-6 transition
+  ${selectedFile ? "opacity-60 cursor-not-allowed" : "cursor-pointer hover:border-indigo-500"}`}
+>
+  {!selectedFile && (
+    <>
+      <span className="text-slate-400 text-sm mb-2">
+        Click to upload ONE file (.pdf, .jpg, .png)
+      </span>
 
-        <div className="flex justify-end gap-3">
-          <button
-            onClick={() => {
-              setShowUploadModal(false);
-              setSelectedFile(null);
-            }}
-            className="px-4 py-1 bg-gray-400 text-white rounded"
-          >
-            Cancel
-          </button>
-
-          <button
-            onClick={handleCompleteCertification}
-            disabled={!selectedFile || uploading}
-            className="px-4 py-1 bg-blue-700 text-white rounded flex items-center gap-2"
-          >
-            {uploading ? "Uploading..." : "Submit"}
-          </button>
-        </div>
-      </div>
-    </div>
+      <input
+        type="file"
+        accept=".pdf,.jpg,.png"
+        multiple={false}
+        onChange={(e) => {
+          const file = e.target.files?.[0];
+          if (file) setSelectedFile(file);
+        }}
+        className="hidden"
+      />
+    </>
   )}
 
+  {selectedFile && (
+    <div className="text-indigo-400 text-sm text-center">
+      {selectedFile.name}
+    </div>
+  )}
+</label>
+
+      {/* Selected File Preview */}
+      {selectedFile && (
+        <div className="mt-4 text-sm text-indigo-400 truncate">
+          Selected: {selectedFile.name}
+        </div>
+      )}
+
+      {/* Buttons */}
+      <div className="flex justify-end gap-3 mt-6">
+        
+        <button
+          onClick={() => {
+            setShowUploadModal(false);
+            setSelectedFile(null);
+          }}
+          className="px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 transition text-sm"
+        >
+          Cancel
+        </button>
+
+        <button
+          onClick={handleFileUpload}
+          disabled={!selectedFile || uploading}
+          className={`px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition
+            ${
+              !selectedFile || uploading
+                ? "bg-indigo-900 opacity-60 cursor-not-allowed"
+                : "bg-indigo-600 hover:bg-indigo-500 active:scale-95"
+            }`}
+        >
+          {uploading ? "Uploading..." : "Submit"}
+        </button>
+
+      </div>
+    </div>
+  </div>
+)}
       <div>
         <h1 className="text-3xl font-extrabold text-white">
           Professional Certifications

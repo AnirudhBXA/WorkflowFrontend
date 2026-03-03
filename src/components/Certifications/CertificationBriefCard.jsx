@@ -69,6 +69,9 @@ export default function CertificationBriefCard({
           </div>
 
         </div>
+
+          { (item.status === "COMPLETED" || item.status === "VERIFIED" && item?.file) && (
+
           <div className="bg-[#0B1220] p-4 rounded-xl flex items-center gap-3">
             <FileText className="text-indigo-400" />
             <span className="text-slate-300 text-sm">
@@ -76,6 +79,7 @@ export default function CertificationBriefCard({
             </span>
             <Download className="ml-auto text-slate-400" />
           </div>
+          )}
 
           {showActions && isActionable && (
             <div className="flex gap-3 pt-4">

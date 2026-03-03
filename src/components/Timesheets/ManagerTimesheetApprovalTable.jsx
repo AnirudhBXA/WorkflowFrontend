@@ -1,6 +1,7 @@
 import { Check, X, User, Loader2 } from "lucide-react";
 import { useState } from "react";
 import axiosInstance from "../../utils/axiosInstance";
+import { toast } from "sonner";
 
 export default function ManagerTimesheetApprovalTable({
   data,
@@ -12,9 +13,18 @@ export default function ManagerTimesheetApprovalTable({
     try {
       setLoadingTaskId(taskId);
 
-      await axiosInstance.post(`/timesheets/tasks/${taskId}/complete`, {
-        managerDecision: decision,
-      });
+      try{
+        await axiosInstance.post(`/timesheets/tasks/${taskId}/complete`, {
+          managerDecision: decision,
+        });
+        toast.success(`Timesheet ${decision} successfully!`);
+
+      } catch(err){
+        toast.error(
+          err?.response?.data?.message ||
+          err?.message ||
+          "Failed to Login");
+      }
 
       onActionComplete();
     } catch {

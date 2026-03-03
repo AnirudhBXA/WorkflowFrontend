@@ -18,6 +18,10 @@ export default function CertificationsComponent() {
   const [summary, setSummary] = useState({ left: 0, used: 0 });
   const [selected, setSelected] = useState(null);
   const [loadingCertId, setLoadingCertId] = useState(null);
+  const [showUploadModal, setShowUploadModal] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const [selectedCert, setSelectedCert] = useState(null);
 
   const [myPage, setMyPage] = useState(1);
   const [teamPage, setTeamPage] = useState(1);
@@ -140,6 +144,44 @@ export default function CertificationsComponent() {
     }
   }
 
+
+  async function handleFileUpload() {
+    if (!selectedFile || !selectedCert) return;
+  
+    try {
+      setUploading(true);
+  
+      const formData = new FormData();
+      formData.append("file", selectedFile);
+  
+      await axiosInstance.post(
+        `/certifications/complete/${selectedCert.taskId}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+  
+      toast.success("Completed Successfully ✅");
+  
+      setShowUploadModal(false);
+      setSelectedFile(null);
+      setSelectedCert(null);
+  
+      await refreshAll();
+    } catch (e) {
+      toast.error(
+        e?.response?.data?.message ||
+        e?.message ||
+        "Upload failed ❌"
+      );
+    } finally {
+      setUploading(false);
+    }
+  }
+
   async function handleCompleteCertification(event, item) {
     event.stopPropagation();
     try {
@@ -216,6 +258,45 @@ export default function CertificationsComponent() {
         />
       )}
 
+
+  {showUploadModal && (
+    <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
+      <div className="bg-white p-6 rounded-lg w-[400px] shadow-lg">
+        
+        <h2 className="text-lg font-semibold mb-4">
+          Upload Completed Certificate
+        </h2>
+
+        <input
+          type="file"
+          accept=".pdf,.jpg,.png"
+          onChange={(e) => setSelectedFile(e.target.files[0])}
+          className="mb-4"
+        />
+
+        <div className="flex justify-end gap-3">
+          <button
+            onClick={() => {
+              setShowUploadModal(false);
+              setSelectedFile(null);
+            }}
+            className="px-4 py-1 bg-gray-400 text-white rounded"
+          >
+            Cancel
+          </button>
+
+          <button
+            onClick={handleCompleteCertification}
+            disabled={!selectedFile || uploading}
+            className="px-4 py-1 bg-blue-700 text-white rounded flex items-center gap-2"
+          >
+            {uploading ? "Uploading..." : "Submit"}
+          </button>
+        </div>
+      </div>
+    </div>
+  )}
+
       <div>
         <h1 className="text-3xl font-extrabold text-white">
           Professional Certifications
@@ -281,7 +362,11 @@ export default function CertificationsComponent() {
                 <td className="px-6 py-5">
                   {c.status === "APPROVED" && (
                     <button
-                      onClick={(e) => handleCompleteCertification(e, c)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedCert(c);
+                        setShowUploadModal(true);
+                      }}
                       className="bg-blue-700 text-white px-4 py-1 rounded-md 
                                 font-semibold text-sm hover:bg-blue-700 
                                 active:scale-95 transition duration-200

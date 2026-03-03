@@ -30,17 +30,16 @@ export default function LeaveApprovalComponent() {
   }, []);
 
   const handleStatusUpdate = async (decision, taskId) => {
-
-    try{
+    try {
       await axiosInstance.post(`/leaves/workflow/tasks/${taskId}/complete`, {
         decision,
       });
-      toast.success(decision+" leave successfully")
-    } catch(error){
+      toast.success(decision+" leave successfully")    } catch (error) {
       toast.error(
         error?.response?.data?.message ||
-        error?.message ||
-        "Failed to Update status");
+          error?.message ||
+          "Failed to Update status",
+      );
     }
     setLeavesList((prev) =>
       prev.map((leave) =>
@@ -89,15 +88,13 @@ export default function LeaveApprovalComponent() {
           <table className="min-w-full text-sm">
             <thead className="bg-[#0B1220] text-slate-500">
               <tr>
+                <th className="px-6 py-4 text-left">Leave Id</th>
                 <th className="px-6 py-4 text-left whitespace-nowrap">
                   Employee
                 </th>
                 <th className="px-6 py-4 text-left whitespace-nowrap">Leave</th>
                 <th className="px-6 py-4 text-left whitespace-nowrap">From</th>
                 <th className="px-6 py-4 text-left whitespace-nowrap">To</th>
-                <th className="px-6 py-4 text-left whitespace-nowrap">
-                  Status
-                </th>
                 <th className="px-6 py-4 text-left whitespace-nowrap">
                   Action
                 </th>
@@ -111,6 +108,7 @@ export default function LeaveApprovalComponent() {
                   className="hover:bg-[#0B1220] transition"
                   onClick={() => setSelectedLeave(item)}
                 >
+                  <td className="px-6 py-4 text-slate-200">{item.id}</td>
                   <td className="px-6 py-4 text-slate-200 whitespace-nowrap">
                     {item.empEmail}
                   </td>
@@ -123,11 +121,8 @@ export default function LeaveApprovalComponent() {
                   <td className="px-6 py-4 text-slate-400 whitespace-nowrap">
                     {formatDateToDDMMYYYY(item.endDate)}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    {badge(item.status)}
-                  </td>
                   <td className="px-4 py-6 text-center">
-                    <div className="inline-flex items-center gap-2 text-indigo-400 font-semibold text-xs uppercase">
+                    <div className="inline-flex cursor-pointer items-center gap-2 text-indigo-400 font-semibold text-xs uppercase">
                       Review <ArrowRight size={14} />
                     </div>
                   </td>

@@ -25,6 +25,7 @@ export default function LeavesComponent() {
         setLeavesList(leaves);
 
         const totalDaysUsed = leaves.reduce((sum, leave) => {
+          console.log("Processing Leave:", leave);
           if (leave.status === "APPROVED") {
             const start = new Date(leave.startDate);
             const end = new Date(leave.endDate);
@@ -34,7 +35,9 @@ export default function LeavesComponent() {
           return sum;
         }, 0);
 
-        const totalAllowance = 30; 
+        console.log("Total Days Used:", totalDaysUsed);
+
+        const totalAllowance = 30;
         setSummary({
           available: Math.max(totalAllowance - totalDaysUsed, 0),
           used: totalDaysUsed,
@@ -103,33 +106,88 @@ export default function LeavesComponent() {
           <h2 className="font-bold text-white">My Leave History</h2>
         </div>
 
-        <table className="w-full text-sm">
-          <thead className="bg-[#0B1220] text-xs uppercase text-slate-500">
-            <tr>
-              <th className="px-6 py-4 text-left">Type</th>
-              <th className="px-6 py-4 text-left">Timeline</th>
-              <th className="px-6 py-4 text-left">Status</th>
-              <th className="px-6 py-4 text-left">Reason</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-800">
-            {paginatedLeaves.map((item) => (
-              <tr key={item.id} className="hover:bg-[#0B1220] transition">
-                <td className="px-6 py-5 font-semibold text-slate-200">
-                  {item.leaveType}
-                </td>
-                <td className="px-6 py-5 text-slate-400">
-                  {new Date(item.startDate).toLocaleDateString()} →{" "}
-                  {new Date(item.endDate).toLocaleDateString()}
-                </td>
-                <td className="px-6 py-5">{statusBadge(item.status)}</td>
-                <td className="px-6 py-5 text-slate-400 truncate max-w-xs">
-                  {item.reason}
-                </td>
+        <div className="overflow-x-auto custom-scrollbar">
+          <table className="w-full text-sm table-auto">
+            <thead className="bg-[#0B1220] text-xs uppercase text-slate-500">
+              <tr>
+                <th className="px-6 py-4 text-left">Leave Id</th>
+                <th className="px-6 py-4 text-left">Type</th>
+                <th className="px-6 py-4 text-left">Timeline</th>
+                <th className="px-6 py-4 text-left">No. of Days</th>
+                <th className="px-6 py-4 text-left">Status</th>
+                <th className="px-6 py-4 text-left">Reason</th>
+                <th className="px-6 py-4 text-left">Document</th>
+                <th className="px-6 py-4 text-left">Created At</th>
+                <th className="px-6 py-4 text-left">Updated At</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y divide-slate-800">
+              {paginatedLeaves.map((item) => {
+                const start = new Date(item.startDate);
+                const end = new Date(item.endDate);
+                const days =
+                  Math.floor((end - start) / (1000 * 60 * 60 * 24)) + 1;
+
+                const formatDate = (date) =>
+                  new Date(date).toLocaleDateString("en-GB", {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                  });
+
+                const formatDateTime = (date) =>
+                  new Date(date).toLocaleString("en-GB", {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  });
+
+                return (
+                  <tr
+                    key={item.leaveId}
+                    className="hover:bg-[#0B1220] transition"
+                  >
+                    <td className="px-6 py-5 font-semibold text-slate-200">
+                      {item.leaveId}
+                    </td>
+                    <td className="px-6 py-5 font-semibold text-slate-200">
+                      {item.leaveType}
+                    </td>
+                    <td className="px-6 py-5 text-slate-400">
+                      {formatDate(item.startDate)} → {formatDate(item.endDate)}
+                    </td>
+                    <td className="px-6 py-5 text-slate-400">{days}</td>
+                    <td className="px-6 py-5">{statusBadge(item.status)}</td>
+                    <td className="px-6 py-5 text-slate-400 truncate max-w-50">
+                      {item.reason}
+                    </td>
+                    <td className="px-6 py-5 text-indigo-400">
+                      {item.supportingDocumentPath ? (
+                        <a
+                          href={item.supportingDocumentPath}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="underline hover:text-indigo-300"
+                        >
+                          View
+                        </a>
+                      ) : (
+                        "—"
+                      )}
+                    </td>
+                    <td className="px-6 py-5 text-slate-400">
+                      {formatDateTime(item.createdAt)}
+                    </td>
+                    <td className="px-6 py-5 text-slate-400">
+                      {formatDateTime(item.updatedAt)}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
           <div className="flex items-center justify-between px-6 py-4 border-t border-slate-800 bg-[#0B1220]">
             <span className="text-xs text-slate-500">
               Page {page} of {totalPages}
@@ -153,6 +211,7 @@ export default function LeavesComponent() {
               </button>
             </div>
           </div>
+        </div>
       </div>
 
       {user?.role === "MANAGER" && (
@@ -174,7 +233,7 @@ export default function LeavesComponent() {
           <div className="flex items-center gap-2">
             <Briefcase className="w-6 h-6 text-indigo-400" />
             <h2 className="text-xl font-bold text-white">
-              Organization Overview
+              Department Overview
             </h2>
           </div>
           <div className="bg-[#111827] border border-slate-800 rounded-2xl p-6">

@@ -65,28 +65,26 @@ export default function DepartmentLeaves() {
         <table className="w-full text-sm">
           <thead className="bg-[#0B1220] text-slate-500">
             <tr>
-              <th className="px-6 py-4 text-left">Employee</th>
-              <th className="px-6 py-4 text-left">Leave</th>
+              <th className="px-6 py-4 text-left">Leave Id</th>
+              <th className="px-6 py-4 text-left">Type</th>
+              <th className="px-6 py-4 text-left">Employee Email</th>
               <th className="px-6 py-4 text-left">From</th>
               <th className="px-6 py-4 text-left">To</th>
-              <th className="px-6 py-4 text-left">Status</th>
-              <th className="px-6 py-4 text-left">Reason</th>
               <th className="px-6 py-4 text-left">Action</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-800">
             {paginatedLeaves.map((item) => (
-              <tr key={item.id} className="hover:bg-[#0B1220]">
-                <td className="px-6 py-4 text-slate-200">{item.name}</td>
+              <tr key={item.leaveId} className="hover:bg-[#0B1220]">
+                <td className="px-6 py-4 text-slate-200">{item.leaveId}</td>
                 <td className="px-6 py-4 text-slate-300">{item.leaveType}</td>
+                <td className="px-6 py-4 text-slate-400">{item.email}</td>
                 <td className="px-6 py-4 text-slate-400">
                   {formatDateToDDMMYYYY(item.startDate)}
                 </td>
                 <td className="px-6 py-4 text-slate-400">
                   {formatDateToDDMMYYYY(item.endDate)}
                 </td>
-                <td className="px-6 py-4">{badge(item.status)}</td>
-                <td className="px-6 py-4 text-slate-400">{item.reason}</td>
                 <td className="px-6 py-4">
                   <button
                     onClick={() => setSelectedLeave(item)}

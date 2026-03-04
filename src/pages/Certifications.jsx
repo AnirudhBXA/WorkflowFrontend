@@ -5,8 +5,9 @@ import CertificationBriefCard from "../components/Certifications/CertificationBr
 import { History, Users } from "lucide-react";
 import { AuthContext } from "../context/AuthContext";
 import axiosInstance from "../utils/axiosInstance";
-import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, Loader2, Check, X } from "lucide-react";
 import { toast } from "sonner";
+// import { Check, X, User, Loader2 } from "lucide-react";
 
 export default function CertificationsComponent() {
   const { user } = useContext(AuthContext);
@@ -65,6 +66,8 @@ export default function CertificationsComponent() {
     if (user) {
       refreshAll();
     }
+
+    console.log(user)
   }, [user]);
 
   async function refreshAll() {
@@ -197,6 +200,24 @@ export default function CertificationsComponent() {
       );
     } finally {
       setLoadingCertId(null);
+    }
+  }
+
+  async function handleManagerVerifyCertification(event, taskId, decision) {
+    event.stopPropagation();
+    try {
+      // setLoadingCertId(item.certId);
+      const response = await axiosInstance.post(
+        `/certifications/manager-verification/${taskId}?approved=${decision}`,
+      );
+      await refreshAll();
+      toast.success("Verification completed");
+    } catch (e) {
+      toast.error(
+        e?.response?.data?.message || e?.message || "Status update failed ❌",
+      );
+    } finally {
+      // setLoadingCertId(null);
     }
   }
 
@@ -401,7 +422,7 @@ export default function CertificationsComponent() {
                 </td>
                 <td className="px-6 py-5">{badge(c.status)}</td>
                 <td className="px-6 py-5">
-                  {c.status === "APPROVED" && (
+                  {(c.status === "APPROVED" && c.assignee === user.username ) && (
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
@@ -489,7 +510,7 @@ export default function CertificationsComponent() {
                   </td>
                   <td className="px-6 py-5">{badge(c.status)}</td>
                   <td className="px-6 py-5">
-                    {c.status === "COMPLETED" && (
+                    {(c.status === "COMPLETED" && c.assignee === user.username  ) && (
                       <button
                         onClick={(e) => handleHRVerifyCertification(e, c)}
                         className="bg-blue-700 text-white px-4 py-1 rounded-md 
@@ -497,7 +518,7 @@ export default function CertificationsComponent() {
                                 active:scale-95 transition duration-200
                                 flex items-center gap-2"
                       >
-                        Verify
+                        Start Reimbursement
                         {loadingCertId === c.certId && (
                           <Loader2 className="w-4 h-4 animate-spin" />
                         )}
@@ -554,6 +575,7 @@ export default function CertificationsComponent() {
                 <th className="px-6 py-4 text-left">Employee</th>
                 <th className="px-6 py-4 text-left">Certification</th>
                 <th className="px-6 py-4 text-left">Status</th>
+                <th className="px-6 py-4 text-left">Action</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800">
@@ -571,6 +593,25 @@ export default function CertificationsComponent() {
                     {c.certificationName}
                   </td>
                   <td className="px-6 py-5">{badge(c.status)}</td>
+                  <td className="px-6 py-5">
+                    {(c.status === "COMPLETED" && c.assignee === user.username  ) && (
+
+                      <div>
+                      <button
+                        onClick={(e) => handleManagerVerifyCertification(e, c.taskId, true)}
+                        className="bg-blue-700 text-white px-4 py-1 rounded-md 
+                                font-semibold text-sm hover:bg-blue-700 
+                                active:scale-95 transition duration-200
+                                flex items-center gap-2"
+                      >
+                        Verify
+                        {/* {loadingCertId === c.certId && (
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                        )} */}
+                      </button>
+                      </div>
+                    )}
+                  </td>
                 </tr>
               ))}
             </tbody>

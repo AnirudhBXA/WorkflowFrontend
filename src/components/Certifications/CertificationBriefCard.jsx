@@ -119,11 +119,27 @@ export default function CertificationBriefCard({
               </p>
             </div>
 
-            <div className="text-right">
-              <p className="text-xs text-slate-400">Due date</p>
-              <p className="text-slate-200 font-semibold">{item.dueDate}</p>
-            </div>
+          <div className="text-right">
+            <p className="text-xs text-slate-400">Due date</p>
+            <p className="text-slate-200 font-semibold">
+              {item.dueDate}
+            </p>
           </div>
+
+          <div>
+            <p className="text-xs text-slate-400">Provider</p>
+            <p className="text-slate-200 font-semibold">
+              {item.provider || "--"}
+            </p>
+          </div>
+
+          <div className="text-right">
+            <p className="text-xs text-slate-400">Certification link</p>
+            <p className="text-slate-200 font-semibold">
+              {item.certificationLink || "--"}
+            </p>
+          </div>
+        </div>
 
           {/* FILE PREVIEW */}
           {item?.fileUrl && (

@@ -54,8 +54,6 @@ export default function AdminPage() {
   const handleAddUser = async (e) => {
     e.preventDefault();
     const tempPassword = Math.random().toString(36).slice(-8);
-
-    console.log(new Date().toLocaleTimeString());
     try {
       setLoading(true);
       const res = await axiosInstance.post("/admin/user/create", {
@@ -73,7 +71,6 @@ export default function AdminPage() {
     } finally {
       setLoading(false);
     }
-    console.log(new Date().toLocaleTimeString());
 
   };
 

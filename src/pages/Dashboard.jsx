@@ -1,7 +1,6 @@
 import StatsCards from "../components/Dashboard/StatsCards";
 import ChartsSection from "../components/Dashboard/ChartSection";
 import TasksAndCalendar from "../components/Dashboard/TasksAndCalendar";
-import { Download } from "lucide-react";
 
 export default function DashboardPage() {
   return (
@@ -16,13 +15,6 @@ export default function DashboardPage() {
               Monitor workflows, approvals and activity
             </p>
           </div>
-
-          {/* <div className="flex gap-3">
-            <button className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl bg-slate-800 border border-slate-700 hover:bg-slate-700 transition">
-              <Download size={16} />
-              Export data
-            </button>
-          </div> */}
         </div>
 
         <div className="space-y-10">

@@ -25,7 +25,6 @@ export default function LeavesComponent() {
         setLeavesList(leaves);
 
         const totalDaysUsed = leaves.reduce((sum, leave) => {
-          console.log("Processing Leave:", leave);
           if (leave.status === "APPROVED") {
             const start = new Date(leave.startDate);
             const end = new Date(leave.endDate);
@@ -34,8 +33,6 @@ export default function LeavesComponent() {
           }
           return sum;
         }, 0);
-
-        console.log("Total Days Used:", totalDaysUsed);
 
         const totalAllowance = 30;
         setSummary({

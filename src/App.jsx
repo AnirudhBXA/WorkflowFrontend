@@ -9,7 +9,7 @@ function App() {
 
   return (
     <div className="flex h-screen bg-[#0B1220]">
-      <Toaster position="top-right" richColors/>
+      <Toaster position="top-right" richColors />
       <div className="hidden md:flex md:w-64 md:shrink-0">
         <NavigationSidebar />
       </div>

@@ -2,7 +2,7 @@ import { X, Calendar, User, Mail, ArrowRight } from "lucide-react";
 
 export default function RescheduleCard({ data, setData, onClose, onConfirm }) {
   return (
-    <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-[100] p-4">
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-100 p-4">
       <div className="bg-[#0b1220] border border-slate-800 rounded-4xl shadow-2xl w-full max-w-md overflow-hidden animate-in zoom-in duration-200">
         <div className="bg-blue-700 p-8 text-[#0b1220] relative">
           <button
@@ -66,7 +66,7 @@ export default function RescheduleCard({ data, setData, onClose, onConfirm }) {
                 type="datetime-local"
                 value={data.newDate}
                 onChange={(e) => setData({ ...data, newDate: e.target.value })}
-                className="w-full pl-11 pr-4 py-3 bg-slate-900 border border-slate-800 rounded-xl focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 text-white transition-all font-medium [color-scheme:dark]"
+                className="w-full pl-11 pr-4 py-3 bg-slate-900 border border-slate-800 rounded-xl focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 text-white transition-all font-medium scheme-dark"
               />
             </div>
           </div>

@@ -137,23 +137,21 @@ export default function CertificationsComponent() {
       await refreshAll();
       toast.success(decision + " successfully");
     } catch (e) {
-      // console.log(error.message)
       toast.error(
         e?.response?.data?.message || e?.message || "Status update failed ❌",
       );
     }
   }
 
-
   async function handleFileUpload() {
     if (!selectedFile || !selectedCert) return;
-  
+
     try {
       setUploading(true);
-  
+
       const formData = new FormData();
       formData.append("file", selectedFile);
-  
+
       await axiosInstance.post(
         `/certifications/complete/${selectedCert.taskId}`,
         formData,
@@ -161,21 +159,19 @@ export default function CertificationsComponent() {
           headers: {
             "Content-Type": "multipart/form-data",
           },
-        }
+        },
       );
-  
+
       toast.success("Completed Successfully ✅");
-  
+
       setShowUploadModal(false);
       setSelectedFile(null);
       setSelectedCert(null);
-  
+
       await refreshAll();
     } catch (e) {
       toast.error(
-        e?.response?.data?.message ||
-        e?.message ||
-        "Upload failed ❌"
+        e?.response?.data?.message || e?.message || "Upload failed ❌",
       );
     } finally {
       setUploading(false);
@@ -258,86 +254,81 @@ export default function CertificationsComponent() {
         />
       )}
 
+      {showUploadModal && (
+        <div className="fixed inset-0 backdrop-blur-md bg-black/30 flex justify-center items-center z-50 transition-all">
+          <div className="bg-[#0F172A] text-white p-6 rounded-2xl w-105 shadow-2xl border border-slate-700">
+            {/* Title */}
+            <h2 className="text-xl font-semibold mb-5 text-slate-200">
+              Upload Completed Certificate
+            </h2>
 
-{showUploadModal && (
-  <div className="fixed inset-0 backdrop-blur-md bg-black/30 flex justify-center items-center z-50 transition-all">
-    
-    <div className="bg-[#0F172A] text-white p-6 rounded-2xl w-[420px] shadow-2xl border border-slate-700">
-      
-      {/* Title */}
-      <h2 className="text-xl font-semibold mb-5 text-slate-200">
-        Upload Completed Certificate
-      </h2>
-
-      {/* File Input */}
-      <label
-  className={`flex flex-col items-center justify-center border-2 border-dashed 
+            {/* File Input */}
+            <label
+              className={`flex flex-col items-center justify-center border-2 border-dashed 
   border-slate-600 rounded-xl p-6 transition
   ${selectedFile ? "opacity-60 cursor-not-allowed" : "cursor-pointer hover:border-indigo-500"}`}
->
-  {!selectedFile && (
-    <>
-      <span className="text-slate-400 text-sm mb-2">
-        Click to upload ONE file (.pdf, .jpg, .png)
-      </span>
+            >
+              {!selectedFile && (
+                <>
+                  <span className="text-slate-400 text-sm mb-2">
+                    Click to upload ONE file (.pdf, .jpg, .png)
+                  </span>
 
-      <input
-        type="file"
-        accept=".pdf,.jpg,.png"
-        multiple={false}
-        onChange={(e) => {
-          const file = e.target.files?.[0];
-          if (file) setSelectedFile(file);
-        }}
-        className="hidden"
-      />
-    </>
-  )}
+                  <input
+                    type="file"
+                    accept=".pdf,.jpg,.png"
+                    multiple={false}
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) setSelectedFile(file);
+                    }}
+                    className="hidden"
+                  />
+                </>
+              )}
 
-  {selectedFile && (
-    <div className="text-indigo-400 text-sm text-center">
-      {selectedFile.name}
-    </div>
-  )}
-</label>
+              {selectedFile && (
+                <div className="text-indigo-400 text-sm text-center">
+                  {selectedFile.name}
+                </div>
+              )}
+            </label>
 
-      {/* Selected File Preview */}
-      {selectedFile && (
-        <div className="mt-4 text-sm text-indigo-400 truncate">
-          Selected: {selectedFile.name}
-        </div>
-      )}
+            {/* Selected File Preview */}
+            {selectedFile && (
+              <div className="mt-4 text-sm text-indigo-400 truncate">
+                Selected: {selectedFile.name}
+              </div>
+            )}
 
-      {/* Buttons */}
-      <div className="flex justify-end gap-3 mt-6">
-        
-        <button
-          onClick={() => {
-            setShowUploadModal(false);
-            setSelectedFile(null);
-          }}
-          className="px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 transition text-sm"
-        >
-          Cancel
-        </button>
+            {/* Buttons */}
+            <div className="flex justify-end gap-3 mt-6">
+              <button
+                onClick={() => {
+                  setShowUploadModal(false);
+                  setSelectedFile(null);
+                }}
+                className="px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 transition text-sm"
+              >
+                Cancel
+              </button>
 
-        <button
-          onClick={handleFileUpload}
-          disabled={!selectedFile || uploading}
-          className={`px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition
+              <button
+                onClick={handleFileUpload}
+                disabled={!selectedFile || uploading}
+                className={`px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition
             ${
               !selectedFile || uploading
                 ? "bg-indigo-900 opacity-60 cursor-not-allowed"
                 : "bg-indigo-600 hover:bg-indigo-500 active:scale-95"
             }`}
-        >
-          {uploading ? "Uploading..." : "Submit"}
-        </button>
-
-      </div>
-    </div>
-  </div>
-)}
+              >
+                {uploading ? "Uploading..." : "Submit"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       <div>
         <h1 className="text-3xl font-extrabold text-white">
           Professional Certifications

@@ -2,7 +2,14 @@ import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import axiosInstance from "../utils/axiosInstance";
-import { Mail, Lock, Chrome, Github, ArrowRight, LayoutGrid } from "lucide-react";
+import {
+  Mail,
+  Lock,
+  Chrome,
+  Github,
+  ArrowRight,
+  LayoutGrid,
+} from "lucide-react";
 import { toast } from "sonner";
 
 function LoginComponent() {
@@ -63,9 +70,8 @@ function LoginComponent() {
       );
 
       toast.error(
-        err?.response?.data?.message ||
-        err?.message ||
-        "Failed to Login");
+        err?.response?.data?.message || err?.message || "Failed to Login",
+      );
     } finally {
       setLoading(false);
     }
@@ -234,13 +240,6 @@ function LoginComponent() {
               {!loading && <ArrowRight className="w-4 h-4" />}
             </button>
           </form>
-
-          {/* <p className="text-center text-gray-500 text-sm mt-8">
-            Don't have an account?{" "}
-            <button className="text-indigo-600 font-semibold hover:underline">
-              Create an account
-            </button>
-          </p> */}
         </div>
       </div>
     </div>

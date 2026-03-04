@@ -49,10 +49,9 @@ export default function CertificationApprovalComponent({ items, setSelected }) {
                   onClick={() => setSelected(item)}
                   className="hover:bg-[#0B1220] transition cursor-pointer"
                 >
-
                   <td className="px-6 py-6">
                     <span className="font-semibold text-slate-200">
-                        {item.certId}
+                      {item.certId}
                     </span>
                   </td>
                   <td className="px-6 py-6">

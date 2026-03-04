@@ -16,6 +16,16 @@ export default function TrainingsComponent() {
 
   const [completingTaskId, setCompletingTaskId] = useState(-1);
 
+  // Pagination state for team trainings
+  const [page, setPage] = useState(1);
+  const PAGE_SIZE = 6;
+  const totalPages = Math.ceil(teamTrainings.length / PAGE_SIZE);
+  const startIndex = (page - 1) * PAGE_SIZE;
+  const paginatedTeamTrainings = teamTrainings.slice(
+    startIndex,
+    startIndex + PAGE_SIZE,
+  );
+
   useEffect(() => {
     fetchMyTrainings();
     if (user.role === "MANAGER") {
@@ -29,12 +39,12 @@ export default function TrainingsComponent() {
     try {
       const response = await axiosInstance.get("/trainings/me");
       setMyTrainings(response.data);
-      console.log("Fetched my trainings:", response.data);
-    } catch(error) {
+    } catch (error) {
       toast.error(
         error?.response?.data?.message ||
-        error?.message ||
-        "Failed to fetch your trainings");
+          error?.message ||
+          "Failed to fetch your trainings",
+      );
     } finally {
       setMyLoading(false);
     }
@@ -44,11 +54,12 @@ export default function TrainingsComponent() {
     try {
       const response = await axiosInstance.get("/trainings/teamTrainings");
       setTeamTrainings(response.data);
-    } catch {
+    } catch (error) {
       toast.error(
         error?.response?.data?.message ||
-        error?.message ||
-        "Failed to fetch your trainings");
+          error?.message ||
+          "Failed to fetch team trainings",
+      );
     } finally {
       setTeamLoading(false);
     }
@@ -65,7 +76,7 @@ export default function TrainingsComponent() {
     } catch (error) {
       toast.error(
         error?.response?.data?.message ||
-        error?.message ||
+          error?.message ||
           "Failed to mark training as complete. Please try again.",
       );
     } finally {
@@ -122,7 +133,7 @@ export default function TrainingsComponent() {
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {myTrainings.map((item) => (
             <TrainingCard
-              key={item.taskId || item.trainingName}
+              key={item.trainingId}
               data={item}
               onComplete={handleComplete}
               completingTaskId={completingTaskId}
@@ -131,7 +142,6 @@ export default function TrainingsComponent() {
         </div>
       </section>
 
-      {/* TEAM TRAININGS */}
       {user.role === "MANAGER" && (
         <section className="space-y-6 pt-6">
           <div className="flex items-center gap-2">
@@ -144,27 +154,30 @@ export default function TrainingsComponent() {
               <table className="w-full text-sm">
                 <thead className="bg-[#0B1220] text-xs uppercase text-slate-500">
                   <tr>
-                    <th className="px-8 py-5 text-left">Employee</th>
+                    <th className="px-8 py-5 text-left">Training ID</th>
+                    <th className="px-8 py-5 text-left">Employee Email</th>
                     <th className="px-8 py-5 text-left">Training</th>
-                    <th className="px-8 py-5 text-left">Mentor</th>
-                    <th className="px-8 py-5 text-left">Due Date</th>
+                    <th className="px-8 py-5 text-left">Trainer</th>
+                    <th className="px-8 py-5 text-left">Due</th>
+                    <th className="px-8 py-5 text-left">Grace Period</th>
                     <th className="px-8 py-5 text-left">Status</th>
                   </tr>
                 </thead>
 
                 <tbody className="divide-y divide-slate-800">
-                  {teamTrainings.map((item) => (
+                  {paginatedTeamTrainings.map((item) => (
                     <tr
-                      key={`${item.employee.id}-${item.trainingName}`}
+                      key={`${item.employee.employeeId}-${item.trainingId}`}
                       className="hover:bg-[#0B1220] transition"
                     >
+                      <td className="px-8 py-6 text-slate-400">
+                        {item.trainingId}
+                      </td>
+
                       <td className="px-8 py-6">
                         <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-lg bg-indigo-600/10 flex items-center justify-center text-xs font-bold text-indigo-400">
-                            {item.employee.name.charAt(0)}
-                          </div>
                           <span className="font-semibold text-slate-200">
-                            {item.employee.name}
+                            {item.employee.email}
                           </span>
                         </div>
                       </td>
@@ -177,8 +190,12 @@ export default function TrainingsComponent() {
                         {item.trainerName}
                       </td>
 
-                      <td className="px-8 py-6 text-xs text-slate-400">
-                        {item.dueDate || "No due date"}
+                      <td className="px-8 py-6 text-slate-400">
+                        {item.dueDate}
+                      </td>
+
+                      <td className="px-8 py-6 text-rose-400">
+                        {item.graceDueDate || "—"}
                       </td>
 
                       <td className="px-8 py-6">{statusBadge(item.status)}</td>
@@ -186,6 +203,31 @@ export default function TrainingsComponent() {
                   ))}
                 </tbody>
               </table>
+            </div>
+
+            {/* Pagination Controls */}
+            <div className="flex items-center justify-between px-6 py-4 border-t border-slate-800 bg-[#0B1220]">
+              <span className="text-xs text-slate-500">
+                Page {page} of {totalPages}
+              </span>
+
+              <div className="flex items-center gap-2">
+                <button
+                  disabled={page === 1}
+                  onClick={() => setPage((p) => p - 1)}
+                  className="py-2 px-4 rounded-lg border border-slate-700 text-slate-400 hover:bg-slate-800 disabled:opacity-40"
+                >
+                  ‹
+                </button>
+
+                <button
+                  disabled={page === totalPages}
+                  onClick={() => setPage((p) => p + 1)}
+                  className="px-4 py-2 rounded-lg border border-slate-700 text-slate-400 hover:bg-slate-800 disabled:opacity-40"
+                >
+                  ›
+                </button>
+              </div>
             </div>
           </div>
         </section>

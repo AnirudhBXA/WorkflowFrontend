@@ -1,4 +1,10 @@
-import { Building2, Users, ChevronRight, Briefcase, LayoutGrid } from "lucide-react";
+import {
+  Building2,
+  Users,
+  ChevronRight,
+  Briefcase,
+  LayoutGrid,
+} from "lucide-react";
 
 export default function AdminSidebar({ activeTab, setActiveTab }) {
   const menuItems = [

@@ -85,8 +85,9 @@ export default function InterviewsComponent() {
     } catch (error) {
       toast.error(
         error?.response?.data?.message ||
-        error?.message ||
-        "Failed to update status");
+          error?.message ||
+          "Failed to update status",
+      );
     } finally {
       setActionLoading(null);
     }
@@ -105,8 +106,9 @@ export default function InterviewsComponent() {
     } catch (error) {
       toast.error(
         error?.response?.data?.message ||
-        error?.message ||
-        "Failed to Reschedule");
+          error?.message ||
+          "Failed to Reschedule",
+      );
     } finally {
       setActionLoading(false);
     }
@@ -120,9 +122,8 @@ export default function InterviewsComponent() {
       closeInterviewModal();
     } catch (error) {
       toast.error(
-        error?.response?.data?.message ||
-        error?.message ||
-        "Failed to close");
+        error?.response?.data?.message || error?.message || "Failed to close",
+      );
     } finally {
       setActionLoading(false);
     }
@@ -178,7 +179,6 @@ export default function InterviewsComponent() {
 
   return (
     <div className="max-w-7xl mx-auto space-y-10">
-      {/* HEADER */}
       <div>
         <h1 className="text-3xl font-extrabold text-white">
           Interview Scheduler
@@ -188,7 +188,6 @@ export default function InterviewsComponent() {
         </p>
       </div>
 
-      {/* STATS */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {stats.map((stat, idx) => (
           <MetricProgressCard
@@ -201,7 +200,6 @@ export default function InterviewsComponent() {
         ))}
       </div>
 
-      {/* My Schedule Table */}
       <div className="bg-[#111827] border border-slate-800 rounded-2xl overflow-hidden">
         <div className="px-6 py-4 border-b border-slate-800 flex items-center gap-2">
           <Calendar className="w-4 h-4 text-indigo-400" />
@@ -249,7 +247,6 @@ export default function InterviewsComponent() {
         </div>
       </div>
 
-      {/* HR OVERSIGHT Table */}
       {user?.role === "HR" && (
         <div className="bg-[#111827] border border-slate-800 rounded-2xl overflow-hidden">
           <div className="px-6 py-4 border-b border-slate-800 flex items-center gap-2">
@@ -310,7 +307,6 @@ export default function InterviewsComponent() {
         </div>
       )}
 
-      {/* MODAL */}
       {showModal && selectedInterview && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-[#0b1220] border border-slate-800 rounded-2xl w-full max-w-2xl p-8 space-y-6 shadow-2xl">
@@ -365,7 +361,6 @@ export default function InterviewsComponent() {
               </div>
             </div>
 
-            {/* FEEDBACK + OUTCOME */}
             <div className="space-y-4 pt-4 border-t border-slate-800">
               <div className="space-y-2">
                 <label className="text-xs uppercase tracking-wider text-slate-500 font-bold">
@@ -401,9 +396,7 @@ export default function InterviewsComponent() {
               </div>
             </div>
 
-            {/* ACTION BUTTONS */}
             <div className="flex flex-col gap-3 pt-4">
-              {/* INTERVIEWER ACTIONS: Only if status is SCHEDULED and user is not just viewing as HR */}
               {selectedInterview.status === "SCHEDULED" &&
                 user?.role !== "HR" && (
                   <div className="flex gap-2">
@@ -437,10 +430,8 @@ export default function InterviewsComponent() {
                   </div>
                 )}
 
-              {/* HR ACTIONS: Visible if user is HR and status allows action */}
               {user?.role === "HR" && (
                 <div className="flex gap-2">
-                  {/* Show Reschedule only if marked for rescheduling */}
                   {selectedInterview.status === "RESCHEDULED" && (
                     <button
                       onClick={() => {
@@ -461,7 +452,6 @@ export default function InterviewsComponent() {
                     </button>
                   )}
 
-                  {/* Show Close Interview if any action has been taken (Completed, No Show, or Rescheduled) */}
                   {selectedInterview.status !== "SCHEDULED" &&
                     selectedInterview.status !== "CLOSED" && (
                       <button

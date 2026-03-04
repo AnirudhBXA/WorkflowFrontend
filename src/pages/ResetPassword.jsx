@@ -1,14 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import axiosInstance from "../utils/axiosInstance";
-import {
-  Lock,
-  CheckCircle2,
-  ShieldCheck,
-  LayoutGrid,
-  KeyRound,
-  RefreshCcw,
-} from "lucide-react";
+import { Lock, CheckCircle2, LayoutGrid } from "lucide-react";
 
 function ResetPasswordPage() {
   const navigate = useNavigate();
@@ -67,9 +60,7 @@ function ResetPasswordPage() {
 
   return (
     <div className="h-screen w-full flex overflow-hidden bg-white">
-      {/* LEFT SECTION: Branding (60%) */}
       <div className="hidden lg:flex lg:w-[60%] bg-[#F8F7FF] flex-col justify-between p-16 relative border-r border-indigo-50">
-        {/* Logo */}
         <div className="flex items-center gap-2 text-indigo-600 font-bold text-2xl relative z-10">
           <div className="bg-indigo-600 p-2 rounded-xl shadow-lg shadow-indigo-200">
             <LayoutGrid className="text-white w-6 h-6" />
@@ -81,9 +72,6 @@ function ResetPasswordPage() {
 
         {/* Content */}
         <div className="relative z-10 max-w-2xl">
-          {/* <div className="w-16 h-16 bg-white rounded-2xl shadow-sm flex items-center justify-center mb-8 border border-indigo-50">
-            <KeyRound className="w-8 h-8 text-indigo-600" />
-          </div> */}
           <h2 className="text-5xl font-black text-gray-900 leading-[1.1] tracking-tight">
             Secure your <br />
             <span className="bg-clip-text text-transparent bg-linear-to-r from-indigo-600 to-purple-600">
@@ -94,7 +82,6 @@ function ResetPasswordPage() {
             Choose a strong password to ensure your projects and team data
             remain protected under enterprise-grade encryption.
           </p>
-
         </div>
         {/* Decorative Background */}
         <div className="absolute top-0 right-0 w-full h-full opacity-40 pointer-events-none">

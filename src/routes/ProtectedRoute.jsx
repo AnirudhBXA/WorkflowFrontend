@@ -1,12 +1,13 @@
 import { useContext } from "react";
 import { Navigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
+import { Loader2 } from "lucide-react";
 
 export default function ProtectedRoute({ allowedRoles, children }) {
   const { user, loading } = useContext(AuthContext);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <Loader2 size={14} className="animate-spin" />;
   }
 
   if (!user) {

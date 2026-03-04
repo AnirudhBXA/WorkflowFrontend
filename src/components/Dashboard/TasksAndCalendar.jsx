@@ -5,8 +5,6 @@ import {
   Clock,
   ChevronLeft,
   ChevronRight,
-  User,
-  UserCheck,
   Search,
 } from "lucide-react";
 import axiosInstance from "../../utils/axiosInstance";

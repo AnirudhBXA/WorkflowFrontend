@@ -35,14 +35,13 @@ export default function TimesheetsComponent() {
     try {
       const res = await axiosInstance.get("/data/timesheets/summary");
       setWeeklyData(res.data.weekly || []);
-    }
-    catch (error){
+    } catch (error) {
       toast.error(
         error?.response?.data?.message ||
-        error?.message ||
-        "Failed to fetch your timesheets");
-    }
-    finally {
+          error?.message ||
+          "Failed to fetch your timesheets",
+      );
+    } finally {
       setLoading(false);
     }
   };
@@ -51,14 +50,13 @@ export default function TimesheetsComponent() {
     try {
       const response = await axiosInstance.get("/timesheets/this-month");
       setMonthlyData(response.data);
-    }
-    catch(error){
+    } catch (error) {
       toast.error(
         error?.response?.data?.message ||
-        error?.message ||
-        "Failed to fetch your timesheets");
-    }
-    finally {
+          error?.message ||
+          "Failed to fetch your timesheets",
+      );
+    } finally {
       setLoading(false);
     }
   }
@@ -67,14 +65,13 @@ export default function TimesheetsComponent() {
     try {
       const response = await axiosInstance.get("/timesheets/team");
       setTeamTimesheets(response.data);
-    } 
-    catch(error){
+    } catch (error) {
       toast.error(
         error?.response?.data?.message ||
-        error?.message ||
-        "Failed to fetch your timesheets");
-    }
-    finally {
+          error?.message ||
+          "Failed to fetch your timesheets",
+      );
+    } finally {
       setLoading(false);
     }
   }

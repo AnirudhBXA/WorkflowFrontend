@@ -34,7 +34,8 @@ export default function LeaveApprovalComponent() {
       await axiosInstance.post(`/leaves/workflow/tasks/${taskId}/complete`, {
         decision,
       });
-      toast.success(decision+" leave successfully")    } catch (error) {
+      toast.success(decision + " leave successfully");
+    } catch (error) {
       toast.error(
         error?.response?.data?.message ||
           error?.message ||

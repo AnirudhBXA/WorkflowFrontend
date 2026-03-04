@@ -1,7 +1,3 @@
-/**
- * Formats a date string to DD/MM/YYYY, HH:MM AM/PM
- * Example: 2026-02-06T14:30:00 -> 06/02/2026, 02:30 PM
- */
 export function formatDateTime(dateString) {
   if (!dateString) return "N/A";
   const date = new Date(dateString);

@@ -25,7 +25,6 @@ function FileUploadComponent() {
     relatedApi: "",
   });
   const [workflowOptions, setWorkFlowOptions] = useState([]);
-
   const role = "HR";
 
   useEffect(() => {
@@ -97,14 +96,12 @@ function FileUploadComponent() {
 
       setUploadResult(response.data);
 
-      toast.success("Upload Success. WorkFlows created")
+      toast.success("Upload Success. WorkFlows created");
     } catch (error) {
       console.error(error);
       toast.error(
-        error?.response?.data?.message ||
-        error?.message ||
-        "Failed to upload"
-      )
+        error?.response?.data?.message || error?.message || "Failed to upload",
+      );
     } finally {
       setIsUploading(false);
     }
@@ -123,7 +120,6 @@ function FileUploadComponent() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
-          {/* Configuration */}
           <div className="bg-[#111827] lg:col-span-2 border border-slate-800 rounded-2xl p-8">
             <div className="flex items-center gap-3 mb-6">
               <div className="p-2 bg-indigo-600/10 rounded-xl text-indigo-400">
@@ -157,7 +153,6 @@ function FileUploadComponent() {
             </div>
           </div>
 
-          {/* Upload Area */}
           <div className="lg:col-span-2 bg-[#111827] border border-slate-800 rounded-2xl p-8">
             <div className="flex justify-between mb-6">
               <div className="flex items-center gap-3">
@@ -258,7 +253,6 @@ function FileUploadComponent() {
           </div>
         </div>
 
-        {/* Summary */}
         {uploadResult && (
           <div className="grid md:grid-cols-3 gap-4">
             {[

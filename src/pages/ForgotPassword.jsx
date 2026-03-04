@@ -1,14 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../utils/axiosInstance";
-import {
-  Mail,
-  ArrowLeft,
-  LayoutGrid,
-  ShieldQuestion,
-  Send,
-  CheckCircle,
-} from "lucide-react";
+import { Mail, ArrowLeft, LayoutGrid, Send, CheckCircle } from "lucide-react";
 
 function ForgotPasswordComponent() {
   const navigate = useNavigate();
@@ -65,11 +58,7 @@ function ForgotPasswordComponent() {
           <span className="tracking-tight text-indigo-600">DarwinFlow</span>
         </div>
 
-        {/* Content */}
         <div className="relative z-10 max-w-2xl">
-          {/* <div className="w-16 h-16 bg-white rounded-2xl shadow-sm flex items-center justify-center mb-8 border border-indigo-50">
-            <ShieldQuestion className="w-8 h-8 text-indigo-600" />
-          </div> */}
           <h2 className="text-5xl font-black text--900 leading-[1.1] tracking-tight">
             Forgot your <br />
             <span className="bg-clip-text text-transparent bg-linear-to-r from-indigo-600 to-purple-600">
@@ -82,14 +71,12 @@ function ForgotPasswordComponent() {
           </p>
         </div>
 
-        {/* Abstract Background Decoration */}
         <div className="absolute top-0 right-0 w-full h-full opacity-40 pointer-events-none">
           <div className="absolute top-[-10%] right-[-10%] w-125 h-125 bg-indigo-200/50 rounded-full blur-[120px]"></div>
           <div className="absolute bottom-[-5%] left-[-5%] w-75 h-75 bg-purple-200/40 rounded-full blur-[100px]"></div>
         </div>
       </div>
 
-      {/* RIGHT SECTION: The Reset Form (40%) */}
       <div className="w-full lg:w-[40%] flex items-center justify-center p-8 bg-white">
         <div className="w-full max-w-md">
           <button
@@ -129,7 +116,6 @@ function ForgotPasswordComponent() {
               </div>
             </div>
 
-            {/* Status Messages */}
             {message && (
               <div className="bg-emerald-50 text-emerald-700 text-sm p-4 rounded-xl border border-emerald-100 flex items-center gap-3 font-medium">
                 <CheckCircle className="w-5 h-5 shrink-0" />

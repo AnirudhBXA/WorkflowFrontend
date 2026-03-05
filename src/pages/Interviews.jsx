@@ -397,8 +397,8 @@ export default function InterviewsComponent() {
             </div>
 
             <div className="flex flex-col gap-3 pt-4">
-              {selectedInterview.status === "SCHEDULED" &&
-                user?.role !== "HR" && (
+              {selectedInterview.status === "SCHEDULED" && 
+                selectedInterview.taskAssignee === user.username && (
                   <div className="flex gap-2">
                     <button
                       onClick={() => handleStatusUpdate("COMPLETED")}
@@ -430,7 +430,8 @@ export default function InterviewsComponent() {
                   </div>
                 )}
 
-              {user?.role === "HR" && (
+              {user?.role === "HR" && 
+                selectedInterview.taskAssignee === user?.username  && (
                 <div className="flex gap-2">
                   {selectedInterview.status === "RESCHEDULED" && (
                     <button

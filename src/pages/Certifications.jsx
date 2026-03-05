@@ -24,6 +24,11 @@ export default function CertificationsComponent() {
   const [uploading, setUploading] = useState(false);
   const [selectedCert, setSelectedCert] = useState(null);
 
+  const [sortConfig, setSortConfig] = useState({
+    field: null,
+    direction: "asc",
+  });
+
   const [myPage, setMyPage] = useState(1);
   const [teamPage, setTeamPage] = useState(1);
   const [deptPage, setDeptPage] = useState(1);
@@ -41,23 +46,26 @@ export default function CertificationsComponent() {
   };
   const PAGE_SIZE = 5;
 
+  const sortedTeamcerts = (sortData(teamCerts));
   const totalTeamPages = Math.ceil(teamCerts.length / PAGE_SIZE);
   const startIndexTeam = (teamPage - 1) * PAGE_SIZE;
-  const paginatedTeamCerts = teamCerts.slice(
+  const paginatedTeamCerts = sortedTeamcerts.slice(
     startIndexTeam,
     startIndexTeam + PAGE_SIZE,
   );
 
+  const sortedMycerts = (sortData(myCerts));
   const totalMyPages = Math.ceil(myCerts.length / PAGE_SIZE);
   const startIndexMy = (myPage - 1) * PAGE_SIZE;
-  const paginatedMyCerts = myCerts.slice(
+  const paginatedMyCerts = sortedMycerts.slice(
     startIndexMy,
     startIndexMy + PAGE_SIZE,
   );
-
+  
+  const sortedDeptcerts = (sortData(deptCerts));
   const totalDeptPages = Math.ceil(deptCerts.length / PAGE_SIZE);
   const startIndexDept = (deptPage - 1) * PAGE_SIZE;
-  const paginatedDeptCerts = deptCerts.slice(
+  const paginatedDeptCerts = sortedDeptcerts.slice(
     startIndexDept,
     startIndexDept + PAGE_SIZE,
   );
@@ -69,6 +77,38 @@ export default function CertificationsComponent() {
 
     console.log(user)
   }, [user]);
+
+  function sortData(data) {
+    if (!sortConfig.field) return data;
+  
+    return [...data].sort((a, b) => {
+      let aValue = a[sortConfig.field];
+      let bValue = b[sortConfig.field];
+  
+      if (sortConfig.field === "certName") {
+        aValue = a.certificationName || "";
+        bValue = b.certificationName || "";
+      }
+  
+      if (sortConfig.field === "dueDate") {
+        aValue = new Date(a.dueDate);
+        bValue = new Date(b.dueDate);
+      }
+  
+      if (aValue < bValue) return sortConfig.direction === "asc" ? -1 : 1;
+      if (aValue > bValue) return sortConfig.direction === "asc" ? 1 : -1;
+  
+      return 0;
+    });
+  }
+
+  // function handleSort(field) {
+  //   setSortConfig((prev) => ({
+  //     field,
+  //     direction:
+  //       prev.field === field && prev.direction === "asc" ? "desc" : "asc",
+  //   }));
+  // }
 
   async function refreshAll() {
     setLoading(true);
@@ -383,6 +423,33 @@ export default function CertificationsComponent() {
           <h2 className="text-sm font-bold uppercase text-slate-300">
             My Certifications
           </h2>
+
+          <div className="flex items-center gap-4 mb-4">
+
+            <select
+              value={sortConfig.field}
+              onChange={(e) =>
+                setSortConfig((prev) => ({ ...prev, field: e.target.value }))
+              }
+              className="bg-[#0B1220] border border-slate-700 text-slate-300 px-3 py-2 rounded-lg text-sm"
+            >
+              <option value="dueDate">Sort by Due Date</option>
+              <option value="certName">Sort by Name</option>
+              <option value="status">Sort by Status</option>
+            </select>
+
+            <select
+              value={sortConfig.direction}
+              onChange={(e) =>
+                setSortConfig((prev) => ({ ...prev, direction: e.target.value }))
+              }
+              className="bg-[#0B1220] border border-slate-700 text-slate-300 px-3 py-2 rounded-lg text-sm"
+            >
+              <option value="asc">Ascending</option>
+              <option value="desc">Descending</option>
+            </select>
+
+          </div>
         </div>
 
         <table className="w-full text-sm">
@@ -391,6 +458,7 @@ export default function CertificationsComponent() {
               <th className="px-6 py-4 text-left">Cert Id</th>
               <th className="px-6 py-4 text-left">Certification</th>
               <th className="px-6 py-4 text-left">Amount</th>
+              <th className="px-6 py-4 text-left">Due date</th>
               <th className="px-6 py-4 text-left">Status</th>
               <th className="px-6 py-4 text-left">Action</th>
             </tr>
@@ -411,6 +479,7 @@ export default function CertificationsComponent() {
                 <td className="px-6 py-5 text-slate-400">
                   ₹ {c.reimbursementAmount}
                 </td>
+                <td className="px-6 py-5 text-slate-400">{c.dueDate}</td>
                 <td className="px-6 py-5">{badge(c.status)}</td>
                 <td className="px-6 py-5">
                   {(c.status === "APPROVED" && c.assignee === user.username ) && (
@@ -470,6 +539,33 @@ export default function CertificationsComponent() {
             <History className="w-5 h-5 text-indigo-400" />
             <h2 className="text-sm font-bold uppercase text-slate-300">
               Department Certifications
+
+              <div className="flex items-center gap-4 mb-4">
+
+            <select
+              value={sortConfig.field}
+              onChange={(e) =>
+                setSortConfig((prev) => ({ ...prev, field: e.target.value }))
+              }
+              className="bg-[#0B1220] border border-slate-700 text-slate-300 px-3 py-2 rounded-lg text-sm"
+            >
+              <option value="dueDate">Sort by Due Date</option>
+              <option value="certName">Sort by Name</option>
+              <option value="status">Sort by Status</option>
+            </select>
+
+            <select
+              value={sortConfig.direction}
+              onChange={(e) =>
+                setSortConfig((prev) => ({ ...prev, direction: e.target.value }))
+              }
+              className="bg-[#0B1220] border border-slate-700 text-slate-300 px-3 py-2 rounded-lg text-sm"
+            >
+              <option value="asc">Ascending</option>
+              <option value="desc">Descending</option>
+            </select>
+
+          </div>
             </h2>
           </div>
 

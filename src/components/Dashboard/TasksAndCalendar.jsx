@@ -63,7 +63,6 @@ export default function TasksAndCalendar() {
   const { user } = useContext(AuthContext);
   const [taskData, setTaskData] = useState([]);
   const [completedTasks, setCompletedTasks] = useState([]);
-  const [showAll, setShowAll] = useState(false);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -108,9 +107,10 @@ export default function TasksAndCalendar() {
     });
   }, [taskData, query, priorityFilter]);
 
-  const paginatedTasks = showAll
-    ? filtered
-    : filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  const paginatedTasks = filtered.slice(
+    (page - 1) * PAGE_SIZE,
+    page * PAGE_SIZE,
+  );
   const totalFilteredPages = Math.max(
     1,
     Math.ceil(filtered.length / PAGE_SIZE),
@@ -169,31 +169,6 @@ export default function TasksAndCalendar() {
               aria-label="Search tasks"
             />
           </div>
-
-          <select
-            value={priorityFilter}
-            onChange={(e) => {
-              setPriorityFilter(e.target.value);
-              setPage(1);
-            }}
-            className="bg-[#0B1220] border border-slate-700 text-sm text-slate-200 rounded-lg px-3 py-2"
-            aria-label="Filter by priority"
-          >
-            <option value="all">All priorities</option>
-            <option value="high">High</option>
-            <option value="medium">Medium</option>
-            <option value="low">Low</option>
-          </select>
-
-          <button
-            onClick={() => {
-              setShowAll((p) => !p);
-              setPage(1);
-            }}
-            className="text-sm font-semibold text-indigo-400 hover:text-indigo-300"
-          >
-            {showAll ? "Show less" : "View all"}
-          </button>
         </div>
       </div>
 
@@ -353,7 +328,7 @@ export default function TasksAndCalendar() {
       </div>
 
       {/* Pagination */}
-      {!showAll && filtered.length > PAGE_SIZE && (
+      {filtered.length > PAGE_SIZE && (
         <div className="flex items-center justify-between px-6 py-4 border-t border-slate-800 bg-[#0B1220]">
           <span className="text-xs text-slate-500">
             Page {page} of {totalFilteredPages}

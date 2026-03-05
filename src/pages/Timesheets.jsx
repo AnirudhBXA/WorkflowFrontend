@@ -6,40 +6,47 @@ import ManagerTimesheetApprovalTable from "../components/Timesheets/ManagerTimes
 import { BarChart3 } from "lucide-react";
 import { AuthContext } from "../context/AuthContext";
 import { toast } from "sonner";
+import MetricsCard from "../components/Timesheets/MetricsCard";
 
 export default function TimesheetsComponent() {
   const { user } = useContext(AuthContext);
   const [loading, setLoading] = useState(true);
   const [weeklyData, setWeeklyData] = useState([]);
-  const [monthlyData, setMonthlyData] = useState([]);
+  const [monthlyTotal, setMonthlyTotal] = useState(0);
+  const [yearlyTotal, setYearlyTotal] = useState(0);
+  const [allTimeTotal, setAllTimeTotal] = useState(0);
   const [teamTimesheets, setTeamTimesheets] = useState([]);
+  const [monthlyData, setMonthlyData] = useState([]);
 
   const fetchAll = async () => {
     setLoading(true);
     await Promise.all([
-      fetchWeeklySummary(),
+      fetchSummary(),
       fetchMyMonthReport(),
       user.role === "MANAGER" ? fetchTeamTimesheets() : null,
     ]);
   };
 
   useEffect(() => {
-    fetchWeeklySummary();
+    fetchSummary();
     fetchMyMonthReport();
     if (user.role === "MANAGER") {
       fetchTeamTimesheets();
     }
   }, []);
 
-  const fetchWeeklySummary = async () => {
+  const fetchSummary = async () => {
     try {
       const res = await axiosInstance.get("/data/timesheets/summary");
       setWeeklyData(res.data.weekly || []);
+      setMonthlyTotal(res.data.monthly || 0);
+      setYearlyTotal(res.data.yearly || 0);
+      setAllTimeTotal(res.data.allTime || 0);
     } catch (error) {
       toast.error(
         error?.response?.data?.message ||
           error?.message ||
-          "Failed to fetch your timesheets",
+          "Failed to fetch timesheet summary",
       );
     } finally {
       setLoading(false);
@@ -69,7 +76,7 @@ export default function TimesheetsComponent() {
       toast.error(
         error?.response?.data?.message ||
           error?.message ||
-          "Failed to fetch your timesheets",
+          "Failed to fetch team timesheets",
       );
     } finally {
       setLoading(false);
@@ -95,6 +102,28 @@ export default function TimesheetsComponent() {
         </p>
       </div>
 
+      {/* Metrics Section */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <MetricsCard
+          title="Total Time Worked (Month)"
+          value={`${monthlyTotal} hrs`}
+        />
+        <MetricsCard title="Yearly Time Spent" value={`${yearlyTotal} hrs`} />
+        <MetricsCard title="All Time Worked" value={`${allTimeTotal} hrs`} />
+        <MetricsCard
+          title="Avg Weekly Hours"
+          value={
+            weeklyData.length
+              ? (
+                  weeklyData.reduce((sum, d) => sum + d.actual, 0) /
+                  weeklyData.length
+                ).toFixed(1) + " hrs"
+              : "0 hrs"
+          }
+        />
+      </div>
+
+      {/* Weekly Chart */}
       <div className="bg-[#111827] border border-slate-800 rounded-2xl p-8">
         <div className="flex items-center gap-2 mb-6">
           <BarChart3 className="text-indigo-400 w-5 h-5" />
@@ -103,6 +132,7 @@ export default function TimesheetsComponent() {
         <WeeklyHoursChart data={weeklyData} />
       </div>
 
+      {/* Monthly + Manager Tables */}
       <div className="grid lg:grid-cols-1 gap-8 items-start">
         <MonthlyTimesheetTable data={monthlyData} />
 

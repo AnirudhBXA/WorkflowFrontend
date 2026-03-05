@@ -16,7 +16,7 @@ const navItems = [
   { icon: LayoutGrid, label: "Dashboard", navPath: "/dashboard" },
   { icon: Calendar, label: "Leaves", navPath: "/leave" },
   { icon: BookOpen, label: "Trainings", navPath: "/trainings" },
-  { icon: Clock, label: "Timesheet", navPath: "/timesheet" },
+  { icon: Clock, label: "Timesheets", navPath: "/timesheet" },
   { icon: Award, label: "Certifications", navPath: "/certifications" },
   { icon: Users, label: "Interviews", navPath: "/interviews" },
 ];

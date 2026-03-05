@@ -20,7 +20,7 @@ export default function DashboardPage() {
         <div className="space-y-10">
           <StatsCards />
           <ChartsSection />
-          <TasksAndCalendar />
+          {/* <TasksAndCalendar /> */}
         </div>
       </div>
     </div>

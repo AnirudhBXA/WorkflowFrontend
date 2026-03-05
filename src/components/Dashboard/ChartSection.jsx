@@ -123,9 +123,6 @@ export default function ChartsSection() {
             </h3>
             <p className="text-sm text-slate-400">Monthly Working Hours</p>
           </div>
-          <select className="bg-[#0B1220] border border-slate-700 rounded-lg text-xs font-semibold text-slate-400 px-3 py-1 focus:outline-none">
-            <option>Last 4 Weeks</option>
-          </select>
         </div>
 
         <div className="h-72 w-full">

@@ -13,7 +13,7 @@ export default function DepartmentLeaves() {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
 
-  const PAGE_SIZE = 7;
+  const PAGE_SIZE = 5;
   const totalPages = Math.ceil(leavesList.length / PAGE_SIZE);
   const startIndex = (page - 1) * PAGE_SIZE;
   const paginatedLeaves = leavesList.slice(startIndex, startIndex + PAGE_SIZE);
@@ -88,7 +88,7 @@ export default function DepartmentLeaves() {
                 <td className="px-6 py-4">
                   <button
                     onClick={() => setSelectedLeave(item)}
-                    className="px-3 py-1 text-xs font-semibold rounded-lg bg-indigo-600/10 text-indigo-400 hover:bg-indigo-600/20"
+                    className="px-3 py-1 text-xs cursor-pointer font-semibold rounded-lg bg-indigo-600/10 text-indigo-400 hover:bg-indigo-600/20"
                   >
                     View
                   </button>

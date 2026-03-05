@@ -13,7 +13,7 @@ export default function LeavesComponent() {
   const [leavesList, setLeavesList] = useState([]);
   const [page, setPage] = useState(1);
 
-  const PAGE_SIZE = 6;
+  const PAGE_SIZE = 5;
   const totalPages = Math.ceil(leavesList.length / PAGE_SIZE);
   const startIndex = (page - 1) * PAGE_SIZE;
   const paginatedLeaves = leavesList.slice(startIndex, startIndex + PAGE_SIZE);
@@ -114,7 +114,7 @@ export default function LeavesComponent() {
                 <th className="px-6 py-4 text-left">Status</th>
                 <th className="px-6 py-4 text-left">Reason</th>
                 <th className="px-6 py-4 text-left">Document</th>
-                <th className="px-6 py-4 text-left">Created At</th>
+                {/* <th className="px-6 py-4 text-left">Created At</th> */}
                 <th className="px-6 py-4 text-left">Updated At</th>
               </tr>
             </thead>
@@ -174,9 +174,9 @@ export default function LeavesComponent() {
                         "—"
                       )}
                     </td>
-                    <td className="px-6 py-5 text-slate-400">
+                    {/* <td className="px-6 py-5 text-slate-400">
                       {formatDateTime(item.createdAt)}
-                    </td>
+                    </td> */}
                     <td className="px-6 py-5 text-slate-400">
                       {formatDateTime(item.updatedAt)}
                     </td>
@@ -219,7 +219,7 @@ export default function LeavesComponent() {
               Subordinate Approvals
             </h2>
           </div>
-          <div className="bg-[#111827] border border-slate-800 rounded-2xl p-6">
+          <div className="bg-[#111827] border border-slate-800 rounded-2xl">
             <LeaveApprovalComponent />
           </div>
         </div>
@@ -233,7 +233,7 @@ export default function LeavesComponent() {
               Department Overview
             </h2>
           </div>
-          <div className="bg-[#111827] border border-slate-800 rounded-2xl p-6">
+          <div className="bg-[#111827] border border-slate-800 rounded-2xl">
             <DepartmentLeaves />
           </div>
         </div>

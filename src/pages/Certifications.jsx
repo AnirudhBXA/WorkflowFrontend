@@ -46,7 +46,7 @@ export default function CertificationsComponent() {
   };
   const PAGE_SIZE = 5;
 
-  const sortedTeamcerts = (sortData(teamCerts));
+  const sortedTeamcerts = sortData(teamCerts);
   const totalTeamPages = Math.ceil(teamCerts.length / PAGE_SIZE);
   const startIndexTeam = (teamPage - 1) * PAGE_SIZE;
   const paginatedTeamCerts = sortedTeamcerts.slice(
@@ -54,15 +54,15 @@ export default function CertificationsComponent() {
     startIndexTeam + PAGE_SIZE,
   );
 
-  const sortedMycerts = (sortData(myCerts));
+  const sortedMycerts = sortData(myCerts);
   const totalMyPages = Math.ceil(myCerts.length / PAGE_SIZE);
   const startIndexMy = (myPage - 1) * PAGE_SIZE;
   const paginatedMyCerts = sortedMycerts.slice(
     startIndexMy,
     startIndexMy + PAGE_SIZE,
   );
-  
-  const sortedDeptcerts = (sortData(deptCerts));
+
+  const sortedDeptcerts = sortData(deptCerts);
   const totalDeptPages = Math.ceil(deptCerts.length / PAGE_SIZE);
   const startIndexDept = (deptPage - 1) * PAGE_SIZE;
   const paginatedDeptCerts = sortedDeptcerts.slice(
@@ -75,29 +75,29 @@ export default function CertificationsComponent() {
       refreshAll();
     }
 
-    console.log(user)
+    console.log(user);
   }, [user]);
 
   function sortData(data) {
     if (!sortConfig.field) return data;
-  
+
     return [...data].sort((a, b) => {
       let aValue = a[sortConfig.field];
       let bValue = b[sortConfig.field];
-  
+
       if (sortConfig.field === "certName") {
         aValue = a.certificationName || "";
         bValue = b.certificationName || "";
       }
-  
+
       if (sortConfig.field === "dueDate") {
         aValue = new Date(a.dueDate);
         bValue = new Date(b.dueDate);
       }
-  
+
       if (aValue < bValue) return sortConfig.direction === "asc" ? -1 : 1;
       if (aValue > bValue) return sortConfig.direction === "asc" ? 1 : -1;
-  
+
       return 0;
     });
   }
@@ -425,7 +425,6 @@ export default function CertificationsComponent() {
           </h2>
 
           <div className="flex items-center gap-4 mb-4">
-
             <select
               value={sortConfig.field}
               onChange={(e) =>
@@ -441,14 +440,16 @@ export default function CertificationsComponent() {
             <select
               value={sortConfig.direction}
               onChange={(e) =>
-                setSortConfig((prev) => ({ ...prev, direction: e.target.value }))
+                setSortConfig((prev) => ({
+                  ...prev,
+                  direction: e.target.value,
+                }))
               }
               className="bg-[#0B1220] border border-slate-700 text-slate-300 px-3 py-2 rounded-lg text-sm"
             >
               <option value="asc">Ascending</option>
               <option value="desc">Descending</option>
             </select>
-
           </div>
         </div>
 
@@ -482,7 +483,7 @@ export default function CertificationsComponent() {
                 <td className="px-6 py-5 text-slate-400">{c.dueDate}</td>
                 <td className="px-6 py-5">{badge(c.status)}</td>
                 <td className="px-6 py-5">
-                  {(c.status === "APPROVED" && c.assignee === user.username ) && (
+                  {c.status === "APPROVED" && c.assignee === user.username && (
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
@@ -506,7 +507,7 @@ export default function CertificationsComponent() {
           </tbody>
         </table>
 
-        {totalMyPages > 1 && (
+        {totalMyPages > 0 && (
           <div className="flex items-center justify-between px-6 py-4 border-t border-slate-800 bg-[#0B1220]">
             <span className="text-xs text-slate-500">
               Page {myPage} of {totalMyPages}
@@ -539,33 +540,36 @@ export default function CertificationsComponent() {
             <History className="w-5 h-5 text-indigo-400" />
             <h2 className="text-sm font-bold uppercase text-slate-300">
               Department Certifications
-
               <div className="flex items-center gap-4 mb-4">
+                <select
+                  value={sortConfig.field}
+                  onChange={(e) =>
+                    setSortConfig((prev) => ({
+                      ...prev,
+                      field: e.target.value,
+                    }))
+                  }
+                  className="bg-[#0B1220] border border-slate-700 text-slate-300 px-3 py-2 rounded-lg text-sm"
+                >
+                  <option value="dueDate">Sort by Due Date</option>
+                  <option value="certName">Sort by Name</option>
+                  <option value="status">Sort by Status</option>
+                </select>
 
-            <select
-              value={sortConfig.field}
-              onChange={(e) =>
-                setSortConfig((prev) => ({ ...prev, field: e.target.value }))
-              }
-              className="bg-[#0B1220] border border-slate-700 text-slate-300 px-3 py-2 rounded-lg text-sm"
-            >
-              <option value="dueDate">Sort by Due Date</option>
-              <option value="certName">Sort by Name</option>
-              <option value="status">Sort by Status</option>
-            </select>
-
-            <select
-              value={sortConfig.direction}
-              onChange={(e) =>
-                setSortConfig((prev) => ({ ...prev, direction: e.target.value }))
-              }
-              className="bg-[#0B1220] border border-slate-700 text-slate-300 px-3 py-2 rounded-lg text-sm"
-            >
-              <option value="asc">Ascending</option>
-              <option value="desc">Descending</option>
-            </select>
-
-          </div>
+                <select
+                  value={sortConfig.direction}
+                  onChange={(e) =>
+                    setSortConfig((prev) => ({
+                      ...prev,
+                      direction: e.target.value,
+                    }))
+                  }
+                  className="bg-[#0B1220] border border-slate-700 text-slate-300 px-3 py-2 rounded-lg text-sm"
+                >
+                  <option value="asc">Ascending</option>
+                  <option value="desc">Descending</option>
+                </select>
+              </div>
             </h2>
           </div>
 
@@ -597,27 +601,28 @@ export default function CertificationsComponent() {
                   </td>
                   <td className="px-6 py-5">{badge(c.status)}</td>
                   <td className="px-6 py-5">
-                    {(c.status === "COMPLETED" && c.assignee === user.username  ) && (
-                      <button
-                        onClick={(e) => handleHRVerifyCertification(e, c)}
-                        className="bg-blue-700 text-white px-4 py-1 rounded-md 
+                    {c.status === "COMPLETED" &&
+                      c.assignee === user.username && (
+                        <button
+                          onClick={(e) => handleHRVerifyCertification(e, c)}
+                          className="bg-blue-700 text-white px-4 py-1 rounded-md 
                                 font-semibold text-sm hover:bg-blue-700 
                                 active:scale-95 transition duration-200
                                 flex items-center gap-2"
-                      >
-                        Start Reimbursement
-                        {loadingCertId === c.certId && (
-                          <Loader2 className="w-4 h-4 animate-spin" />
-                        )}
-                      </button>
-                    )}
+                        >
+                          Start Reimbursement
+                          {loadingCertId === c.certId && (
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                          )}
+                        </button>
+                      )}
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
 
-          {totalDeptPages > 1 && (
+          {totalDeptPages > 0 && (
             <div className="flex items-center justify-between px-6 py-4 border-t border-slate-800 bg-[#0B1220]">
               <span className="text-xs text-slate-500">
                 Page {deptPage} of {totalDeptPages}
@@ -681,30 +686,36 @@ export default function CertificationsComponent() {
                   </td>
                   <td className="px-6 py-5">{badge(c.status)}</td>
                   <td className="px-6 py-5">
-                    {(c.status === "COMPLETED" && c.assignee === user.username  ) && (
-
-                      <div>
-                      <button
-                        onClick={(e) => handleManagerVerifyCertification(e, c.taskId, true)}
-                        className="bg-blue-700 text-white px-4 py-1 rounded-md 
+                    {c.status === "COMPLETED" &&
+                      c.assignee === user.username && (
+                        <div>
+                          <button
+                            onClick={(e) =>
+                              handleManagerVerifyCertification(
+                                e,
+                                c.taskId,
+                                true,
+                              )
+                            }
+                            className="bg-blue-700 text-white px-4 py-1 rounded-md 
                                 font-semibold text-sm hover:bg-blue-700 
                                 active:scale-95 transition duration-200
                                 flex items-center gap-2"
-                      >
-                        Verify
-                        {/* {loadingCertId === c.certId && (
+                          >
+                            Verify
+                            {/* {loadingCertId === c.certId && (
                           <Loader2 className="w-4 h-4 animate-spin" />
                         )} */}
-                      </button>
-                      </div>
-                    )}
+                          </button>
+                        </div>
+                      )}
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
 
-          {totalTeamPages > 1 && (
+          {totalTeamPages > 0 && (
             <div className="flex items-center justify-between px-6 py-4 border-t border-slate-800 bg-[#0B1220]">
               <span className="text-xs text-slate-500">
                 Page {teamPage} of {totalTeamPages}

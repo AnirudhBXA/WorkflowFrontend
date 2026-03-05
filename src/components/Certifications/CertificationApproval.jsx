@@ -80,7 +80,7 @@ export default function CertificationApprovalComponent({ items, setSelected }) {
           </tbody>
         </table>
 
-        {totalPages > 1 && (
+        {totalPages > 0 && (
           <div className="flex items-center justify-between px-6 py-4 border-t border-slate-800 bg-[#0B1220]">
             <span className="text-xs text-slate-500">
               Page {page} of {totalPages}

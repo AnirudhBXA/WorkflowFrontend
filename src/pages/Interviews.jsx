@@ -70,10 +70,47 @@ export default function InterviewsComponent() {
     setOutcome("");
   }
 
+  const validateStatusUpdate = (scheduledDateTime) => {
+
+    const now = new Date();
+  
+    const scheduled = new Date(`${scheduledDateTime}:00`);
+  
+    const endWindow = new Date(scheduled.getTime() + 24 * 60 * 60 * 1000);
+  
+    // console.log("Now:", now);
+    // console.log("Scheduled:", scheduled);
+    // console.log("End Window:", endWindow);
+  
+    if (now < scheduled) {
+      toast.error("You cannot mark status before the scheduled date.");
+      return false;
+    }
+  
+    if (now > endWindow) {
+      toast.error("You cannot mark status after 24 hours of the scheduled time.");
+      return false;
+    }
+  
+    return true;
+  };
+
   async function handleStatusUpdate(status) {
     if (!selectedInterview) return;
 
     setActionLoading(status);
+
+    // console.log("raw time ",selectedInterview.scheduledAt )
+    // return;
+
+    if (!validateStatusUpdate(selectedInterview.scheduledDate)) {
+      setActionLoading(null);
+      console.log("sdlfjslfjlkj")
+      return;
+    }
+
+    // selectedInterview.sched  uledAt 
+
     try {
       await axiosInstance.post(
         `/interview/complete/${selectedInterview.taskId}`,
@@ -167,7 +204,7 @@ export default function InterviewsComponent() {
   ];
 
   const isFormDisabled =
-    selectedInterview?.status !== "SCHEDULED" && user?.role !== "HR";
+    selectedInterview?.status !== "SCHEDULED" || selectedInterview?.taskAssignee !== user?.username;
 
   if (loading) {
     return (

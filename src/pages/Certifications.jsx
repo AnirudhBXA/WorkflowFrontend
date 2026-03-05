@@ -102,13 +102,6 @@ export default function CertificationsComponent() {
     });
   }
 
-  // function handleSort(field) {
-  //   setSortConfig((prev) => ({
-  //     field,
-  //     direction:
-  //       prev.field === field && prev.direction === "asc" ? "desc" : "asc",
-  //   }));
-  // }
 
   async function refreshAll() {
     setLoading(true);

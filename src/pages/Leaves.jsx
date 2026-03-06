@@ -11,18 +11,23 @@ export default function LeavesComponent() {
   const [loading, setLoading] = useState(true);
   const [summary, setSummary] = useState({ available: 0, used: 0 });
   const [leavesList, setLeavesList] = useState([]);
-  const [page, setPage] = useState(1);
 
   const PAGE_SIZE = 5;
-  const totalPages = Math.ceil(leavesList.length / PAGE_SIZE);
-  const startIndex = (page - 1) * PAGE_SIZE;
-  const paginatedLeaves = leavesList.slice(startIndex, startIndex + PAGE_SIZE);
+
+  const [page, setPage] = useState(0); // backend uses 0 index
+  const [totalPages, setTotalPages] = useState(0);
+
   useEffect(() => {
     async function fetchLeaves() {
       try {
-        const res = await axiosInstance.get("/leaves/me");
-        const leaves = res.data || [];
+        const res = await axiosInstance.get("/leaves/me", {
+          params: {
+            page: page
+          },
+        });
+        const leaves = res.data.content || [];
         setLeavesList(leaves);
+        setTotalPages(res.data.totalPages);
 
         const totalDaysUsed = leaves.reduce((sum, leave) => {
           if (leave.status === "APPROVED") {
@@ -44,7 +49,7 @@ export default function LeavesComponent() {
       }
     }
     fetchLeaves();
-  }, []);
+  }, [page]);
 
   const statusBadge = (status) => {
     const map = {
@@ -119,7 +124,7 @@ export default function LeavesComponent() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800">
-              {paginatedLeaves.map((item) => {
+              {leavesList.map((item) => {
                 const start = new Date(item.startDate);
                 const end = new Date(item.endDate);
                 const days =
@@ -187,12 +192,12 @@ export default function LeavesComponent() {
           </table>
           <div className="flex items-center justify-between px-6 py-4 border-t border-slate-800 bg-[#0B1220]">
             <span className="text-xs text-slate-500">
-              Page {page} of {totalPages}
+              Page {page + 1 } of {totalPages}
             </span>
 
             <div className="flex items-center gap-2">
               <button
-                disabled={page === 1}
+                disabled={page === 0}
                 onClick={() => setPage((p) => p - 1)}
                 className="py-2 px-4 rounded-lg border border-slate-700 text-slate-400 hover:bg-slate-800 disabled:opacity-40"
               >
@@ -200,7 +205,7 @@ export default function LeavesComponent() {
               </button>
 
               <button
-                disabled={page === totalPages}
+                disabled={page === totalPages-1 }
                 onClick={() => setPage((p) => p + 1)}
                 className="px-4 py-2 rounded-lg border border-slate-700 text-slate-400 hover:bg-slate-800 disabled:opacity-40"
               >

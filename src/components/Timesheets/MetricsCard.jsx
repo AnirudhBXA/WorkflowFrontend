@@ -1,4 +1,3 @@
-// components/Timesheets/MetricsCard.jsx
 export default function MetricsCard({ title, value }) {
   return (
     <div className="bg-[#111827] border border-slate-800 rounded-xl p-6 flex flex-col items-center">

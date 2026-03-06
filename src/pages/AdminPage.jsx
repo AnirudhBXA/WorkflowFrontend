@@ -71,7 +71,6 @@ export default function AdminPage() {
     } finally {
       setLoading(false);
     }
-
   };
 
   const handleEditSubmit = async (updatedUser) => {

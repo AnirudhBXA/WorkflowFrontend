@@ -43,7 +43,7 @@ export default function InterviewsComponent() {
   async function fetchInterviews() {
     const res = await axiosInstance.get("/interview/me", {
       params: {
-        page: interviewPage
+        page: interviewPage,
       },
     });
     setInterviews(res.data.interviews.content || []);
@@ -52,8 +52,8 @@ export default function InterviewsComponent() {
 
   async function fetchEmployeeInterviews() {
     const res = await axiosInstance.get("/interview/employees", {
-      params: { 
-        page: employeePage
+      params: {
+        page: employeePage,
       },
     });
     setEmployeeInterviews(res.data.interviews.content || []);
@@ -87,27 +87,23 @@ export default function InterviewsComponent() {
   }
 
   const validateStatusUpdate = (scheduledDateTime) => {
-
     const now = new Date();
-  
+
     const scheduled = new Date(`${scheduledDateTime}:00`);
-  
     const endWindow = new Date(scheduled.getTime() + 24 * 60 * 60 * 1000);
-  
-    // console.log("Now:", now);
-    // console.log("Scheduled:", scheduled);
-    // console.log("End Window:", endWindow);
-  
+
     if (now < scheduled) {
       toast.error("You cannot mark status before the scheduled date.");
       return false;
     }
-  
+
     if (now > endWindow) {
-      toast.error("You cannot mark status after 24 hours of the scheduled time.");
+      toast.error(
+        "You cannot mark status after 24 hours of the scheduled time.",
+      );
       return false;
     }
-  
+
     return true;
   };
 
@@ -115,18 +111,12 @@ export default function InterviewsComponent() {
     if (!selectedInterview) return;
 
     setActionLoading(status);
-
-    // console.log("raw time ",selectedInterview.scheduledAt )
-    // return;
-
     if (!validateStatusUpdate(selectedInterview.scheduledDate)) {
       setActionLoading(null);
-      console.log("sdlfjslfjlkj")
+      console.log("sdlfjslfjlkj");
       return;
     }
-
-    // selectedInterview.sched  uledAt 
-
+    
     try {
       await axiosInstance.post(
         `/interview/complete/${selectedInterview.taskId}`,
@@ -220,7 +210,8 @@ export default function InterviewsComponent() {
   ];
 
   const isFormDisabled =
-    selectedInterview?.status !== "SCHEDULED" || selectedInterview?.taskAssignee !== user?.username;
+    selectedInterview?.status !== "SCHEDULED" ||
+    selectedInterview?.taskAssignee !== user?.username;
 
   if (loading) {
     return (
@@ -450,7 +441,7 @@ export default function InterviewsComponent() {
             </div>
 
             <div className="flex flex-col gap-3 pt-4">
-              {selectedInterview.status === "SCHEDULED" && 
+              {selectedInterview.status === "SCHEDULED" &&
                 selectedInterview.taskAssignee === user.username && (
                   <div className="flex gap-2">
                     <button
@@ -483,45 +474,45 @@ export default function InterviewsComponent() {
                   </div>
                 )}
 
-              {user?.role === "HR_RECRUITMENT" && 
-                selectedInterview.taskAssignee === user?.username  && (
-                <div className="flex gap-2">
-                  {selectedInterview.status === "RESCHEDULED" && (
-                    <button
-                      onClick={() => {
-                        setRescheduleData({
-                          taskId: selectedInterview.taskId,
-                          newDate: "",
-                          userName:
-                            selectedInterview.intervieweeName ||
-                            selectedInterview.intervieweeEmail,
-                          newInterviewerEmail:
-                            selectedInterview.interviewerEmail,
-                        });
-                        setShowRescheduleCard(true);
-                      }}
-                      className="flex-1 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 py-3 rounded-xl font-bold border border-amber-500/20 transition-all"
-                    >
-                      Reschedule
-                    </button>
-                  )}
-
-                  {selectedInterview.status !== "SCHEDULED" &&
-                    selectedInterview.status !== "CLOSED" && (
+              {user?.role === "HR_RECRUITMENT" &&
+                selectedInterview.taskAssignee === user?.username && (
+                  <div className="flex gap-2">
+                    {selectedInterview.status === "RESCHEDULED" && (
                       <button
-                        onClick={() =>
-                          hrCloseInterview(selectedInterview.taskId)
-                        }
-                        disabled={actionLoading}
-                        className="flex-1 bg-slate-800 hover:bg-slate-700 text-white py-3 rounded-xl font-bold transition-all"
+                        onClick={() => {
+                          setRescheduleData({
+                            taskId: selectedInterview.taskId,
+                            newDate: "",
+                            userName:
+                              selectedInterview.intervieweeName ||
+                              selectedInterview.intervieweeEmail,
+                            newInterviewerEmail:
+                              selectedInterview.interviewerEmail,
+                          });
+                          setShowRescheduleCard(true);
+                        }}
+                        className="flex-1 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 py-3 rounded-xl font-bold border border-amber-500/20 transition-all"
                       >
-                        {actionLoading === true
-                          ? "Closing..."
-                          : "Close Interview"}
+                        Reschedule
                       </button>
                     )}
-                </div>
-              )}
+
+                    {selectedInterview.status !== "SCHEDULED" &&
+                      selectedInterview.status !== "CLOSED" && (
+                        <button
+                          onClick={() =>
+                            hrCloseInterview(selectedInterview.taskId)
+                          }
+                          disabled={actionLoading}
+                          className="flex-1 bg-slate-800 hover:bg-slate-700 text-white py-3 rounded-xl font-bold transition-all"
+                        >
+                          {actionLoading === true
+                            ? "Closing..."
+                            : "Close Interview"}
+                        </button>
+                      )}
+                  </div>
+                )}
             </div>
           </div>
         </div>

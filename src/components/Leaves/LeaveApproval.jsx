@@ -13,7 +13,7 @@ import { toast } from "sonner";
 function formatDateToDDMMYYYY(dateString) {
   const date = new Date(dateString);
   return `${String(date.getDate()).padStart(2, "0")}/${String(
-    date.getMonth() + 1
+    date.getMonth() + 1,
   ).padStart(2, "0")}/${date.getFullYear()}`;
 }
 
@@ -38,7 +38,7 @@ export default function LeaveApprovalComponent() {
     try {
       const res = await axiosInstance.get("/leaves", {
         params: {
-          page: page
+          page: page,
         },
       });
 
@@ -62,7 +62,7 @@ export default function LeaveApprovalComponent() {
       toast.error(
         error?.response?.data?.message ||
           error?.message ||
-          "Failed to Update status"
+          "Failed to Update status",
       );
     }
 
@@ -104,12 +104,8 @@ export default function LeaveApprovalComponent() {
         <LeaveBriefCard
           leave={selectedLeave}
           onClose={() => setSelectedLeave(null)}
-          onApprove={() =>
-            handleStatusUpdate("APPROVED", selectedLeave.taskId)
-          }
-          onReject={() =>
-            handleStatusUpdate("REJECTED", selectedLeave.taskId)
-          }
+          onApprove={() => handleStatusUpdate("APPROVED", selectedLeave.taskId)}
+          onReject={() => handleStatusUpdate("REJECTED", selectedLeave.taskId)}
         />
       )}
 

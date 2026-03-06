@@ -1,6 +1,5 @@
 import StatsCards from "../components/Dashboard/StatsCards";
 import ChartsSection from "../components/Dashboard/ChartSection";
-import TasksAndCalendar from "../components/Dashboard/TasksAndCalendar";
 
 export default function DashboardPage() {
   return (

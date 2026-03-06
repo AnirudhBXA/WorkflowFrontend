@@ -12,9 +12,7 @@ export default function LeavesComponent() {
   const [summary, setSummary] = useState({ available: 0, used: 0 });
   const [leavesList, setLeavesList] = useState([]);
 
-  const PAGE_SIZE = 5;
-
-  const [page, setPage] = useState(0); // backend uses 0 index
+  const [page, setPage] = useState(0); 
   const [totalPages, setTotalPages] = useState(0);
 
   useEffect(() => {
@@ -22,7 +20,7 @@ export default function LeavesComponent() {
       try {
         const res = await axiosInstance.get("/leaves/me", {
           params: {
-            page: page
+            page: page,
           },
         });
         const leaves = res.data.content || [];
@@ -192,7 +190,7 @@ export default function LeavesComponent() {
           </table>
           <div className="flex items-center justify-between px-6 py-4 border-t border-slate-800 bg-[#0B1220]">
             <span className="text-xs text-slate-500">
-              Page {page + 1 } of {totalPages}
+              Page {page + 1} of {totalPages}
             </span>
 
             <div className="flex items-center gap-2">
@@ -205,7 +203,7 @@ export default function LeavesComponent() {
               </button>
 
               <button
-                disabled={page === totalPages-1 }
+                disabled={page === totalPages - 1}
                 onClick={() => setPage((p) => p + 1)}
                 className="px-4 py-2 rounded-lg border border-slate-700 text-slate-400 hover:bg-slate-800 disabled:opacity-40"
               >

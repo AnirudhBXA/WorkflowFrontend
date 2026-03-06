@@ -62,13 +62,13 @@ export default function CertificationsComponent() {
   useEffect(() => {
     fetchMyCertificates();
   }, [myPage]);
-  
+
   useEffect(() => {
     if (user.role === "MANAGER") {
       fetchTeamCertificates();
     }
   }, [teamPage]);
-  
+
   useEffect(() => {
     if (user.role === "HR") {
       fetchDeptartmentCertifications();
@@ -119,8 +119,8 @@ export default function CertificationsComponent() {
     try {
       const res = await axiosInstance.get("/certifications/me", {
         params: {
-          page: myPage
-        }
+          page: myPage,
+        },
       });
       setMyCerts(res.data.content || []);
       setTotalMyPages(res.data.totalPages);
@@ -146,12 +146,14 @@ export default function CertificationsComponent() {
     try {
       const res = await axiosInstance.get("/certifications/team", {
         params: {
-          page: teamPage
-        }
+          page: teamPage,
+        },
       });
       setTeamCerts(res.data.content || []);
       setTotalTeamPages(res.data.totalPages);
-      setPendingItems((res.data.content || []).filter((c) => c.status === "ASSIGNED"));
+      setPendingItems(
+        (res.data.content || []).filter((c) => c.status === "ASSIGNED"),
+      );
     } catch (e) {
       toast.error(
         e?.response?.data?.message || e?.message || "Failed to load data ❌",
@@ -163,8 +165,8 @@ export default function CertificationsComponent() {
     try {
       const response = await axiosInstance.get("/certifications/dept", {
         params: {
-          page: deptPage
-        }
+          page: deptPage,
+        },
       });
       setDeptCerts(response.data.content || []);
       setTotalDeptPages(response.data.totalPages);
@@ -224,7 +226,6 @@ export default function CertificationsComponent() {
       setUploading(false);
     }
   }
-
 
   async function handleManagerVerifyCertification(event, taskId, decision) {
     event.stopPropagation();
@@ -718,7 +719,7 @@ export default function CertificationsComponent() {
                 </button>
 
                 <button
-                  disabled={teamPage === totalTeamPages-1}
+                  disabled={teamPage === totalTeamPages - 1}
                   onClick={() => setTeamPage((p) => p + 1)}
                   className="p-2 rounded-lg border border-slate-700 text-slate-400 hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed"
                 >

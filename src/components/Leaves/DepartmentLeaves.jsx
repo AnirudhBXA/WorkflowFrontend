@@ -5,7 +5,7 @@ import LeaveBriefCard from "./LeaveBriefCard";
 function formatDateToDDMMYYYY(dateString) {
   const date = new Date(dateString);
   return `${String(date.getDate()).padStart(2, "0")}/${String(
-    date.getMonth() + 1
+    date.getMonth() + 1,
   ).padStart(2, "0")}/${date.getFullYear()}`;
 }
 
@@ -28,7 +28,7 @@ export default function DepartmentLeaves() {
     try {
       const res = await axiosInstance.get("/leaves/dept-leaves", {
         params: {
-          page: page
+          page: page,
         },
       });
 

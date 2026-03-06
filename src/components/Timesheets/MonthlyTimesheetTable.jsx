@@ -1,4 +1,5 @@
 import { User } from "lucide-react";
+
 export default function MonthlyTimesheetTable({ data }) {
   const badge = (status) =>
     status === "APPROVED"

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useContext } from "react";
 import axiosInstance from "../utils/axiosInstance";
 import {
   CloudUpload,
@@ -9,10 +9,12 @@ import {
   Settings2,
   ChevronRight,
 } from "lucide-react";
+import { AuthContext } from "../context/AuthContext";
 
 import { toast } from "sonner";
 
 function FileUploadComponent() {
+  const { user } = useContext(AuthContext);
   const inputRef = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -25,30 +27,45 @@ function FileUploadComponent() {
     relatedApi: "",
   });
   const [workflowOptions, setWorkFlowOptions] = useState([]);
-  const role = "HR";
 
   useEffect(() => {
     const options = [{ workflowName: "Select-Workflow", relatedApi: "" }];
-    if (role === "HR") {
+
+    if (user?.role === "HR_OPERATIONS") {
+      options.push({
+        workflowName: "Leave Workflow",
+        relatedApi: "/leaves/workflow/upload-leave-requests",
+      });
+    }
+
+    if (user?.role === "HR_LND") {
       options.push(
-        {
-          workflowName: "Leave Workflow",
-          relatedApi: "/leaves/workflow/upload-leave-requests",
-        },
         {
           workflowName: "Certification Workflow",
           relatedApi: "/certifications/upload",
         },
-        { workflowName: "Interview Workflow", relatedApi: "/interview/upload" },
         {
-          workflowName: "Timesheet Workflow",
-          relatedApi: "/timesheets/upload",
+          workflowName: "Trainings Workflow",
+          relatedApi: "/trainings/upload",
         },
-        { workflowName: "Trainings Workflow", relatedApi: "/trainings/upload" },
       );
     }
+
+    if (user?.role === "HR_RECRUITMENT") {
+      options.push({
+        workflowName: "Interview Workflow",
+        relatedApi: "/interview/upload",
+      });
+    }
+
+    if (user?.role === "HR_PAYROLL") {
+      options.push({
+        workflowName: "Timesheet Workflow",
+        relatedApi: "/timesheets/upload",
+      });
+    }
     setWorkFlowOptions(options);
-  }, [role]);
+  }, [user]);
 
   const handleFile = (file) => {
     if (!file || !file.name.endsWith(".xlsx")) {

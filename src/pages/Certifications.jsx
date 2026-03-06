@@ -7,7 +7,6 @@ import { AuthContext } from "../context/AuthContext";
 import axiosInstance from "../utils/axiosInstance";
 import { ChevronLeft, ChevronRight, Loader2, Check, X } from "lucide-react";
 import { toast } from "sonner";
-// import { Check, X, User, Loader2 } from "lucide-react";
 
 export default function CertificationsComponent() {
   const { user } = useContext(AuthContext);
@@ -102,7 +101,6 @@ export default function CertificationsComponent() {
     });
   }
 
-
   async function refreshAll() {
     setLoading(true);
     try {
@@ -110,7 +108,7 @@ export default function CertificationsComponent() {
         fetchMyCertificates(),
         fetchMySummary(),
         user.role === "MANAGER" ? fetchTeamCertificates() : Promise.resolve(),
-        user.role === "HR"
+        user.role === "HR_LND"
           ? fetchDeptartmentCertifications()
           : Promise.resolve(),
       ]);
@@ -527,7 +525,7 @@ export default function CertificationsComponent() {
         )}
       </div>
 
-      {user.role === "HR" && (
+      {user.role === "HR_LND" && (
         <div className="bg-[#111827] border border-slate-800 rounded-2xl overflow-hidden">
           <div className="px-6 py-4 border-b border-slate-800 flex items-center gap-2">
             <History className="w-5 h-5 text-indigo-400" />

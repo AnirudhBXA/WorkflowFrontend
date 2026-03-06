@@ -48,7 +48,7 @@ export default function InterviewsComponent() {
     setLoading(true);
     try {
       await fetchInterviews();
-      if (user?.role === "HR") {
+      if (user?.role === "HR_RECRUITMENT") {
         await fetchEmployeeInterviews();
       }
     } finally {
@@ -284,7 +284,7 @@ export default function InterviewsComponent() {
         </div>
       </div>
 
-      {user?.role === "HR" && (
+      {user?.role === "HR_RECRUITMENT" && (
         <div className="bg-[#111827] border border-slate-800 rounded-2xl overflow-hidden">
           <div className="px-6 py-4 border-b border-slate-800 flex items-center gap-2">
             <Calendar className="w-4 h-4 text-indigo-400" />
@@ -467,7 +467,7 @@ export default function InterviewsComponent() {
                   </div>
                 )}
 
-              {user?.role === "HR" && 
+              {user?.role === "HR_RECRUITMENT" && 
                 selectedInterview.taskAssignee === user?.username  && (
                 <div className="flex gap-2">
                   {selectedInterview.status === "RESCHEDULED" && (

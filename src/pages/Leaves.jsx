@@ -225,7 +225,7 @@ export default function LeavesComponent() {
         </div>
       )}
 
-      {user?.role === "HR" && (
+      {user?.role === "HR_OPERATIONS" && (
         <div className="space-y-4">
           <div className="flex items-center gap-2">
             <Briefcase className="w-6 h-6 text-indigo-400" />

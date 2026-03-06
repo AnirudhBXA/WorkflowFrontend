@@ -70,7 +70,16 @@ createRoot(document.getElementById("root")).render(
             <Route
               path="workflows"
               element={
-                <ProtectedRoute allowedRoles={["ADMIN", "HR"]}>
+                <ProtectedRoute
+                  allowedRoles={[
+                    "ADMIN",
+                    "HR_OPERATIONS",
+                    "HR_PAYROLL",
+                    "HR_LND",
+                    "HR_RECRUITMENT",
+                    "HR",
+                  ]}
+                >
                   <WorkflowPage />
                 </ProtectedRoute>
               }

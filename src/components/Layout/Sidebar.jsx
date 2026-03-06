@@ -107,7 +107,7 @@ export default function NavigationSidebar({ className = "" }) {
           </div>
         )}
 
-        {(user?.role === "ADMIN" || user?.role === "HR") && (
+        {(user?.role === "ADMIN" || (user?.role?.startsWith("HR")) && user?.role !== "HR_BP") && (
           <NavLink
             to="/workflows"
             className={({ isActive }) =>

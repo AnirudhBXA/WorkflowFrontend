@@ -144,10 +144,17 @@ export default function UserRegistryView({
                 className="w-full px-3 py-2 border text-sm"
               >
                 <option value="">Select Role</option>
-                <option>Employee</option>
-                <option>Manager</option>
-                <option>HR</option>
-                <option>Admin</option>
+
+                <option value="EMPLOYEE">Employee</option>
+                <option value="MANAGER">Manager</option>
+
+                <option value="HR_OPERATIONS">HR Operations</option>
+                <option value="HR_PAYROLL">HR Payroll</option>
+                <option value="HR_LND">HR Learning & Development</option>
+                <option value="HR_RECRUITMENT">HR Recruitment</option>
+                <option value="HR_BP">HR Business Partner</option>
+
+                <option value="ADMIN">Admin</option>
               </select>
             </div>
           </div>
@@ -210,10 +217,18 @@ export default function UserRegistryView({
                         onChange={handleEditChange}
                         className="border border-zinc-300 p-1 w-full bg-white"
                       >
-                        <option>Employee</option>
-                        <option>Manager</option>
-                        <option>HR</option>
-                        <option>Admin</option>
+                        <option value="EMPLOYEE">Employee</option>
+                        <option value="MANAGER">Manager</option>
+
+                        <option value="HR_OPERATIONS">HR Operations</option>
+                        <option value="HR_PAYROLL">HR Payroll</option>
+                        <option value="HR_LND">
+                          HR Learning & Development
+                        </option>
+                        <option value="HR_RECRUITMENT">HR Recruitment</option>
+                        <option value="HR_BP">HR Business Partner</option>
+
+                        <option value="ADMIN">Admin</option>
                       </select>
                     </td>
                     <td className="px-4 py-4 italic text-zinc-400">Active</td>

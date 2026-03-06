@@ -4,45 +4,40 @@ import LeaveBriefCard from "./LeaveBriefCard";
 
 function formatDateToDDMMYYYY(dateString) {
   const date = new Date(dateString);
-  return `${String(date.getDate()).padStart(2, "0")}/${String(date.getMonth() + 1).padStart(2, "0")}/${date.getFullYear()}`;
+  return `${String(date.getDate()).padStart(2, "0")}/${String(
+    date.getMonth() + 1
+  ).padStart(2, "0")}/${date.getFullYear()}`;
 }
 
 export default function DepartmentLeaves() {
   const [leavesList, setLeavesList] = useState([]);
   const [selectedLeave, setSelectedLeave] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [page, setPage] = useState(1);
+
+  const [page, setPage] = useState(0); // backend uses 0 index
+  const [totalPages, setTotalPages] = useState(0);
 
   const PAGE_SIZE = 5;
-  const totalPages = Math.ceil(leavesList.length / PAGE_SIZE);
-  const startIndex = (page - 1) * PAGE_SIZE;
-  const paginatedLeaves = leavesList.slice(startIndex, startIndex + PAGE_SIZE);
 
   useEffect(() => {
-    axiosInstance.get("/leaves/dept-leaves").then((res) => {
-      setLeavesList(res.data || []);
+    fetchDepartmentLeaves();
+  }, [page]);
+
+  async function fetchDepartmentLeaves() {
+    setLoading(true);
+    try {
+      const res = await axiosInstance.get("/leaves/dept-leaves", {
+        params: {
+          page: page
+        },
+      });
+
+      setLeavesList(res.data.content || []);
+      setTotalPages(res.data.totalPages || 0);
+    } finally {
       setLoading(false);
-    });
-  }, []);
-
-  useEffect(() => {
-    setPage(1);
-  }, [leavesList]);
-
-  const badge = (status) => {
-    const map = {
-      APPROVED: "bg-emerald-500/10 text-emerald-400",
-      PENDING: "bg-amber-500/10 text-amber-400",
-      REJECTED: "bg-rose-500/10 text-rose-400",
-    };
-    return (
-      <span
-        className={`px-3 py-1 rounded-lg text-xs font-semibold ${map[status]}`}
-      >
-        {status}
-      </span>
-    );
-  };
+    }
+  }
 
   if (loading) {
     return (
@@ -73,18 +68,22 @@ export default function DepartmentLeaves() {
               <th className="px-6 py-4 text-left">Action</th>
             </tr>
           </thead>
+
           <tbody className="divide-y divide-slate-800">
-            {paginatedLeaves.map((item) => (
+            {leavesList.map((item) => (
               <tr key={item.leaveId} className="hover:bg-[#0B1220]">
                 <td className="px-6 py-4 text-slate-200">{item.leaveId}</td>
                 <td className="px-6 py-4 text-slate-300">{item.leaveType}</td>
                 <td className="px-6 py-4 text-slate-400">{item.email}</td>
+
                 <td className="px-6 py-4 text-slate-400">
                   {formatDateToDDMMYYYY(item.startDate)}
                 </td>
+
                 <td className="px-6 py-4 text-slate-400">
                   {formatDateToDDMMYYYY(item.endDate)}
                 </td>
+
                 <td className="px-6 py-4">
                   <button
                     onClick={() => setSelectedLeave(item)}
@@ -97,15 +96,16 @@ export default function DepartmentLeaves() {
             ))}
           </tbody>
         </table>
+
         {totalPages > 1 && (
           <div className="flex items-center justify-between px-6 py-4 border-t border-slate-800 bg-[#0B1220]">
             <span className="text-xs text-slate-500">
-              Page {page} of {totalPages}
+              Page {page + 1} of {totalPages}
             </span>
 
             <div className="flex items-center gap-2">
               <button
-                disabled={page === 1}
+                disabled={page === 0}
                 onClick={() => setPage((p) => p - 1)}
                 className="py-2 px-4 rounded-lg border border-slate-700 text-slate-400 hover:bg-slate-800 disabled:opacity-40"
               >
@@ -113,7 +113,7 @@ export default function DepartmentLeaves() {
               </button>
 
               <button
-                disabled={page === totalPages}
+                disabled={page === totalPages - 1}
                 onClick={() => setPage((p) => p + 1)}
                 className="py-2 px-4 rounded-lg border border-slate-700 text-slate-400 hover:bg-slate-800 disabled:opacity-40"
               >

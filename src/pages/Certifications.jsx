@@ -23,14 +23,21 @@ export default function CertificationsComponent() {
   const [uploading, setUploading] = useState(false);
   const [selectedCert, setSelectedCert] = useState(null);
 
+  const PAGE_SIZE = 5;
+
+  const [myPage, setMyPage] = useState(0);
+  const [teamPage, setTeamPage] = useState(0);
+  const [deptPage, setDeptPage] = useState(0);
+
+  const [totalMyPages, setTotalMyPages] = useState(0);
+  const [totalTeamPages, setTotalTeamPages] = useState(0);
+  const [totalDeptPages, setTotalDeptPages] = useState(0);
+
   const [sortConfig, setSortConfig] = useState({
     field: null,
     direction: "asc",
   });
 
-  const [myPage, setMyPage] = useState(1);
-  const [teamPage, setTeamPage] = useState(1);
-  const [deptPage, setDeptPage] = useState(1);
   const [isViewingApproval, setIsViewingApproval] = useState(false); // New State
 
   // Update this to handle clicking from Approval table vs History table
@@ -43,31 +50,6 @@ export default function CertificationsComponent() {
     setIsViewingApproval(false);
     setSelected(item);
   };
-  const PAGE_SIZE = 5;
-
-  const sortedTeamcerts = sortData(teamCerts);
-  const totalTeamPages = Math.ceil(teamCerts.length / PAGE_SIZE);
-  const startIndexTeam = (teamPage - 1) * PAGE_SIZE;
-  const paginatedTeamCerts = sortedTeamcerts.slice(
-    startIndexTeam,
-    startIndexTeam + PAGE_SIZE,
-  );
-
-  const sortedMycerts = sortData(myCerts);
-  const totalMyPages = Math.ceil(myCerts.length / PAGE_SIZE);
-  const startIndexMy = (myPage - 1) * PAGE_SIZE;
-  const paginatedMyCerts = sortedMycerts.slice(
-    startIndexMy,
-    startIndexMy + PAGE_SIZE,
-  );
-
-  const sortedDeptcerts = sortData(deptCerts);
-  const totalDeptPages = Math.ceil(deptCerts.length / PAGE_SIZE);
-  const startIndexDept = (deptPage - 1) * PAGE_SIZE;
-  const paginatedDeptCerts = sortedDeptcerts.slice(
-    startIndexDept,
-    startIndexDept + PAGE_SIZE,
-  );
 
   useEffect(() => {
     if (user) {
@@ -76,6 +58,22 @@ export default function CertificationsComponent() {
 
     console.log(user);
   }, [user]);
+
+  useEffect(() => {
+    fetchMyCertificates();
+  }, [myPage]);
+  
+  useEffect(() => {
+    if (user.role === "MANAGER") {
+      fetchTeamCertificates();
+    }
+  }, [teamPage]);
+  
+  useEffect(() => {
+    if (user.role === "HR") {
+      fetchDeptartmentCertifications();
+    }
+  }, [deptPage]);
 
   function sortData(data) {
     if (!sortConfig.field) return data;
@@ -119,8 +117,13 @@ export default function CertificationsComponent() {
 
   async function fetchMyCertificates() {
     try {
-      const res = await axiosInstance.get("/certifications/me");
-      setMyCerts(res.data || []);
+      const res = await axiosInstance.get("/certifications/me", {
+        params: {
+          page: myPage
+        }
+      });
+      setMyCerts(res.data.content || []);
+      setTotalMyPages(res.data.totalPages);
     } catch (e) {
       toast.error(
         e?.response?.data?.message || e?.message || "Failed to load data ❌",
@@ -141,9 +144,14 @@ export default function CertificationsComponent() {
 
   async function fetchTeamCertificates() {
     try {
-      const res = await axiosInstance.get("/certifications/team");
-      setTeamCerts(res.data || []);
-      setPendingItems((res.data || []).filter((c) => c.status === "ASSIGNED"));
+      const res = await axiosInstance.get("/certifications/team", {
+        params: {
+          page: teamPage
+        }
+      });
+      setTeamCerts(res.data.content || []);
+      setTotalTeamPages(res.data.totalPages);
+      setPendingItems((res.data.content || []).filter((c) => c.status === "ASSIGNED"));
     } catch (e) {
       toast.error(
         e?.response?.data?.message || e?.message || "Failed to load data ❌",
@@ -153,8 +161,13 @@ export default function CertificationsComponent() {
 
   async function fetchDeptartmentCertifications() {
     try {
-      const response = await axiosInstance.get("/certifications/dept");
-      setDeptCerts(response.data || []);
+      const response = await axiosInstance.get("/certifications/dept", {
+        params: {
+          page: deptPage
+        }
+      });
+      setDeptCerts(response.data.content || []);
+      setTotalDeptPages(response.data.totalPages);
     } catch (e) {
       toast.error(
         e?.response?.data?.message || e?.message || "Failed to load data ❌",
@@ -212,23 +225,6 @@ export default function CertificationsComponent() {
     }
   }
 
-  async function handleCompleteCertification(event, item) {
-    event.stopPropagation();
-    try {
-      setLoadingCertId(item.certId);
-      const response = await axiosInstance.post(
-        `/certifications/complete/${item.taskId}`,
-      );
-      await refreshAll();
-      toast.success("Completed Successfully");
-    } catch (e) {
-      toast.error(
-        e?.response?.data?.message || e?.message || "Status update failed ❌",
-      );
-    } finally {
-      setLoadingCertId(null);
-    }
-  }
 
   async function handleManagerVerifyCertification(event, taskId, decision) {
     event.stopPropagation();
@@ -456,7 +452,7 @@ export default function CertificationsComponent() {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-800">
-            {paginatedMyCerts.map((c) => (
+            {myCerts.map((c) => (
               <tr
                 key={c.certId}
                 onClick={() => handleSelectForView(c)}
@@ -501,12 +497,12 @@ export default function CertificationsComponent() {
         {totalMyPages > 0 && (
           <div className="flex items-center justify-between px-6 py-4 border-t border-slate-800 bg-[#0B1220]">
             <span className="text-xs text-slate-500">
-              Page {myPage} of {totalMyPages}
+              Page {myPage + 1} of {totalMyPages}
             </span>
 
             <div className="flex items-center gap-2">
               <button
-                disabled={myPage === 1}
+                disabled={myPage === 0}
                 onClick={() => setMyPage((p) => p - 1)}
                 className="p-2 rounded-lg border border-slate-700 text-slate-400 hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed"
               >
@@ -514,7 +510,7 @@ export default function CertificationsComponent() {
               </button>
 
               <button
-                disabled={myPage === totalMyPages}
+                disabled={myPage === totalMyPages - 1}
                 onClick={() => setMyPage((p) => p + 1)}
                 className="p-2 rounded-lg border border-slate-700 text-slate-400 hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed"
               >
@@ -575,7 +571,7 @@ export default function CertificationsComponent() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800">
-              {paginatedDeptCerts.map((c) => (
+              {deptCerts.map((c) => (
                 <tr
                   key={c.certId}
                   onClick={() => setSelected(c)}
@@ -616,12 +612,12 @@ export default function CertificationsComponent() {
           {totalDeptPages > 0 && (
             <div className="flex items-center justify-between px-6 py-4 border-t border-slate-800 bg-[#0B1220]">
               <span className="text-xs text-slate-500">
-                Page {deptPage} of {totalDeptPages}
+                Page {deptPage + 1} of {totalDeptPages}
               </span>
 
               <div className="flex items-center gap-2">
                 <button
-                  disabled={deptPage === 1}
+                  disabled={deptPage === 0}
                   onClick={() => setDeptPage((p) => p - 1)}
                   className="p-2 rounded-lg border border-slate-700 text-slate-400 hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed"
                 >
@@ -629,7 +625,7 @@ export default function CertificationsComponent() {
                 </button>
 
                 <button
-                  disabled={deptPage === totalDeptPages}
+                  disabled={deptPage === totalDeptPages - 1}
                   onClick={() => setDeptPage((p) => p + 1)}
                   className="p-2 rounded-lg border border-slate-700 text-slate-400 hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed"
                 >
@@ -662,7 +658,7 @@ export default function CertificationsComponent() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800">
-              {paginatedTeamCerts.map((c) => (
+              {teamCerts.map((c) => (
                 <tr
                   key={c.certId}
                   onClick={() => handleSelectForView(c)}
@@ -709,12 +705,12 @@ export default function CertificationsComponent() {
           {totalTeamPages > 0 && (
             <div className="flex items-center justify-between px-6 py-4 border-t border-slate-800 bg-[#0B1220]">
               <span className="text-xs text-slate-500">
-                Page {teamPage} of {totalTeamPages}
+                Page {teamPage + 1} of {totalTeamPages}
               </span>
 
               <div className="flex items-center gap-2">
                 <button
-                  disabled={teamPage === 1}
+                  disabled={teamPage === 0}
                   onClick={() => setTeamPage((p) => p - 1)}
                   className="p-2 rounded-lg border border-slate-700 text-slate-400 hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed"
                 >
@@ -722,7 +718,7 @@ export default function CertificationsComponent() {
                 </button>
 
                 <button
-                  disabled={teamPage === totalTeamPages}
+                  disabled={teamPage === totalTeamPages-1}
                   onClick={() => setTeamPage((p) => p + 1)}
                   className="p-2 rounded-lg border border-slate-700 text-slate-400 hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed"
                 >

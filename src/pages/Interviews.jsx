@@ -27,6 +27,12 @@ export default function InterviewsComponent() {
     newInterviewerEmail: "",
   });
 
+  const [interviewPage, setInterviewPage] = useState(0);
+  const [employeePage, setEmployeePage] = useState(0);
+
+  const [totalInterviewPages, setTotalInterviewPages] = useState(0);
+  const [totalEmployeePages, setTotalEmployeePages] = useState(0);
+
   const [feedback, setFeedback] = useState("");
   const [outcome, setOutcome] = useState("");
 
@@ -35,13 +41,23 @@ export default function InterviewsComponent() {
   }, [user]);
 
   async function fetchInterviews() {
-    const res = await axiosInstance.get("/interview/me");
-    setInterviews(res.data.interviews || []);
+    const res = await axiosInstance.get("/interview/me", {
+      params: {
+        page: interviewPage
+      },
+    });
+    setInterviews(res.data.interviews.content || []);
+    setTotalInterviewPages(res.data.interviews.totalPages);
   }
 
   async function fetchEmployeeInterviews() {
-    const res = await axiosInstance.get("/interview/employees");
-    setEmployeeInterviews(res.data || []);
+    const res = await axiosInstance.get("/interview/employees", {
+      params: { 
+        page: employeePage
+      },
+    });
+    setEmployeeInterviews(res.data.interviews.content || []);
+    setTotalEmployeePages(res.data.interviews.totalPages);
   }
 
   async function refreshAfterAction() {
@@ -303,7 +319,7 @@ export default function InterviewsComponent() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-800">
-                {!employeeInterviews?.interviews?.length ? (
+                {!employeeInterviews?.length ? (
                   <tr>
                     <td
                       colSpan={4}
@@ -313,7 +329,7 @@ export default function InterviewsComponent() {
                     </td>
                   </tr>
                 ) : (
-                  employeeInterviews.interviews.map((item) => (
+                  employeeInterviews.map((item) => (
                     <tr
                       key={item.id}
                       className="hover:bg-[#0B1220] transition cursor-pointer"

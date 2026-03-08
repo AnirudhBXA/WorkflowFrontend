@@ -7,7 +7,6 @@ import { toast } from "sonner";
 
 export default function TrainingsComponent() {
   const { user } = useContext(AuthContext);
-
   const [myLoading, setMyLoading] = useState(true);
   const [teamLoading, setTeamLoading] = useState(true);
   const [myTrainings, setMyTrainings] = useState([]);

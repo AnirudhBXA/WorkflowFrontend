@@ -1,38 +1,36 @@
 import {
-  Bell,
-  Settings,
   LogOut,
   User as UserIcon,
   Menu as MenuIcon,
 } from "lucide-react";
-import { useEffect, useState, useContext } from "react";
+import { useContext } from "react";
 import { Menu, Portal } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import axiosInstance from "../../utils/axiosInstance";
 
 function HeaderComponent({ onMenuClick }) {
-  const [notifications, setNotifications] = useState([]);
+  // const [notifications, setNotifications] = useState([]);
   const { logout, user } = useContext(AuthContext);
 
-  useEffect(() => {
-    setNotifications([
-      {
-        id: 1,
-        title: "Flexi declaration open",
-        description: "Declaration for 2025-2026 is now live",
-        time: "2h ago",
-        unread: true,
-      },
-      {
-        id: 2,
-        title: "Timesheet Approved",
-        description: "Your manager approved last week's entries",
-        time: "5h ago",
-        unread: false,
-      },
-    ]);
-  }, []);
+  // useEffect(() => {
+  //   setNotifications([
+  //     {
+  //       id: 1,
+  //       title: "Flexi declaration open",
+  //       description: "Declaration for 2025-2026 is now live",
+  //       time: "2h ago",
+  //       unread: true,
+  //     },
+  //     {
+  //       id: 2,
+  //       title: "Timesheet Approved",
+  //       description: "Your manager approved last week's entries",
+  //       time: "5h ago",
+  //       unread: false,
+  //     },
+  //   ]);
+  // }, []);
 
   function handleLogout() {
     axiosInstance.post("/auth/logout");
@@ -51,7 +49,6 @@ function HeaderComponent({ onMenuClick }) {
 
   return (
     <header className="sticky top-0 z-40 h-16 bg-[#0F172A] border-b border-slate-800 flex items-center justify-between px-4 md:px-8">
-      {/* Hamburger for mobile */}
       <button
         className="md:hidden p-2 rounded-md hover:bg-[#111827] text-slate-400 hover:text-white"
         onClick={onMenuClick}
@@ -61,7 +58,7 @@ function HeaderComponent({ onMenuClick }) {
 
       <div className="flex items-center gap-5 ml-auto">
         {/* Notifications */}
-        <Menu.Root unstyled>
+        {/* <Menu.Root unstyled>
           <Menu.Trigger asChild>
             <button className="relative p-2 rounded-xl hover:bg-[#111827] text-slate-400 hover:text-white">
               <Bell size={20} />
@@ -99,7 +96,7 @@ function HeaderComponent({ onMenuClick }) {
               </Menu.Content>
             </Menu.Positioner>
           </Portal>
-        </Menu.Root>
+        </Menu.Root> */}
 
         {/* Profile dropdown */}
         <Menu.Root unstyled>
@@ -127,12 +124,6 @@ function HeaderComponent({ onMenuClick }) {
                       <UserIcon size={16} /> Profile
                     </div>
                   </Link>
-                  <Link to="/settings">
-                    <div className="flex items-center gap-3 px-4 py-3 text-sm font-semibold text-slate-300 hover:bg-[#0B1220] rounded-xl">
-                      <Settings size={16} /> Settings
-                    </div>
-                  </Link>
-                  <div className="h-px bg-slate-700 my-2" />
                   <div
                     onClick={handleLogout}
                     className="flex items-center gap-3 px-4 py-3 text-sm font-semibold text-red-400 hover:bg-red-500/10 rounded-xl cursor-pointer"

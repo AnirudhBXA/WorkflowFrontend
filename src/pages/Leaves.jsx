@@ -12,7 +12,7 @@ export default function LeavesComponent() {
   const [summary, setSummary] = useState({ available: 0, used: 0 });
   const [leavesList, setLeavesList] = useState([]);
 
-  const [page, setPage] = useState(0); 
+  const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
 
   useEffect(() => {
@@ -117,7 +117,6 @@ export default function LeavesComponent() {
                 <th className="px-6 py-4 text-left">Status</th>
                 <th className="px-6 py-4 text-left">Reason</th>
                 <th className="px-6 py-4 text-left">Document</th>
-                {/* <th className="px-6 py-4 text-left">Created At</th> */}
                 <th className="px-6 py-4 text-left">Updated At</th>
               </tr>
             </thead>
@@ -177,9 +176,6 @@ export default function LeavesComponent() {
                         "—"
                       )}
                     </td>
-                    {/* <td className="px-6 py-5 text-slate-400">
-                      {formatDateTime(item.createdAt)}
-                    </td> */}
                     <td className="px-6 py-5 text-slate-400">
                       {formatDateTime(item.updatedAt)}
                     </td>

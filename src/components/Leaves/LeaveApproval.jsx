@@ -27,18 +27,19 @@ export default function LeaveApprovalComponent() {
 
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
 
-  const PAGE_SIZE = 5;
-
   useEffect(() => {
     fetchLeaves();
-  }, [page]);
+  }, [page, sortConfig]);
 
   async function fetchLeaves() {
     setLoading(true);
+
     try {
       const res = await axiosInstance.get("/leaves", {
         params: {
           page: page,
+          sort: sortConfig.key,
+          direction: sortConfig.direction,
         },
       });
 
@@ -70,13 +71,12 @@ export default function LeaveApprovalComponent() {
   };
 
   const handleSort = (key) => {
-    let direction = "asc";
+    setPage(0);
 
-    if (sortConfig.key === key && sortConfig.direction === "asc") {
-      direction = "desc";
-    }
-
-    setSortConfig({ key, direction });
+    setSortConfig((prev) => ({
+      key,
+      direction: prev.key === key && prev.direction === "asc" ? "desc" : "asc",
+    }));
   };
 
   const renderSortIcon = (key) => {
@@ -116,16 +116,16 @@ export default function LeaveApprovalComponent() {
               <tr>
                 <th
                   className="px-6 py-4 text-left cursor-pointer"
-                  onClick={() => handleSort("id")}
+                  onClick={() => handleSort("leaveId")}
                 >
-                  Leave Id {renderSortIcon("id")}
+                  Leave Id {renderSortIcon("leaveId")}
                 </th>
 
                 <th
                   className="px-6 py-4 text-left cursor-pointer"
-                  onClick={() => handleSort("empEmail")}
+                  onClick={() => handleSort("email")}
                 >
-                  Employee {renderSortIcon("empEmail")}
+                  Employee {renderSortIcon("email")}
                 </th>
 
                 <th
@@ -157,7 +157,10 @@ export default function LeaveApprovalComponent() {
 
             <tbody className="divide-y divide-slate-800">
               {leavesList.map((item) => (
-                <tr key={item.id} className="hover:bg-[#0B1220] transition">
+                <tr
+                  key={`${item.id}-${item.taskId}`}
+                  className="hover:bg-[#0B1220] transition"
+                >
                   <td className="px-6 py-4 text-slate-200">{item.id}</td>
 
                   <td className="px-6 py-4 text-slate-200 whitespace-nowrap">

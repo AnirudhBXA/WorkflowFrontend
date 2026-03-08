@@ -14,10 +14,8 @@ export default function DepartmentLeaves() {
   const [selectedLeave, setSelectedLeave] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const [page, setPage] = useState(0); // backend uses 0 index
+  const [page, setPage] = useState(0); 
   const [totalPages, setTotalPages] = useState(0);
-
-  const PAGE_SIZE = 5;
 
   useEffect(() => {
     fetchDepartmentLeaves();
